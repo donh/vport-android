@@ -1,6 +1,6 @@
 package com.a21vianet.wallet.vport.library.commom.crypto.bean;
 
-import com.a21vianet.wallet.app.WalletApplication;
+import com.a21vianet.wallet.vport.library.BaseApplication;
 import com.google.gson.Gson;
 import com.littlesparkle.growler.core.utility.PrefUtility;
 
@@ -79,7 +79,7 @@ public class Contract {
      * 保存智能合约地址
      */
     public void save() {
-        PrefUtility.setString(WalletApplication.getContext(), SAVE_TAG, new Gson().toJson(this));
+        PrefUtility.setString(BaseApplication.getContext(), SAVE_TAG, new Gson().toJson(this));
     }
 
     /**
@@ -87,7 +87,7 @@ public class Contract {
      */
     public void get() {
         Gson gson = new Gson();
-        String string = PrefUtility.getString(WalletApplication.getContext(), SAVE_TAG, "");
+        String string = PrefUtility.getString(BaseApplication.getContext(), SAVE_TAG, "");
         if (string.equals("")) {
             return;
         }
@@ -104,7 +104,7 @@ public class Contract {
     public void clear() {
         Gson gson = new Gson();
         Contract contract = new Contract();
-        PrefUtility.setString(WalletApplication.getContext(), SAVE_TAG, gson.toJson(contract));
+        PrefUtility.setString(BaseApplication.getContext(), SAVE_TAG, gson.toJson(contract));
         this.setController(contract.getController());
         this.setRecover(contract.getRecover());
         this.setProxy(contract.getProxy());

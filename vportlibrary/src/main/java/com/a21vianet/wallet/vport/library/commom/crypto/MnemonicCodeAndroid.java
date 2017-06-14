@@ -21,8 +21,8 @@ package com.a21vianet.wallet.vport.library.commom.crypto;
 
 import com.a21vianet.quincysx.library.crypto.crypto.mnemonic.MnemonicCode;
 import com.a21vianet.quincysx.library.crypto.crypto.mnemonic.MnemonicWordList;
-import com.a21vianet.wallet.app.R;
-import com.a21vianet.wallet.app.WalletApplication;
+import com.a21vianet.wallet.vport.library.BaseApplication;
+import com.a21vianet.wallet.vport.library.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,16 +62,16 @@ public class MnemonicCodeAndroid extends MnemonicCode {
     private InputStream getMnemonicWordListRawResource(MnemonicWordList wordList) {
         switch (wordList) {
             case English:
-                return WalletApplication.getContext().getResources().openRawResource(R.raw
+                return BaseApplication.getContext().getResources().openRawResource(R.raw
                         .mnemonic_wordlist_english);
             case ZhCN:
-                return WalletApplication.getContext().getResources().openRawResource(R.raw
+                return BaseApplication.getContext().getResources().openRawResource(R.raw
                         .mnemonic_wordlist_zh_cn);
             case ZhTw:
-                return WalletApplication.getContext().getResources().openRawResource(R.raw
+                return BaseApplication.getContext().getResources().openRawResource(R.raw
                         .mnemonic_wordlist_zh_tw);
         }
-        return WalletApplication.getContext().getResources().openRawResource(R.raw
+        return BaseApplication.getContext().getResources().openRawResource(R.raw
                 .mnemonic_wordlist_english);
     }
 

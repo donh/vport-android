@@ -1,14 +1,14 @@
 package com.a21vianet.wallet.vport.library.commom.crypto;
 
-import com.a21vianet.wallet.app.WalletApplication;
-import com.a21vianet.wallet.app.commom.crypto.bean.Contract;
-import com.a21vianet.wallet.app.commom.crypto.callback.MultisigCallback;
-import com.a21vianet.wallet.app.commom.http.ipfs.IPFSRequest;
-import com.a21vianet.wallet.app.commom.http.ipfs.RawTxResponse;
-import com.a21vianet.wallet.app.commom.http.ipfs.bean.UserInfoIPFS;
-import com.a21vianet.wallet.app.commom.http.transaction.TransactionRequest;
-import com.a21vianet.wallet.app.commom.http.transaction.bean.RawTxSignedResponse;
-import com.a21vianet.wallet.app.event.ChangeUserInfoEvnet;
+import com.a21vianet.wallet.vport.library.BaseApplication;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
+import com.a21vianet.wallet.vport.library.commom.crypto.callback.MultisigCallback;
+import com.a21vianet.wallet.vport.library.commom.http.ipfs.IPFSRequest;
+import com.a21vianet.wallet.vport.library.commom.http.ipfs.RawTxResponse;
+import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFS;
+import com.a21vianet.wallet.vport.library.commom.http.transaction.TransactionRequest;
+import com.a21vianet.wallet.vport.library.commom.http.transaction.bean.RawTxSignedResponse;
+import com.a21vianet.wallet.vport.library.event.ChangeUserInfoEvent;
 import com.littlesparkle.growler.core.http.BaseHttpSubscriber;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,7 +65,7 @@ public class CryptoBiz {
                             @Override
                             public void call(final Subscriber<? super String> subscriber) {
                                 try {
-                                    CryptoManager.getInstance().sign(WalletApplication.getContext(),
+                                    CryptoManager.getInstance().sign(BaseApplication.getContext(),
                                             rawTxResponse.rawTx, new MultisigCallback() {
                                                 @Override
                                                 public void onSinged(String signedRawTransaction) {
@@ -104,7 +104,8 @@ public class CryptoBiz {
                                     @Override
                                     protected void onSuccess(RawTxSignedResponse
                                                                      rawTxSignedResponse) {
-                                        EventBus.getDefault().post(new ChangeUserInfoEvnet(userInfoIPFS));
+                                        EventBus.getDefault().post(new ChangeUserInfoEvent
+                                                (userInfoIPFS));
                                         subscriber.onNext(rawTxSignedResponse);
                                     }
                                 }, rawTx);

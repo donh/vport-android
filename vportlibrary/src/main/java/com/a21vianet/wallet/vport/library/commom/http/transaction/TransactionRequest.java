@@ -2,7 +2,7 @@ package com.a21vianet.wallet.vport.library.commom.http.transaction;
 
 import android.support.annotation.NonNull;
 
-import com.a21vianet.wallet.app.commom.http.transaction.bean.RawTxSignedResponse;
+import com.a21vianet.wallet.vport.library.commom.http.transaction.bean.RawTxSignedResponse;
 import com.littlesparkle.growler.core.http.Request;
 
 import retrofit2.http.Field;

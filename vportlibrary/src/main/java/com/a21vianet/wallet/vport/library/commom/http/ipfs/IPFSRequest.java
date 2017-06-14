@@ -2,8 +2,8 @@ package com.a21vianet.wallet.vport.library.commom.http.ipfs;
 
 import android.support.annotation.NonNull;
 
-import com.a21vianet.wallet.app.commom.http.ipfs.bean.UserInfoIPFS;
-import com.a21vianet.wallet.app.commom.http.ipfs.bean.UserInfoIPFSGET;
+import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFS;
+import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFSGET;
 import com.google.gson.Gson;
 import com.littlesparkle.growler.core.http.Request;
 

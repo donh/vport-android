@@ -26,9 +26,11 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.properties.libJunit
-    compile rootProject.ext.libSupportV7
-    annotationProcessor rootProject.ext.libButterknifeProcessor
-    compile project(':core')
-    compile project(':crypto')
+    testCompile rootProject.ext.properties.libJunit;
+    compile rootProject.ext.libSupportV7;
+    annotationProcessor rootProject.ext.libButterknifeProcessor;
+    compile project(':core');
+    compile project(':crypto');
+    //AES加密
+    compile rootProject.ext.libAESCrypt;
 }

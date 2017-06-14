@@ -2,7 +2,7 @@ package com.a21vianet.wallet.vport.library.commom.http.vchain;
 
 import android.support.annotation.NonNull;
 
-import com.a21vianet.wallet.app.commom.http.vchain.bean.TxIdResponse;
+import com.a21vianet.wallet.vport.library.commom.http.vchain.bean.TxIdResponse;
 import com.littlesparkle.growler.core.http.Request;
 
 import retrofit2.http.GET;

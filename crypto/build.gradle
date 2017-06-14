@@ -26,7 +26,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.properties.libJunit
+    testCompile 'junit:junit:4.12'
     compile rootProject.ext.libSupportV7
     compile rootProject.ext.libMultidex
     // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on

@@ -13,10 +13,10 @@ import com.a21vianet.quincysx.library.crypto.messagedigesters.MessageDigestAlgor
 import com.a21vianet.quincysx.library.crypto.messagedigesters.MessageDigester;
 import com.a21vianet.quincysx.library.crypto.script.Script;
 import com.a21vianet.quincysx.library.crypto.script.ScriptBuilder;
-import com.a21vianet.wallet.app.WalletApplication;
-import com.a21vianet.wallet.app.commom.crypto.bean.BitcoinKey;
-import com.a21vianet.wallet.app.commom.crypto.callback.GenerateCallBack;
-import com.a21vianet.wallet.app.commom.crypto.callback.MultisigCallback;
+import com.a21vianet.wallet.vport.library.BaseApplication;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.BitcoinKey;
+import com.a21vianet.wallet.vport.library.commom.crypto.callback.GenerateCallBack;
+import com.a21vianet.wallet.vport.library.commom.crypto.callback.MultisigCallback;
 import com.google.gson.Gson;
 import com.littlesparkle.growler.core.utility.PrefUtility;
 import com.scottyab.aescrypt.AESCrypt;
@@ -293,7 +293,7 @@ public final class CryptoManager {
         if (keyInfoStr.trim().equals("")) {
             return;
         }
-        String s = AESCrypt.decrypt(password, keyInfoStr);
+        String s = com.scottyab.aescrypt.AESCrypt.decrypt(password, keyInfoStr);
         mBitcoinKey = mGson.fromJson(s, BitcoinKey.class);
     }
 
@@ -311,7 +311,7 @@ public final class CryptoManager {
         }
         try {
             keyInfoStr = AESCrypt.encrypt(password, mGson.toJson(mBitcoinKey));
-            PrefUtility.setString(WalletApplication.getContext(), SAVE_KEY_FLAG, keyInfoStr);
+            PrefUtility.setString(BaseApplication.getContext(), SAVE_KEY_FLAG, keyInfoStr);
         } catch (GeneralSecurityException e) {
             //handle error
         }
@@ -332,7 +332,7 @@ public final class CryptoManager {
         }
         try {
             keyInfoStr = AESCrypt.encrypt(password, mGson.toJson(bitcoinKey));
-            PrefUtility.setString(WalletApplication.getContext(), SAVE_KEY_FLAG, keyInfoStr);
+            PrefUtility.setString(BaseApplication.getContext(), SAVE_KEY_FLAG, keyInfoStr);
         } catch (GeneralSecurityException e) {
             //handle error
         }
@@ -341,7 +341,7 @@ public final class CryptoManager {
     public void cleanBitcoinKey() {
         keyInfoStr = "";
         mBitcoinKey = null;
-        PrefUtility.delete(WalletApplication.getContext(), SAVE_KEY_FLAG);
+        PrefUtility.delete(BaseApplication.getContext(), SAVE_KEY_FLAG);
     }
 
     /**
@@ -392,6 +392,6 @@ public final class CryptoManager {
      * 初始化加密的字符串
      */
     private void initKeyInfoStr() {
-        keyInfoStr = PrefUtility.getString(WalletApplication.getContext(), SAVE_KEY_FLAG, "");
+        keyInfoStr = PrefUtility.getString(BaseApplication.getContext(), SAVE_KEY_FLAG, "");
     }
 }

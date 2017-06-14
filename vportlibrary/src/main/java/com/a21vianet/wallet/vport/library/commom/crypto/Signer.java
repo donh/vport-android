@@ -6,7 +6,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.a21vianet.wallet.app.commom.crypto.callback.MultisigCallback;
+import com.a21vianet.wallet.vport.library.commom.crypto.callback.MultisigCallback;
 
 import rx.Observable;
 import rx.Subscriber;

@@ -65,8 +65,6 @@ dependencies {
     compile rootProject.ext.libRefreshLayout
     //自定义Dialog
     compile rootProject.ext.libBirdDialog
-    //AES加密
-    compile rootProject.ext.libAESCrypt
     //密码框
     compile rootProject.ext.libPassWordEdit
 }
