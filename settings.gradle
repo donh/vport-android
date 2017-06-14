@@ -1,0 +1,2 @@
+include ':app', ':vportlibrary', ':core', ':crypto'
+project(':core').projectDir = new File('android-core/core')

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <script type="text/javascript" src="javascript/app.js"></script>
+    <script type="text/javascript">
+		var Buffer = vchain.Buffer;
+        var bitcoin = vchain.bitcoin;
+
+        var sign = function (_privKeys,_tx) {
+
+            const priv = bitcoin.ECPair.fromWIF(_privKeys);
+            var tx = bitcoin.Transaction.fromHex(_tx);
+            var txb = bitcoin.TransactionBuilder.fromTransaction(tx);
+            var rawSignedTransaction;
+
+            txb.tx.ins.forEach(function(input, i) {
+                try{
+                    txb.sign(i, priv);
+                    rawSignedTransaction = txb.build().toHex();
+                    android.onSinged(rawSignedTransaction);
+                    return rawSignedTransaction
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+        }
+
+        var signMultisig = function (_privKeys,_redeemScript,_tx) {
+            var redeemScript = new Buffer(_redeemScript, 'hex');
+            <!--var redeemScript = _redeemScript;-->
+
+            var tx = bitcoin.Transaction.fromHex(_tx);
+            var txb = bitcoin.TransactionBuilder.fromTransaction(tx);
+
+            var rawSignedTransaction;
+
+            txb.tx.ins.forEach(function(input, i) {
+                txb.sign(i, bitcoin.ECPair.fromWIF(_privKeys), redeemScript);
+            });
+
+            try {
+                rawSignedTransaction = txb.build().toHex();
+                android.onSinged(rawSignedTransaction);
+                return rawSignedTransaction
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+</body>
+
+</html>
