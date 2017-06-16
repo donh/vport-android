@@ -24,7 +24,7 @@ public class WalletApplication extends BaseApplication {
         lockManager.getAppLock().setLogoId(R.drawable.security_lock);
 
         Api.Config config = new Api.Config();
-        config.setBaseUrl("http://58.83.219.133:9487/");
+        config.setBaseUrl(com.a21vianet.wallet.vport.http.Api.vChainApi);
         config.setTimeout(120);
         Api.init(this, config);
 

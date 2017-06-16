@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.a21vianet.wallet.vport.MainActivity;
+import com.a21vianet.wallet.vport.action.mian.MainActivity;
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;

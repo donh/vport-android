@@ -1,4 +1,4 @@
-package com.a21vianet.wallet.vport.scan;
+package com.a21vianet.wallet.vport.action.scan;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
