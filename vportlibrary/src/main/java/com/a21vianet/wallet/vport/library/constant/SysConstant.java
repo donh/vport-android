@@ -1,6 +1,6 @@
 package com.a21vianet.wallet.vport.library.constant;
 
-import com.a21vianet.wallet.app.WalletApplication;
+import com.a21vianet.wallet.vport.library.BaseApplication;
 import com.littlesparkle.growler.core.utility.PrefUtility;
 
 /**
@@ -11,15 +11,15 @@ public class SysConstant {
     private static final String APP_HRAD_IMAGE_URL_HASH = "app_hardimage_url_hash";
 
     public static void setHradImageUrlHash(String hash) {
-        PrefUtility.setString(WalletApplication.getContext(), APP_HRAD_IMAGE_URL_HASH, hash);
+        PrefUtility.setString(BaseApplication.getContext(), APP_HRAD_IMAGE_URL_HASH, hash);
     }
 
     public static String getHradImageUrlHash() {
-        return PrefUtility.getString(WalletApplication.getContext(), APP_HRAD_IMAGE_URL_HASH, "");
+        return PrefUtility.getString(BaseApplication.getContext(), APP_HRAD_IMAGE_URL_HASH, "");
     }
 
     public static void clearHradImageUrlHash() {
-        PrefUtility.delete(WalletApplication.getContext(), APP_HRAD_IMAGE_URL_HASH);
+        PrefUtility.delete(BaseApplication.getContext(), APP_HRAD_IMAGE_URL_HASH);
     }
 
     public static String getIPFSIP() {
