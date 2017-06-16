@@ -23,6 +23,10 @@ public class Api {
     /**
      * IPFS 服务器地址
      */
-    public static final String IPFSApi = "http://54.250.155.8:8091/";
+    public static final String IPFSApi = "http://58.83.219.152:5001/";
+    /**
+     * IPFS Web 服务器地址
+     */
+    public static final String IPFSWebApi = "http://58.83.219.152:8080/";
 
 }

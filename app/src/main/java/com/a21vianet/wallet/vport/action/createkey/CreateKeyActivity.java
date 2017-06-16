@@ -6,12 +6,15 @@ import android.widget.Toast;
 
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.action.mian.MainActivity;
+import com.a21vianet.wallet.vport.biz.CryptoBiz;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.BitcoinKey;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.GenerateCallBack;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.MultisigCallback;
+import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFS;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.CreateResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.TransactionResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.VChainRequest;
@@ -87,7 +90,6 @@ public class CreateKeyActivity extends BaseActivity {
                     public void onError(Throwable e) {
                         Contract contract = new Contract();
                         contract.clear();
-                        dismissProgress();
                         ToastFactory.getInstance(getApplicationContext()).makeTextShow("创建新用户失败",
                                 Toast.LENGTH_SHORT);
                         finish();
@@ -225,6 +227,25 @@ public class CreateKeyActivity extends BaseActivity {
                                 }
                             }
                         });
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<Contract, Observable<Contract>>() {
+                    @Override
+                    public Observable<Contract> call(Contract contract) {
+                        UserInfoIPFS userInfoIPFS = new UserInfoIPFS();
+                        userInfoIPFS.setName(contract.getNickname());
+
+                        try {
+                            BitcoinKey coinKey = CryptoManager.getInstance().getCoinKey();
+                            userInfoIPFS.setAddress(CryptoManager.getInstance()
+                                    .generateBitcoinAddress());
+                            userInfoIPFS.setPublicKey(coinKey.getPubKey());
+                        } catch (NoDecryptException e) {
+                            e.printStackTrace();
+                        }
+
+                        return CryptoBiz.signIPFSTx(contract, userInfoIPFS);
                     }
                 });
     }

@@ -39,8 +39,11 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void testIpfsGet() {
-        final String toJson = new Gson().toJson(new User("张三", "0X008975766666666", 1));
-        new IPFSRequest(Api.IPFSApi).ipfsGetJson(new BaseHttpSubscriber<String>() {
+        final String toJson = "{\"address\":\"1KjbqswGXnEHGR3TnrvDiyLH3mmAAeytyr\"," +
+                "\"@context\":\"http://schema.org\",\"description\":\"\",\"name\":\"哈哈\"," +
+                "\"network\":\"vChain\"," +
+                "\"publicKey\":\"0324ce19909c9998d0f6dec002f4a47e56e4fef864fbb12138437132754d3b1d0c\",\"@type\":\"Person\"}";
+        new IPFSRequest(Api.IPFSWebApi).ipfsGetJson(new BaseHttpSubscriber<String>() {
             @Override
             protected void onError(ErrorResponse error) {
                 super.onError(error);
@@ -48,8 +51,10 @@ public class ExampleInstrumentedTest {
 
             @Override
             protected void onSuccess(String s) {
+                System.out.println(toJson);
                 assertEquals(s, toJson);
             }
-        }, "QmQD9BZqnabKm7ErxjTPCgV1CxWboQCBkpQFdQZy5h1GgK");
+        }, "QmQtBaJtHeCbV94Lm3tXm1XQEqHWkhHnnVnP7VkdGpMBF6");
     }
+
 }

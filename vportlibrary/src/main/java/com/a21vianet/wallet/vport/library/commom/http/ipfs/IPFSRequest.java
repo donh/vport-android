@@ -61,6 +61,18 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .subscribe(subscriber);
     }
 
+    public Subscription set(
+            Subscriber<RawTxResponse> subscriber,
+            String senderAddress,
+            String proxyAddress,
+            String userInfo) {
+        return mService.set(senderAddress, proxyAddress, "PROFILE", userInfo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
+    }
+
     public Subscription get(Subscriber<UserInfoIPFSGET> subscriber, String senderAddress, String
             proxyAddress) {
         return mService.get(senderAddress, proxyAddress, "PROFILE")

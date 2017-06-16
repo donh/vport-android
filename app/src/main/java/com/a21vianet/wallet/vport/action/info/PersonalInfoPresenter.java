@@ -5,14 +5,14 @@ import android.net.Uri;
 
 import com.a21vianet.wallet.vport.action.info.data.IPFSResponse;
 import com.a21vianet.wallet.vport.action.info.data.PersonalInfoRequest;
-import com.a21vianet.wallet.vport.library.commom.crypto.CryptoBiz;
+import com.a21vianet.wallet.vport.biz.CryptoBiz;
+import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.IPFSRequest;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFS;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFSGET;
-import com.a21vianet.wallet.vport.library.commom.http.transaction.bean.RawTxSignedResponse;
 import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.a21vianet.wallet.vport.library.event.ChangeHeadImageEvent;
 import com.jph.takephoto.app.TakePhoto;
@@ -109,7 +109,7 @@ public class PersonalInfoPresenter extends BasePresenter<PersonalInfoActivity> i
 
                     @Override
                     public void call(final Subscriber<? super IPFSResponse> subscriber) {
-                        new PersonalInfoRequest("http://58.83.219.152:5001/").setThumbToIPFS(new BaseHttpSubscriber<IPFSResponse>() {
+                        new PersonalInfoRequest(Api.IPFSApi).setThumbToIPFS(new BaseHttpSubscriber<IPFSResponse>() {
                             @Override
                             protected void onError(ErrorResponse error) {
                                 super.onError(error);
@@ -158,16 +158,16 @@ public class PersonalInfoPresenter extends BasePresenter<PersonalInfoActivity> i
                     }
                 });
             }
-        }).flatMap(new Func1<UserInfoIPFS, Observable<RawTxSignedResponse>>() {
+        }).flatMap(new Func1<UserInfoIPFS, Observable<Contract>>() {
             @Override
-            public Observable<RawTxSignedResponse> call(UserInfoIPFS userInfoIPFS) {
+            public Observable<Contract> call(UserInfoIPFS userInfoIPFS) {
                 return CryptoBiz.signIPFSTx(contract, userInfoIPFS);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseHttpSubscriber<RawTxSignedResponse>() {
+                .subscribe(new BaseHttpSubscriber<Contract>() {
                     @Override
-                    public void onNext(RawTxSignedResponse rawTxSignedResponse) {
+                    public void onNext(Contract rawTxSignedResponse) {
                         super.onNext(rawTxSignedResponse);
                         getView().dismissProgress();
                         getView().showHardImage(SysConstant.getHradImageUrlHash());

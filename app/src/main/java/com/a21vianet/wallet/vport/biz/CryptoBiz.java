@@ -1,14 +1,19 @@
-package com.a21vianet.wallet.vport.library.commom.crypto;
+package com.a21vianet.wallet.vport.biz;
 
+import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.BaseApplication;
+import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
+import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.MultisigCallback;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.IPFSRequest;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.RawTxResponse;
+import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.AddResult;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFS;
 import com.a21vianet.wallet.vport.library.commom.http.transaction.TransactionRequest;
 import com.a21vianet.wallet.vport.library.commom.http.transaction.bean.RawTxSignedResponse;
 import com.a21vianet.wallet.vport.library.event.ChangeUserInfoEvent;
+import com.google.gson.Gson;
 import com.littlesparkle.growler.core.http.BaseHttpSubscriber;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,30 +35,60 @@ public class CryptoBiz {
      * @param contract
      * @return
      */
-    public static Observable<RawTxSignedResponse> signIPFSTx(final Contract contract, final
+    public static Observable<Contract> signIPFSTx(final Contract contract, final
     UserInfoIPFS userInfoIPFS) {
         return Observable
-                .create(new Observable.OnSubscribe<RawTxResponse>() {
+                .create(new Observable.OnSubscribe<String>() {
                     @Override
-                    public void call(final Subscriber<? super RawTxResponse> subscriber) {
-                        try {
-                            new IPFSRequest().set(new BaseHttpSubscriber<RawTxResponse>() {
-                                @Override
-                                public void onError(Throwable e) {
-                                    super.onError(e);
-                                    subscriber.onError(e);
-                                }
+                    public void call(final Subscriber<? super String> subscriber) {
+                        final String json = new Gson().toJson(userInfoIPFS);
+                        new IPFSRequest(Api.IPFSApi).ipfsAddJson(new BaseHttpSubscriber<AddResult>() {
+                            @Override
+                            public void onError(Throwable e) {
+                                super.onError(e);
+                                subscriber.onError(e);
+                            }
 
-                                @Override
-                                protected void onSuccess(RawTxResponse rawTxResponse) {
-                                    subscriber.onNext(rawTxResponse);
-                                }
-                            }, CryptoManager.getInstance().generateBitcoinAddress(), contract
-                                    .getProxy(), userInfoIPFS);
-                        } catch (NoDecryptException e) {
-                            e.printStackTrace();
-                            subscriber.onError(e);
-                        }
+                            @Override
+                            protected void onSuccess(AddResult addResult) {
+                                super.onSuccess(addResult);
+                                contract.setIpfsHex(addResult.getHash());
+                                subscriber.onNext(json);
+                            }
+                        }, json);
+                    }
+                })
+                .flatMap(new Func1<String, Observable<RawTxResponse>>() {
+                    @Override
+                    public Observable<RawTxResponse> call(final String json) {
+                        return Observable
+                                .create(new Observable.OnSubscribe<RawTxResponse>() {
+                                    @Override
+                                    public void call(final Subscriber<? super RawTxResponse>
+                                                             subscriber) {
+                                        try {
+                                            new IPFSRequest().set(
+                                                    new BaseHttpSubscriber<RawTxResponse>() {
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                            super.onError(e);
+                                                            subscriber.onError(e);
+                                                        }
+
+                                                        @Override
+                                                        protected void onSuccess(RawTxResponse
+                                                                                         rawTxResponse) {
+                                                            subscriber.onNext(rawTxResponse);
+                                                        }
+                                                    }, CryptoManager.getInstance()
+                                                            .generateBitcoinAddress(),
+                                                    contract.getProxy(), json);
+                                        } catch (NoDecryptException e) {
+                                            e.printStackTrace();
+                                            subscriber.onError(e);
+                                        }
+                                    }
+                                });
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -111,6 +146,11 @@ public class CryptoBiz {
                                 }, rawTx);
                             }
                         });
+                    }
+                }).map(new Func1<RawTxSignedResponse, Contract>() {
+                    @Override
+                    public Contract call(RawTxSignedResponse rawTxSignedResponse) {
+                        return contract;
                     }
                 });
     }
