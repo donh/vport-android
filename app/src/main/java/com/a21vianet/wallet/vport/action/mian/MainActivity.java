@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.view.View;
 
 import com.a21vianet.wallet.vport.R;
+import com.a21vianet.wallet.vport.action.historyoperation.HistoryOperationActivity;
 import com.a21vianet.wallet.vport.action.info.PersonalInfoActivity;
 import com.a21vianet.wallet.vport.action.password.PasswordManager;
 import com.a21vianet.wallet.vport.action.scan.ScanActivity;
+import com.a21vianet.wallet.vport.action.setting.SettingActivity;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.littlesparkle.growler.core.am.ActivityUtility;
 import com.littlesparkle.growler.core.ui.activity.BaseMainActivity;
@@ -32,7 +34,7 @@ public class MainActivity extends BaseMainActivity {
 
 
     @OnClick({R.id.relative_visiting, R.id.relative_identity, R.id.relative_operation, R.id
-            .imgv_main_scan})
+            .imgv_main_scan, R.id.imgv_main_setting})
     public void onViewClicked(View view) {
         Intent intent = null;
         switch (view.getId()) {
@@ -42,9 +44,13 @@ public class MainActivity extends BaseMainActivity {
             case R.id.relative_identity:
                 break;
             case R.id.relative_operation:
+                intent = new Intent(this, HistoryOperationActivity.class);
                 break;
             case R.id.imgv_main_scan:
                 intent = new Intent(this, ScanActivity.class);
+                break;
+            case R.id.imgv_main_setting:
+                intent = new Intent(this, SettingActivity.class);
                 break;
         }
         if (intent != null) {
