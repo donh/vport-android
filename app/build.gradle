@@ -65,4 +65,5 @@ dependencies {
     compile rootProject.ext.libBirdDialog
     //密码框
     compile rootProject.ext.libPassWordEdit
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }

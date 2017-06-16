@@ -14,7 +14,7 @@ def libBaseAdapterVersion = "3.0.3"
 
 ext {
     AndroidVersion = [
-            applicationId    : "com.a21vianet.wallet.app",
+            applicationId    : "com.a21vianet.wallet.vport",
 
             compileSdkVersion: 25,
             buildToolsVersion: "25.0.2",
@@ -60,7 +60,7 @@ ext {
     //自定义dialog
     libBirdDialog = "com.github.QuincySx:BirdDialog:1.0.0"
     // 密码
-    libPassWordEdit = "com.github.QuincySx:PassWordEdit:1.0.1"
+    libPassWordEdit = "com.github.QuincySx:PassWordEdit:1.0.2"
 
     libDownloadManager = "com.coolerfall:android-http-download-manager:1.6.1"
     libXutils = "org.xutils:xutils:3.3.36"

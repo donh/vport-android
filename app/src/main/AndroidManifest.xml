@@ -4,6 +4,7 @@
           package="com.a21vianet.wallet.vport">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".WalletApplication"
         android:allowBackup="true"
@@ -49,6 +50,10 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".action.setting.SettingActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".action.createkey.CreateKeyActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
     </application>
