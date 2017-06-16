@@ -12,8 +12,9 @@ import com.littlesparkle.growler.core.utility.PrefUtility;
 public class Contract {
     private String proxy;
     private String controller;
-    private String recover;
+    private String recovery;
     private String ipfsHex;
+    private String nickname;
 
     private static final String SAVE_TAG = "contract_info_save_tag";
 
@@ -23,14 +24,15 @@ public class Contract {
     public Contract(String proxy, String controller, String recover) {
         this.proxy = proxy;
         this.controller = controller;
-        this.recover = recover;
+        this.recovery = recover;
     }
 
-    public Contract(String proxy, String controller, String recover, String ipfsHex) {
-        this.proxy = proxy;
-        this.controller = controller;
-        this.recover = recover;
-        this.ipfsHex = ipfsHex;
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getProxy() {
@@ -50,11 +52,11 @@ public class Contract {
     }
 
     public String getRecover() {
-        return recover;
+        return recovery;
     }
 
     public void setRecover(String recover) {
-        this.recover = recover;
+        this.recovery = recover;
     }
 
     public String getIpfsHex() {
@@ -70,8 +72,9 @@ public class Contract {
         return "Contract{" +
                 "proxy='" + proxy + '\'' +
                 ", controller='" + controller + '\'' +
-                ", recover='" + recover + '\'' +
+                ", recover='" + recovery + '\'' +
                 ", ipfsHex='" + ipfsHex + '\'' +
+                ", nickname='" + nickname + '\'' +
                 '}';
     }
 
@@ -92,10 +95,7 @@ public class Contract {
             return;
         }
         Contract contract = gson.fromJson(string, this.getClass());
-        this.setController(contract.getController());
-        this.setRecover(contract.getRecover());
-        this.setProxy(contract.getProxy());
-        this.setIpfsHex(contract.getIpfsHex());
+        setDate(contract);
     }
 
     /**
@@ -105,19 +105,23 @@ public class Contract {
         Gson gson = new Gson();
         Contract contract = new Contract();
         PrefUtility.setString(BaseApplication.getContext(), SAVE_TAG, gson.toJson(contract));
-        this.setController(contract.getController());
-        this.setRecover(contract.getRecover());
-        this.setProxy(contract.getProxy());
-        this.setIpfsHex(contract.getIpfsHex());
+        setDate(contract);
     }
 
     public boolean isEmpty() {
         get();
-        if (proxy == null || controller == null || recover == null) {
+        if (proxy == null || controller == null || recovery == null) {
             return true;
         } else {
             return false;
         }
     }
 
+    private void setDate(Contract contract) {
+        this.setController(contract.getController());
+        this.setRecover(contract.getRecover());
+        this.setProxy(contract.getProxy());
+        this.setIpfsHex(contract.getIpfsHex());
+        this.setNickname(contract.getNickname());
+    }
 }
