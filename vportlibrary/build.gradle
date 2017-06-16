@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion rootProject.ext.AndroidVersion['compileSdkVersion']
@@ -26,6 +27,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     testCompile rootProject.ext.properties.libJunit;
     compile rootProject.ext.libSupportV7;
     annotationProcessor rootProject.ext.libButterknifeProcessor;
