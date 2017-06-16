@@ -38,6 +38,10 @@
             android:name=".action.scan.ScanActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".action.info.PersonalInfoActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
