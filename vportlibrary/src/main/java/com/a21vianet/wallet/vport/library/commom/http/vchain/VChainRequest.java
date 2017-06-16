@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.a21vianet.wallet.vport.library.commom.http.vchain.bean.TxIdResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.bean.VPortCreateResponse;
+import com.a21vianet.wallet.vport.library.commom.http.vchain.bean.GetColor1Response;
+import com.google.gson.JsonObject;
 import com.littlesparkle.growler.core.http.Request;
 
 import okhttp3.RequestBody;
@@ -76,7 +78,27 @@ public class VChainRequest extends Request<VChainRequest.VChainApi> {
                 .subscribe(subscriber);
     }
 
+    public Subscription getColor1(Subscriber<GetColor1Response> subscriber, String address) {
+        JsonObject json = new JsonObject();
+        json.addProperty("addr", address);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; " +
+                "charset=utf-8"), json.toString());
+        return mService.getcolor1(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
+    }
+
     interface VChainApi {
+        /**
+         * 获得资产
+         *
+         * @param address
+         * @param zmount
+         * @param color
+         * @return
+         */
         @GET("sendtoaddress/{address}/{amount}/{color}")
         Observable<TxIdResponse> sendToAddress(
                 @Path("address") String address,
@@ -84,6 +106,14 @@ public class VChainRequest extends Request<VChainRequest.VChainApi> {
                 @Path("color") int color
         );
 
+        /**
+         * 穿件智能合约
+         *
+         * @param senderAddress
+         * @param userKey
+         * @param delegates
+         * @return
+         */
         @POST("vport/identityFactory/create")
         @FormUrlEncoded
         Observable<CreateResponse> create(
@@ -92,6 +122,14 @@ public class VChainRequest extends Request<VChainRequest.VChainApi> {
                 @Field("delegates") String delegates
         );
 
+        /**
+         * 发送严明
+         *
+         * @param senderAddress
+         * @param userKey
+         * @param rawTxSigned
+         * @return
+         */
         @POST("vport/identityFactory/transaction")
         @FormUrlEncoded
         Observable<TransactionResponse> transaction(
@@ -100,9 +138,26 @@ public class VChainRequest extends Request<VChainRequest.VChainApi> {
                 @Field("rawTxSigned") String rawTxSigned
         );
 
+        /**
+         * vPort 代理注册
+         *
+         * @param route
+         * @return
+         */
         @Headers({"Content-Type: application/json", "Accept: application/json"})
         @POST("api/v1/users/add")
         Observable<VPortCreateResponse> vPortCreate(
+                @Body RequestBody route
+        );
+
+        /**
+         * 获得资产 30个 Color1
+         *
+         * @return
+         */
+        @Headers({"Content-Type: application/json", "Accept: application/json"})
+        @POST("getcolor1")
+        Observable<GetColor1Response> getcolor1(
                 @Body RequestBody route
         );
     }

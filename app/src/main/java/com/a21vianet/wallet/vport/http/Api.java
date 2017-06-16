@@ -19,11 +19,13 @@ public class Api {
      * 注册用户代理打钱 服务器地址
      */
     public static final String vChainFarmApi = "http://54.250.155.8:8091/";
+    public static final String vChainGetColor1Api = "http://58.83.219.136:2222/";
 
     /**
      * IPFS 服务器地址
      */
     public static final String IPFSApi = "http://58.83.219.152:5001/";
+
     /**
      * IPFS Web 服务器地址
      */

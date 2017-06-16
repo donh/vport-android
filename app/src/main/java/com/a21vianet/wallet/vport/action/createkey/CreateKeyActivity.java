@@ -18,7 +18,7 @@ import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFS;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.CreateResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.TransactionResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.VChainRequest;
-import com.a21vianet.wallet.vport.library.commom.http.vchain.bean.TxIdResponse;
+import com.a21vianet.wallet.vport.library.commom.http.vchain.bean.GetColor1Response;
 import com.littlesparkle.growler.core.am.ActivityManager;
 import com.littlesparkle.growler.core.http.BaseHttpSubscriber;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
@@ -118,7 +118,7 @@ public class CreateKeyActivity extends BaseActivity {
                         try {
                             final String bitcoinAddress = CryptoManager.getInstance()
                                     .generateBitcoinAddress();
-                            new VChainRequest(Api.vChainFarmApi).sendToAddress(new BaseHttpSubscriber<TxIdResponse>() {
+                            new VChainRequest(Api.vChainGetColor1Api).getColor1(new BaseHttpSubscriber<GetColor1Response>() {
                                 @Override
                                 public void onError(Throwable e) {
                                     super.onError(e);
@@ -126,8 +126,8 @@ public class CreateKeyActivity extends BaseActivity {
                                 }
 
                                 @Override
-                                protected void onSuccess(TxIdResponse txIdResponse) {
-                                    super.onSuccess(txIdResponse);
+                                protected void onSuccess(GetColor1Response requestBody) {
+                                    super.onSuccess(requestBody);
                                     subscriber.onNext(bitcoinAddress);
                                 }
                             }, bitcoinAddress);
