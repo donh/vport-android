@@ -40,7 +40,7 @@ public class TransactionRequest extends Request<TransactionRequest.TransactionAp
                 .subscribe(subscriber);
     }
 
-    interface TransactionApi {
+    public interface TransactionApi {
         @POST("vchain/transaction/send")
         @FormUrlEncoded
         Observable<RawTxSignedResponse> signed(

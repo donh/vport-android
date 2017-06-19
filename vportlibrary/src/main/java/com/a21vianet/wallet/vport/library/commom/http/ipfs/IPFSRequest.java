@@ -73,6 +73,13 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .subscribe(subscriber);
     }
 
+    public Observable<RawTxResponse> set(
+            String senderAddress,
+            String proxyAddress,
+            String userInfo) {
+        return mService.set(senderAddress, proxyAddress, "PROFILE", userInfo);
+    }
+
     public Subscription get(Subscriber<UserInfoIPFSGET> subscriber, String senderAddress, String
             proxyAddress) {
         return mService.get(senderAddress, proxyAddress, "PROFILE")
@@ -106,6 +113,13 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber);
+    }
+
+    public Observable<AddResult> ipfsAddJson(String json) {
+        RequestBody requestFile = RequestBody.create(MediaType.parse("text/plain"), json);
+        MultipartBody.Part formData = MultipartBody.Part.createFormData("file", "ipfsjson",
+                requestFile);
+        return mService.ipfsAddJson(formData);
     }
 
     interface IPFSApi {

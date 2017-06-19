@@ -12,8 +12,6 @@ import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.BitcoinKey;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
-import com.a21vianet.wallet.vport.library.commom.crypto.callback.GenerateCallBack;
-import com.a21vianet.wallet.vport.library.commom.crypto.callback.MultisigCallback;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFS;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.CreateResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.TransactionResponse;
@@ -25,7 +23,6 @@ import com.littlesparkle.growler.core.ui.activity.BaseActivity;
 import com.littlesparkle.growler.core.ui.toast.ToastFactory;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -59,24 +56,8 @@ public class CreateKeyActivity extends BaseActivity {
 
 
     private void createKey(final String pass) {
-        Observable
-                .create(new Observable.OnSubscribe<String>() {
-                    @Override
-                    public void call(final Subscriber<? super String> subscriber) {
-                        CryptoManager.getInstance().generateBitcoinKeyPair(pass, new
-                                GenerateCallBack() {
-                                    @Override
-                                    public void onSuccess() {
-                                        subscriber.onNext("");
-                                    }
-
-                                    @Override
-                                    public void onError() {
-                                        subscriber.onError(new Exception("公私钥创建失败"));
-                                    }
-                                });
-                    }
-                })
+        CryptoManager.getInstance().generateBitcoinKeyPair(pass)
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<String, Observable<Contract>>() {
                     @Override
                     public Observable<Contract> call(String s) {
@@ -111,122 +92,65 @@ public class CreateKeyActivity extends BaseActivity {
      * @return
      */
     private Observable<Contract> nativeSubmit() {
-        return Observable
-                .create(new Observable.OnSubscribe<String>() {
+        String bitcoinAddress = "";
+        try {
+            bitcoinAddress = CryptoManager.getInstance()
+                    .generateBitcoinAddress();
+        } catch (NoDecryptException e) {
+            e.printStackTrace();
+        }
+        final String address = bitcoinAddress;
+        return new VChainRequest(Api.vChainGetColor1Api).getColor1(bitcoinAddress)
+                .map(new Func1<GetColor1Response, String>() {
                     @Override
-                    public void call(final Subscriber<? super String> subscriber) {
-                        try {
-                            final String bitcoinAddress = CryptoManager.getInstance()
-                                    .generateBitcoinAddress();
-                            new VChainRequest(Api.vChainGetColor1Api).getColor1(new BaseHttpSubscriber<GetColor1Response>() {
-                                @Override
-                                public void onError(Throwable e) {
-                                    super.onError(e);
-                                    subscriber.onError(e);
-                                }
-
-                                @Override
-                                protected void onSuccess(GetColor1Response requestBody) {
-                                    super.onSuccess(requestBody);
-                                    subscriber.onNext(bitcoinAddress);
-                                }
-                            }, bitcoinAddress);
-                        } catch (NoDecryptException e) {
-                            e.printStackTrace();
-                            subscriber.onError(e);
-                        }
+                    public String call(GetColor1Response getColor1Response) {
+                        return address;
                     }
                 })
-                .flatMap(new Func1<String, Observable<String>>() {
+                .flatMap(new Func1<String, Observable<CreateResponse>>() {
                     @Override
-                    public Observable<String> call(final String multiSig) {
-                        return Observable.create(new Observable.OnSubscribe<String>() {
-                            @Override
-                            public void call(final Subscriber<? super String> subscriber) {
-                                new VChainRequest().create(new BaseHttpSubscriber<CreateResponse>
-                                        () {
-                                    @Override
-                                    protected void onSuccess(CreateResponse createResponse) {
-                                        subscriber.onNext(createResponse.rawTx);
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        super.onError(e);
-                                        subscriber.onError(e);
-                                    }
-                                }, multiSig, multiSig, multiSig);
-                            }
-                        });
+                    public Observable<CreateResponse> call(final String multiSig) {
+                        return new VChainRequest().create(multiSig, multiSig, multiSig);
+                    }
+                })
+                .map(new Func1<CreateResponse, String>() {
+                    @Override
+                    public String call(CreateResponse response) {
+                        return response.rawTx;
                     }
                 })
                 .flatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(final String tx) {
-                        return Observable.create(new Observable.OnSubscribe<String>() {
-                            @Override
-                            public void call(final Subscriber<? super String> subscriber) {
-                                try {
-                                    CryptoManager.getInstance().sign(CreateKeyActivity.this,
-                                            tx, new MultisigCallback() {
-                                                @Override
-                                                public void onSinged(String signedRawTransaction) {
-                                                    subscriber.onNext(signedRawTransaction);
-                                                }
-
-                                                @Override
-                                                public void onError(Exception e) {
-                                                    subscriber.onError(e);
-                                                }
-                                            });
-                                } catch (NoDecryptException e) {
-                                    e.printStackTrace();
-                                    subscriber.onError(e);
-                                }
-                            }
-                        });
+                        return CryptoManager.getInstance().sign(CreateKeyActivity.this, tx);
                     }
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<String, Observable<Contract>>() {
+                .flatMap(new Func1<String, Observable<TransactionResponse>>() {
                     @Override
-                    public Observable<Contract> call(final String signedRawTransaction) {
-                        return Observable.create(new Observable.OnSubscribe<Contract>() {
-                            @Override
-                            public void call(final Subscriber<? super Contract>
-                                                     subscriber) {
-                                try {
-                                    new VChainRequest().transaction(
-                                            new BaseHttpSubscriber<TransactionResponse>() {
-                                                @Override
-                                                public void onSuccess(TransactionResponse
-                                                                              transactionResponse) {
-                                                    Contract contract = new Contract();
-                                                    contract.get();
-                                                    contract.setController(transactionResponse
-                                                            .contract.getController());
-                                                    contract.setProxy(transactionResponse
-                                                            .contract.getProxy());
-                                                    contract.setRecover(transactionResponse
-                                                            .contract.getRecover());
-                                                    subscriber.onNext(contract);
-                                                }
-
-                                                @Override
-                                                public void onError(Throwable e) {
-                                                    super.onError(e);
-                                                    subscriber.onError(e);
-                                                }
-                                            },
-                                            CryptoManager.getInstance().generateBitcoinAddress(),
-                                            CryptoManager.getInstance().generateBitcoinAddress(),
-                                            signedRawTransaction);
-                                } catch (NoDecryptException e) {
-                                    e.printStackTrace();
-                                    subscriber.onError(e);
-                                }
-                            }
-                        });
+                    public Observable<TransactionResponse> call(final String signedRawTransaction) {
+                        String address = "";
+                        try {
+                            address = CryptoManager.getInstance().generateBitcoinAddress();
+                        } catch (NoDecryptException e) {
+                            e.printStackTrace();
+                        }
+                        return new VChainRequest().transaction(address, address,
+                                signedRawTransaction);
+                    }
+                })
+                .map(new Func1<TransactionResponse, Contract>() {
+                    @Override
+                    public Contract call(TransactionResponse transactionResponse) {
+                        Contract contract = new Contract();
+                        contract.get();
+                        contract.setController(transactionResponse
+                                .contract.getController());
+                        contract.setProxy(transactionResponse
+                                .contract.getProxy());
+                        contract.setRecover(transactionResponse
+                                .contract.getRecover());
+                        return contract;
                     }
                 })
                 .observeOn(Schedulers.io())

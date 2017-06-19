@@ -161,6 +161,31 @@ public final class CryptoManager {
     }
 
     /**
+     * 生成密钥对 RxJava 样式
+     *
+     * @param password 密码
+     */
+    public Observable<String> generateBitcoinKeyPair(final String password) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+
+                generateBitcoinKeyPair(password, new GenerateCallBack() {
+                    @Override
+                    public void onSuccess() {
+                        subscriber.onNext("");
+                    }
+
+                    @Override
+                    public void onError() {
+                        subscriber.onError(new Exception("密钥对生成失败"));
+                    }
+                });
+            }
+        });
+    }
+
+    /**
      * 通过助记词回复私钥
      *
      * @param words
@@ -207,6 +232,30 @@ public final class CryptoManager {
     }
 
     /**
+     * 通过助记词回复私钥 RxJava 样式
+     *
+     * @param words
+     */
+    public Observable<String> resetBitcoinKeyPair(final String password, final List<String> words) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                resetBitcoinKeyPair(password, words, new GenerateCallBack() {
+                    @Override
+                    public void onSuccess() {
+                        subscriber.onNext("");
+                    }
+
+                    @Override
+                    public void onError() {
+                        subscriber.onError(new Exception("生成失败"));
+                    }
+                });
+            }
+        });
+    }
+
+    /**
      * 生成地址
      *
      * @return
@@ -241,6 +290,37 @@ public final class CryptoManager {
     }
 
     /**
+     * 签名 RxJava 样式
+     *
+     * @param context
+     * @param tx
+     */
+    public Observable<String> sign(final Context context, final String tx) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                try {
+                    checkEnCode();
+                } catch (NoDecryptException e) {
+                    subscriber.onError(e);
+                }
+                Signer.getInstance().sign(context, mBitcoinKey.getPrivKey(), tx, new
+                        MultisigCallback() {
+                            @Override
+                            public void onSinged(String signedRawTransaction) {
+                                subscriber.onNext(signedRawTransaction);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                subscriber.onError(e);
+                            }
+                        });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
+    }
+
+    /**
      * 多重签名
      *
      * @param context
@@ -252,6 +332,40 @@ public final class CryptoManager {
         checkEnCode();
         String script = generateMultiSigScriptStr(mBitcoinKey.getPubKey());
         Signer.getInstance().signMultisig(context, mBitcoinKey.getPrivKey(), script, tx, callback);
+    }
+
+    /**
+     * 多重签名 RxJava 样式
+     *
+     * @param context
+     * @param tx
+     */
+    public Observable<String> signMultisig(final Context context, final String tx) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                try {
+                    checkEnCode();
+                } catch (NoDecryptException e) {
+                    subscriber.onError(e);
+                }
+                String script = generateMultiSigScriptStr(mBitcoinKey.getPubKey());
+                Signer.getInstance().signMultisig(context, mBitcoinKey.getPrivKey(), script, tx,
+                        new MultisigCallback() {
+                            @Override
+                            public void onSinged(String signedRawTransaction) {
+                                subscriber.onNext(signedRawTransaction);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                subscriber.onError(e);
+                            }
+                        });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
+
+
     }
 
     /**

@@ -58,6 +58,13 @@ public class VChainRequest extends Request<VChainRequest.VChainApi> {
                 .subscribe(subscriber);
     }
 
+    public Observable<CreateResponse> create(String senderAddress,
+                                             String userKey,
+                                             String delegates) {
+        return mService.create(senderAddress, userKey
+                , delegates);
+    }
+
     public Subscription transaction(Subscriber<TransactionResponse> subscriber, String
             senderAddress, String userKey, String rawTxSigned) {
         return mService.transaction(senderAddress, userKey, rawTxSigned)
@@ -65,6 +72,11 @@ public class VChainRequest extends Request<VChainRequest.VChainApi> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber);
+    }
+
+    public Observable<TransactionResponse> transaction(String senderAddress, String userKey,
+                                                       String rawTxSigned) {
+        return mService.transaction(senderAddress, userKey, rawTxSigned);
     }
 
     public Subscription vPortCreate(Subscriber<VPortCreateResponse> subscriber, String
@@ -88,6 +100,14 @@ public class VChainRequest extends Request<VChainRequest.VChainApi> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber);
+    }
+
+    public Observable<GetColor1Response> getColor1(String address) {
+        JsonObject json = new JsonObject();
+        json.addProperty("addr", address);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; " +
+                "charset=utf-8"), json.toString());
+        return mService.getcolor1(body);
     }
 
     interface VChainApi {
