@@ -1,32 +1,35 @@
 package com.a21vianet.wallet.vport.library.commom.http.vchain.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by wang.rongqiang on 2017/6/9.
  */
 
 public class VPortCreateRequestBean {
 
+    @SerializedName("name")
+    private String name;
+    @SerializedName("phone")
+    private String phone;
+    @SerializedName("privateKey")
+    private String privateKey;
+    @SerializedName("publicKey")
+    private String publicKey;
+    @SerializedName("address")
+    private String address;
+
     public VPortCreateRequestBean() {
     }
 
-    public VPortCreateRequestBean(String name, String phone, String email, String id, String
-            privateKey, String publicKey, String address) {
+    public VPortCreateRequestBean(String name, String phone, String privateKey, String publicKey,
+                                  String address) {
         this.name = name;
         this.phone = phone;
-        this.email = email;
-        this.id = id;
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.address = address;
     }
-
-    private String name;
-    private String phone;
-    private String email;
-    private String id;
-    private String privateKey;
-    private String publicKey;
-    private String address;
 
     public String getName() {
         return name;
@@ -42,22 +45,6 @@ public class VPortCreateRequestBean {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getPrivateKey() {

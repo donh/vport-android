@@ -89,6 +89,11 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .subscribe(subscriber);
     }
 
+    public Observable<UserInfoIPFSGET> get(String senderAddress, String
+            proxyAddress) {
+        return mService.get(senderAddress, proxyAddress, "PROFILE");
+    }
+
     public Subscription ipfsGetJson(Subscriber<String> subscriber, String hash) {
         return mService.ipfsGetJson(hash)
                 .map(new Func1<ResponseBody, String>() {

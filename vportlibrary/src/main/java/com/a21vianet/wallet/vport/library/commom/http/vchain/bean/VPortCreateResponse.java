@@ -1,23 +1,16 @@
 package com.a21vianet.wallet.vport.library.commom.http.vchain.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by wang.rongqiang on 2017/6/9.
  */
 
 public class VPortCreateResponse {
 
-    /**
-     * result : {"user":{"address":"1G6DLbZi1A1s1utakX3mLpbkrqe9HtBozg",
-     * "controller":"6a07a45c1bbf421be5d9d1a064ab033204a3d443","id":"123456200808081234",
-     * "name":"哈哈","phone":"18515288448",
-     * "privateKey":"Kwv62ktzJxTtoZJ5sX3P8FD5RptiXWGMJ2U5ZYWytvQJ249rP2qb",
-     * "proxy":"46ef13b9935b1a98d402b2fd9296a2472af1a946",
-     * "publicKey":"03e4c8693106d5b76a7534a16a0789bd394ee9dde6367b59dffcee5ba73f5611c2",
-     * "recovery":"d8f18acef9761f8db3ba21d47d0e73edececb888"}}
-     * time : 2017-06-09 11:51:50
-     */
-
+    @SerializedName("result")
     private ResultBean result;
+    @SerializedName("time")
     private String time;
 
     public ResultBean getResult() {
@@ -37,16 +30,8 @@ public class VPortCreateResponse {
     }
 
     public static class ResultBean {
-        /**
-         * user : {"address":"1G6DLbZi1A1s1utakX3mLpbkrqe9HtBozg",
-         * "controller":"6a07a45c1bbf421be5d9d1a064ab033204a3d443","id":"123456200808081234",
-         * "name":"哈哈","phone":"18515288448",
-         * "privateKey":"Kwv62ktzJxTtoZJ5sX3P8FD5RptiXWGMJ2U5ZYWytvQJ249rP2qb",
-         * "proxy":"46ef13b9935b1a98d402b2fd9296a2472af1a946",
-         * "publicKey":"03e4c8693106d5b76a7534a16a0789bd394ee9dde6367b59dffcee5ba73f5611c2",
-         * "recovery":"d8f18acef9761f8db3ba21d47d0e73edececb888"}
-         */
 
+        @SerializedName("user")
         private UserBean user;
 
         public UserBean getUser() {
@@ -60,24 +45,30 @@ public class VPortCreateResponse {
         public static class UserBean {
             /**
              * address : 1G6DLbZi1A1s1utakX3mLpbkrqe9HtBozg
-             * controller : 6a07a45c1bbf421be5d9d1a064ab033204a3d443
-             * id : 123456200808081234
-             * name : 哈哈
-             * phone : 18515288448
+             * controller : 071173dbfd2ba49c540dc098a4f464c6fefe3519
+             * name : 冬冬
+             * phone : 0910345967
              * privateKey : Kwv62ktzJxTtoZJ5sX3P8FD5RptiXWGMJ2U5ZYWytvQJ249rP2qb
-             * proxy : 46ef13b9935b1a98d402b2fd9296a2472af1a946
+             * proxy : 4293abb2ce7b42f2fa43c01f750d8ec18bd4c67b
              * publicKey : 03e4c8693106d5b76a7534a16a0789bd394ee9dde6367b59dffcee5ba73f5611c2
-             * recovery : d8f18acef9761f8db3ba21d47d0e73edececb888
+             * recovery : 3fb4bd0739089ec6ec3c039fd2dcff85f2bd67b3
              */
 
+            @SerializedName("address")
             private String address;
+            @SerializedName("controller")
             private String controller;
-            private String id;
+            @SerializedName("name")
             private String name;
+            @SerializedName("phone")
             private String phone;
+            @SerializedName("privateKey")
             private String privateKey;
+            @SerializedName("proxy")
             private String proxy;
+            @SerializedName("publicKey")
             private String publicKey;
+            @SerializedName("recovery")
             private String recovery;
 
             public String getAddress() {
@@ -94,14 +85,6 @@ public class VPortCreateResponse {
 
             public void setController(String controller) {
                 this.controller = controller;
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
             }
 
             public String getName() {
