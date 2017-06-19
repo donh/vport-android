@@ -66,6 +66,10 @@
             android:name=".action.createkey.CreateKeyActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".action.identityinfo.IdentityInfoActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

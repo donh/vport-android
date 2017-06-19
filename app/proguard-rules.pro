@@ -23,3 +23,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.wonderkiln.blurkit.** { *; }
+
+-dontwarn android.support.v8.renderscript.*
+-keepclassmembers class android.support.v8.renderscript.RenderScript {
+  native *** rsn*(...);
+  native *** n*(...);
+}

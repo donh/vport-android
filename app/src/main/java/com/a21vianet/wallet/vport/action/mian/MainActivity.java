@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.action.historyoperation.HistoryOperationActivity;
+import com.a21vianet.wallet.vport.action.identityinfo.IdentityInfoActivity;
 import com.a21vianet.wallet.vport.action.info.PersonalInfoActivity;
 import com.a21vianet.wallet.vport.action.password.PasswordManager;
 import com.a21vianet.wallet.vport.action.scan.ScanActivity;
@@ -48,6 +49,7 @@ public class MainActivity extends BaseMainActivity {
                 intent = new Intent(this, PersonalInfoActivity.class);
                 break;
             case R.id.relative_identity:
+                intent = new Intent(this, IdentityInfoActivity.class);
                 break;
             case R.id.relative_operation:
                 intent = new Intent(this, HistoryOperationActivity.class);
