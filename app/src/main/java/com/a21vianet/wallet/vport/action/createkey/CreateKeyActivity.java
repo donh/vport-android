@@ -12,9 +12,7 @@ import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.BitcoinKey;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
-import com.a21vianet.wallet.vport.library.commom.http.ipfs.IPFSRequest;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFS;
-import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFSGET;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.CreateResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.TransactionResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vchain.VChainRequest;
@@ -26,11 +24,8 @@ import com.littlesparkle.growler.core.http.BaseHttpSubscriber;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
 import com.littlesparkle.growler.core.ui.toast.ToastFactory;
 
-import java.util.concurrent.TimeUnit;
-
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -189,7 +184,7 @@ public class CreateKeyActivity extends BaseActivity {
     private Observable<Contract> vPortSubmit() {
         final Contract contract = new Contract();
         contract.get();
-        VPortCreateRequestBean vPortCreateRequestBean = new VPortCreateRequestBean();
+        final VPortCreateRequestBean vPortCreateRequestBean = new VPortCreateRequestBean();
         try {
             BitcoinKey coinKey = CryptoManager.getInstance().getCoinKey();
             vPortCreateRequestBean.setName(contract.getNickname());
@@ -210,52 +205,25 @@ public class CreateKeyActivity extends BaseActivity {
                         contract.setProxy(vPortCreateResponse.getResult().getUser().getProxy());
                         contract.setRecover(vPortCreateResponse.getResult().getUser().getRecovery
                                 ());
-                        vPortCreateGetHash(contract.getProxy());
                         return contract;
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io());
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<Contract, Observable<Contract>>() {
+                    @Override
+                    public Observable<Contract> call(Contract contract) {
+                        UserInfoIPFS userInfoIPFS = new UserInfoIPFS();
+                        userInfoIPFS.setName(contract.getNickname());
+                        userInfoIPFS.setAddress(vPortCreateRequestBean.getAddress());
+                        userInfoIPFS.setPublicKey(vPortCreateRequestBean.getPublicKey());
+                        return CryptoBiz.signIPFSTx(contract, userInfoIPFS);
+                    }
+                });
     }
 
     @Override
     public void onBackPressed() {
         Toast.makeText(this, "请耐心等待用户注册完毕", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * 延迟获取 IPFS Hash
-     *
-     * @param proxy
-     */
-    public void vPortCreateGetHash(final String proxy) {
-        try {
-            new IPFSRequest()
-                    .get(CryptoManager.getInstance().generateBitcoinAddress(), proxy)
-                    .delay(10, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .subscribe(new Action1<UserInfoIPFSGET>() {
-                        @Override
-                        public void call(UserInfoIPFSGET userInfoIPFSGET) {
-                            if (userInfoIPFSGET.getIpfsHex() == null || userInfoIPFSGET
-                                    .getIpfsHex().equals("")) {
-                                vPortCreateGetHash(proxy);
-                                return;
-                            }
-                            Contract contract = new Contract();
-                            contract.get();
-                            contract.setIpfsHex(userInfoIPFSGET.getIpfsHex());
-                            contract.save();
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            vPortCreateGetHash(proxy);
-                        }
-                    });
-        } catch (NoDecryptException e) {
-            e.printStackTrace();
-        }
     }
 }
