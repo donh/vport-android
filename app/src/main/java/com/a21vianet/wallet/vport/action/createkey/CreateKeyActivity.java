@@ -25,14 +25,18 @@ import com.littlesparkle.growler.core.ui.activity.BaseActivity;
 import com.littlesparkle.growler.core.ui.toast.ToastFactory;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 public class CreateKeyActivity extends BaseActivity {
 
     private static final String PASSWORD = "PASS";
+
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     public static void startActivity(Context context, String pass) {
         Intent intent = new Intent(context, CreateKeyActivity.class);
@@ -56,9 +60,14 @@ public class CreateKeyActivity extends BaseActivity {
         createKey(getIntent().getStringExtra(PASSWORD));
     }
 
+    @Override
+    protected void onDestroy() {
+        mCompositeSubscription.unsubscribe();
+        super.onDestroy();
+    }
 
     private void createKey(final String pass) {
-        CryptoManager.getInstance().generateBitcoinKeyPair(pass)
+        Subscription subscribe = CryptoManager.getInstance().generateBitcoinKeyPair(pass)
                 .observeOn(Schedulers.io())
                 .flatMap(new Func1<String, Observable<Contract>>() {
                     @Override
@@ -85,7 +94,7 @@ public class CreateKeyActivity extends BaseActivity {
                         ActivityManager.getInstance().finishAll();
                     }
                 });
-
+        mCompositeSubscription.add(subscribe);
     }
 
     /**
