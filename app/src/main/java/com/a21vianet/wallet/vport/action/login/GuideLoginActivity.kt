@@ -3,8 +3,8 @@ package com.a21vianet.wallet.vport.action.login
 import android.content.Intent
 import android.view.View
 import android.widget.Toast
-import com.a21vianet.wallet.vport.action.mian.MainActivity
 import com.a21vianet.wallet.vport.R
+import com.a21vianet.wallet.vport.action.mian.MainActivity
 import com.a21vianet.wallet.vport.action.password.HintPasswordActivity
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract
@@ -12,6 +12,7 @@ import com.littlesparkle.growler.core.ui.activity.BaseActivity
 import com.littlesparkle.growler.core.ui.mvp.BasePresenter
 import com.littlesparkle.growler.core.ui.mvp.BaseView
 import kotlinx.android.synthetic.main.activity_guide_login.*
+import qiu.niorgai.StatusBarCompat
 
 class GuideLoginActivity : BaseActivity<BasePresenter<BaseView>>() {
 
@@ -25,6 +26,11 @@ class GuideLoginActivity : BaseActivity<BasePresenter<BaseView>>() {
 
     override fun getLayoutResId(): Int {
         return R.layout.activity_guide_login
+    }
+
+    override fun initView() {
+        super.initView()
+        StatusBarCompat.translucentStatusBar(this);
     }
 
     fun onViewClicked(view: View) {

@@ -18,6 +18,8 @@ import com.littlesparkle.growler.core.ui.toast.ToastFactory;
 
 import java.util.ArrayList;
 
+import qiu.niorgai.StatusBarCompat;
+
 import static com.github.orangegangsters.lollipin.lib.managers.AppLockActivity.EXT_DATA;
 
 public class HintPasswordActivity extends BaseActivity {
@@ -42,6 +44,12 @@ public class HintPasswordActivity extends BaseActivity {
     @Override
     protected void initData() {
         mBitcoinWordList = getIntent().getStringArrayListExtra(WORD_LIST);
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        StatusBarCompat.translucentStatusBar(this);
     }
 
     @Override

@@ -90,4 +90,7 @@ ext {
 
     //AES加密
     libAESCrypt = "com.scottyab:aescrypt:0.0.1"
+
+    //沉浸式状态栏
+    libStatusBarCompat = "com.github.niorgai:StatusBarCompat:2.1.3"
 }

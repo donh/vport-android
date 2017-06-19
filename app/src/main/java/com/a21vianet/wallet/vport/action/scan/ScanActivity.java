@@ -9,6 +9,8 @@ import com.littlesparkle.growler.core.ui.fragment.BaseFragmentActivity;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
+import qiu.niorgai.StatusBarCompat;
+
 public class ScanActivity extends BaseFragmentActivity {
     CodeUtils.AnalyzeCallback analyzeCallback = null;
 
@@ -19,6 +21,12 @@ public class ScanActivity extends BaseFragmentActivity {
         CodeUtils.setFragmentArgs(captureFragment, R.layout.fragment_scan);
         captureFragment.setAnalyzeCallback(analyzeCallback);
         getSupportFragmentManager().beginTransaction().replace(R.id.wallet_scan_frame_layout, captureFragment).commit();
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        StatusBarCompat.translucentStatusBar(this);
     }
 
     private void initScanCallBack() {

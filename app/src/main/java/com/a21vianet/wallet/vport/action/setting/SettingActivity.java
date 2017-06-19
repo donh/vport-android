@@ -18,6 +18,7 @@ import com.littlesparkle.growler.core.ui.activity.BaseTitleBarActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import qiu.niorgai.StatusBarCompat;
 
 import static com.a21vianet.wallet.vport.library.constant.SysConstant.clearHradImageUrlHash;
 
@@ -38,6 +39,7 @@ public class SettingActivity extends BaseTitleBarActivity {
     @Override
     protected void initView() {
         super.initView();
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary));
         try {
             // ---get the package info---
             PackageManager pm = this.getPackageManager();

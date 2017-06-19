@@ -24,6 +24,7 @@ import com.littlesparkle.growler.core.http.BaseHttpSubscriber;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
 import com.littlesparkle.growler.core.ui.toast.ToastFactory;
 
+import qiu.niorgai.StatusBarCompat;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -57,6 +58,7 @@ public class CreateKeyActivity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
+        StatusBarCompat.translucentStatusBar(this);
         createKey(getIntent().getStringExtra(PASSWORD));
     }
 

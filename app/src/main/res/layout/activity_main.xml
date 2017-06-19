@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/mian_background">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/relative_main_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
         <TextView
             android:id="@+id/tv_main_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:gravity="center"
             android:text="vPort"
             android:textColor="#fff"
-            android:textSize="22sp"/>
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imgv_main_setting"
@@ -24,10 +30,12 @@
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginEnd="10dp"
+            android:layout_marginRight="8dp"
             android:scaleType="center"
-            android:src="@drawable/icon_setting"/>
-    </RelativeLayout>
+            android:src="@drawable/icon_setting"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/tv_main_title"/>
+    </android.support.constraint.ConstraintLayout>
 
 
     <View

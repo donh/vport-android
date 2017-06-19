@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import qiu.niorgai.StatusBarCompat;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -47,6 +48,7 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
     @Override
     protected void initView() {
         super.initView();
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary));
         initRecyclerView();
         initRefreshLayout();
         refreshData();

@@ -34,6 +34,7 @@ import com.littlesparkle.growler.core.utility.DensityUtility;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import qiu.niorgai.StatusBarCompat;
 
 
 public class PersonalInfoActivity extends BaseTitleBarActivity<PersonalInfoPresenter> implements
@@ -64,6 +65,12 @@ public class PersonalInfoActivity extends BaseTitleBarActivity<PersonalInfoPrese
     @Override
     protected int selfTitleResId() {
         return R.string.personal_info;
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary));
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.littlesparkle.growler.core.ui.activity.BaseMainActivity;
 import java.security.GeneralSecurityException;
 
 import butterknife.OnClick;
+import qiu.niorgai.StatusBarCompat;
 
 import static com.github.orangegangsters.lollipin.lib.managers.AppLockActivity.EXT_DATA;
 
@@ -32,6 +33,11 @@ public class MainActivity extends BaseMainActivity {
         return R.layout.activity_main;
     }
 
+    @Override
+    protected void initView() {
+        super.initView();
+        StatusBarCompat.translucentStatusBar(this);
+    }
 
     @OnClick({R.id.relative_visiting, R.id.relative_identity, R.id.relative_operation, R.id
             .imgv_main_scan, R.id.imgv_main_setting})
