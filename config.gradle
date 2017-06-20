@@ -96,4 +96,6 @@ ext {
 
     //高斯模糊
     lubTransformations = "jp.wasabeef:glide-transformations:2.0.1"
+
+    libDataPicker = "com.contrarywind:Android-PickerView:3.2.5"
 }

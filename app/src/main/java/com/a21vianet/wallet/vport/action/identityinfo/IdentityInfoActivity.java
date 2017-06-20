@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.action.identityinfo.bean.IdentityInfo;
 import com.bumptech.glide.Glide;
+import com.littlesparkle.growler.core.am.ActivityUtility;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
 import com.littlesparkle.growler.core.ui.adapter.RecyclerBaseAdapter;
 import com.littlesparkle.growler.core.utility.DensityUtility;
@@ -84,6 +85,7 @@ public class IdentityInfoActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.img_add:
+                ActivityUtility.startActivityWithAnim(IdentityInfoActivity.this, PerfectIdentityInfoActivity.class);
                 break;
         }
     }
