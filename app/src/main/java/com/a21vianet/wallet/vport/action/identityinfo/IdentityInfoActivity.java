@@ -106,7 +106,7 @@ public class IdentityInfoActivity extends BaseActivity {
             String staetStr = "";
             @ColorInt
             int typeColor;
-            switch (new Random(3).nextInt()) {
+            switch (new Random().nextInt(3)) {
                 case 0:
                     //待认证
                     staetStr = "待认证";
