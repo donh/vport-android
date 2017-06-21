@@ -71,4 +71,6 @@ dependencies {
 
     compile rootProject.ext.libStatusBarCompat
     compile rootProject.ext.lubTransformations
+
+    compile rootProject.ext.properties.libDataPicker
 }

@@ -44,7 +44,6 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
         Calendar selectedDateBegin = Calendar.getInstance();
         Calendar startDateBegin = Calendar.getInstance();
         Calendar endDateBegin = Calendar.getInstance();
