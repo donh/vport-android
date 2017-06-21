@@ -45,7 +45,7 @@ public class CryptoBiz {
                 })
                 .flatMap(new Func1<String, Observable<RawTxResponse>>() {
                     @Override
-                    public Observable<RawTxResponse> call(final String json) {
+                    public Observable<RawTxResponse> call(final String rawtx) {
                         String address = "";
                         try {
                             address = CryptoManager.getInstance().generateBitcoinAddress();
