@@ -24,7 +24,6 @@ import com.littlesparkle.growler.core.utility.PrefUtility;
 import com.scottyab.aescrypt.AESCrypt;
 
 import org.bouncycastle.jce.interfaces.ECPrivateKey;
-import org.bouncycastle.jce.interfaces.ECPublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.IOException;
@@ -457,15 +456,29 @@ public final class CryptoManager {
      * JWT 验证签名
      *
      * @param context
+     * @param pubkey
+     * @param jsonStr
+     * @param listener
+     * @throws NoDecryptException
+     */
+    public void verifyJWTToken(final Context context, String pubkey, String jsonStr,
+                               OnVerifiedListener listener)
+            throws NoDecryptException {
+        checkEnCode();
+        JWT.verifyToken(context, pubkey, jsonStr, listener);
+    }
+
+    /**
+     * JWT 验证签名
+     *
+     * @param context
      * @param jsonStr
      * @param listener
      * @throws NoDecryptException
      */
     public void verifyJWTToken(final Context context, String jsonStr, OnVerifiedListener
-            listener)
-            throws NoDecryptException {
-        checkEnCode();
-        JWT.verifyToken(context, mBitcoinKey.getPubKey(), jsonStr, listener);
+            listener) throws NoDecryptException {
+        verifyJWTToken(context, mBitcoinKey.getPubKey(), jsonStr, listener);
     }
 
     /**
