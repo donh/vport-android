@@ -17,13 +17,18 @@ import com.a21vianet.wallet.vport.library.BaseApplication;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.BitcoinKey;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.GenerateCallBack;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.MultisigCallback;
+import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnFinishedListener;
+import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnVerifiedListener;
 import com.google.gson.Gson;
 import com.littlesparkle.growler.core.utility.PrefUtility;
 import com.scottyab.aescrypt.AESCrypt;
 
+import org.bouncycastle.jce.interfaces.ECPrivateKey;
+import org.bouncycastle.jce.interfaces.ECPublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
@@ -130,8 +135,15 @@ public final class CryptoManager {
                                     ());
                             BitcoinKeyPair bitcoinKeyPair = generator.generateBitcoinKeyPair
                                     (keyPair);
-                            mBitcoinKey = new BitcoinKey(bitcoinKeyPair.getPrivateKey(),
-                                    bitcoinKeyPair.getPublicKey(), hdAccount.getWords());
+
+                            String rawpric = generator.generateRawBitcoinPrivateKey(
+                                    (ECPrivateKey) keyPair.getPrivate());
+                            String rawpub = generator.generateRawBitcoinPublicKey(
+                                    (ECPublicKey) keyPair.getPublic());
+
+                            mBitcoinKey = new BitcoinKey(rawpric, rawpub, bitcoinKeyPair
+                                    .getPrivateKey(), bitcoinKeyPair.getPublicKey(), hdAccount
+                                    .getWords());
                             encrypt(password, mBitcoinKey);
                             subscriber.onNext("");
                         } catch (IOException e) {
@@ -199,18 +211,21 @@ public final class CryptoManager {
                     public void call(Subscriber<? super String> subscriber) {
                         try {
                             MnemonicCode.setInstance(new MnemonicCodeAndroid());
-                            KeyPair keyPair = generator.generateEcdsaKeyPair(DHCreate
-                                    .resetPrivKey(words));
+                            BigInteger bigInteger = DHCreate.resetPrivKey(words);
+                            KeyPair keyPair = generator.generateEcdsaKeyPair();
                             BitcoinKeyPair bitcoinKeyPair = generator.generateBitcoinKeyPair
                                     (keyPair);
-                            mBitcoinKey = new BitcoinKey(bitcoinKeyPair.getPrivateKey(),
-                                    bitcoinKeyPair.getPublicKey(), words);
+
+                            String rawpriv = generator.generateRawBitcoinPrivateKey(
+                                    (ECPrivateKey) keyPair.getPrivate());
+                            String rawpub = generator.generateRawBitcoinPublicKey(
+                                    (ECPublicKey) keyPair.getPublic());
+
+                            mBitcoinKey = new BitcoinKey(rawpriv, rawpub, bitcoinKeyPair
+                                    .getPrivateKey(), bitcoinKeyPair.getPublicKey(), words);
                             encrypt(password, mBitcoinKey);
                             subscriber.onNext("");
                         } catch (IOException e) {
-                            e.printStackTrace();
-                            subscriber.onError(e);
-                        } catch (InvalidKeySpecException e) {
                             e.printStackTrace();
                             subscriber.onError(e);
                         }
@@ -283,10 +298,15 @@ public final class CryptoManager {
      * @param tx
      * @param callback
      */
-    public void sign(Context context, final String tx,
-                     MultisigCallback callback) throws NoDecryptException {
+    public void sign(Context context, final String tx, final
+    MultisigCallback callback) throws NoDecryptException {
         checkEnCode();
-        Signer.getInstance().sign(context, mBitcoinKey.getPrivKey(), tx, callback);
+        Signer.sign(context, mBitcoinKey.getPrivKey(), tx, new OnFinishedListener() {
+            @Override
+            public void onFinished(String s) {
+                callback.onSinged(s);
+            }
+        });
     }
 
     /**
@@ -304,16 +324,11 @@ public final class CryptoManager {
                 } catch (NoDecryptException e) {
                     subscriber.onError(e);
                 }
-                Signer.getInstance().sign(context, mBitcoinKey.getPrivKey(), tx, new
-                        MultisigCallback() {
+                Signer.sign(context, mBitcoinKey.getPrivKey(), tx, new
+                        OnFinishedListener() {
                             @Override
-                            public void onSinged(String signedRawTransaction) {
-                                subscriber.onNext(signedRawTransaction);
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                subscriber.onError(e);
+                            public void onFinished(String s) {
+                                subscriber.onNext(s);
                             }
                         });
             }
@@ -328,10 +343,16 @@ public final class CryptoManager {
      * @param callback
      */
     public void signMultisig(Context context, final String tx,
-                             MultisigCallback callback) throws NoDecryptException {
+                             final MultisigCallback callback) throws NoDecryptException {
         checkEnCode();
         String script = generateMultiSigScriptStr(mBitcoinKey.getPubKey());
-        Signer.getInstance().signMultisig(context, mBitcoinKey.getPrivKey(), script, tx, callback);
+        Signer.signMultisig(context, mBitcoinKey.getPrivKey(), script, tx, new OnFinishedListener
+                () {
+            @Override
+            public void onFinished(String s) {
+                callback.onSinged(s);
+            }
+        });
     }
 
     /**
@@ -350,22 +371,102 @@ public final class CryptoManager {
                     subscriber.onError(e);
                 }
                 String script = generateMultiSigScriptStr(mBitcoinKey.getPubKey());
-                Signer.getInstance().signMultisig(context, mBitcoinKey.getPrivKey(), script, tx,
-                        new MultisigCallback() {
+                Signer.signMultisig(context, mBitcoinKey.getPrivKey(), script, tx,
+                        new OnFinishedListener() {
                             @Override
-                            public void onSinged(String signedRawTransaction) {
-                                subscriber.onNext(signedRawTransaction);
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                subscriber.onError(e);
+                            public void onFinished(String s) {
+                                subscriber.onNext(s);
                             }
                         });
             }
         }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
+    }
 
+    /**
+     * 签名消息
+     *
+     * @param context
+     * @param msg
+     * @param callback
+     * @throws NoDecryptException
+     */
+    public void signMessage(final Context context, String msg, final
+    MultisigCallback callback) throws NoDecryptException {
+        checkEnCode();
+        Signer.signMessage(context, mBitcoinKey.getPrivKey(), msg, new OnFinishedListener() {
+            @Override
+            public void onFinished(String s) {
+                callback.onSinged(s);
+            }
+        });
+    }
 
+    /**
+     * 签名消息 RxJava 样式
+     *
+     * @param context
+     * @param msg
+     * @throws NoDecryptException
+     */
+    public Observable<String> signMessage(final Context context, final String msg) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                try {
+                    checkEnCode();
+                } catch (NoDecryptException e) {
+                    e.printStackTrace();
+                }
+                Signer.signMessage(context, mBitcoinKey.getPrivKey(), msg,
+                        new OnFinishedListener() {
+                            @Override
+                            public void onFinished(String s) {
+                                subscriber.onNext(s);
+                            }
+                        });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
+    }
+
+    /**
+     * JWT 签名
+     *
+     * @param context
+     * @param jsonStr
+     * @param listener
+     * @throws NoDecryptException
+     */
+    public void signJWTToken(final Context context, String jsonStr, OnFinishedListener listener)
+            throws NoDecryptException {
+        checkEnCode();
+        JWT.signToken(context, mBitcoinKey.getRawPrivKey(), jsonStr, listener);
+    }
+
+    /**
+     * JWT 解密
+     *
+     * @param context
+     * @param tokenString
+     * @param listener
+     */
+    public void decodeJWTToken(final Context context, String tokenString, OnFinishedListener
+            listener) {
+        JWT.decodeToken(context, tokenString, listener);
+    }
+
+    /**
+     * JWT 验证签名
+     *
+     * @param context
+     * @param jsonStr
+     * @param listener
+     * @throws NoDecryptException
+     */
+    public void verifyJWTToken(final Context context, String jsonStr, OnVerifiedListener
+            listener)
+            throws NoDecryptException {
+        checkEnCode();
+        JWT.verifyToken(context, mBitcoinKey.getPubKey(), jsonStr, listener);
     }
 
     /**

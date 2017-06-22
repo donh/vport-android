@@ -7,6 +7,8 @@ import java.util.List;
  */
 
 public class BitcoinKey {
+    private String rawPrivKey;
+    private String rawPubKey;
     private String privKey;
     private String pubKey;
     private List<String> works;
@@ -16,10 +18,29 @@ public class BitcoinKey {
     public BitcoinKey() {
     }
 
-    public BitcoinKey(String privKey, String pubKey, List<String> works) {
+    public BitcoinKey(String rawPrivKey, String rawPubKey, String privKey, String pubKey,
+                      List<String> works) {
+        this.rawPrivKey = rawPrivKey;
+        this.rawPubKey = rawPubKey;
         this.privKey = privKey;
         this.pubKey = pubKey;
         this.works = works;
+    }
+
+    public String getRawPrivKey() {
+        return rawPrivKey;
+    }
+
+    public String getRawPubKey() {
+        return rawPubKey;
+    }
+
+    public void setRawPubKey(String rawPubKey) {
+        this.rawPubKey = rawPubKey;
+    }
+
+    public void setRawPrivKey(String rawPrivKey) {
+        this.rawPrivKey = rawPrivKey;
     }
 
     public void setPhone(String phone) {
