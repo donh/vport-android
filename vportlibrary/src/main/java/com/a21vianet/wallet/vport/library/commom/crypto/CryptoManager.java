@@ -138,10 +138,8 @@ public final class CryptoManager {
 
                             String rawpric = generator.generateRawBitcoinPrivateKey(
                                     (ECPrivateKey) keyPair.getPrivate());
-                            String rawpub = generator.generateRawBitcoinPublicKey(
-                                    (ECPublicKey) keyPair.getPublic());
 
-                            mBitcoinKey = new BitcoinKey(rawpric, rawpub, bitcoinKeyPair
+                            mBitcoinKey = new BitcoinKey(rawpric, bitcoinKeyPair
                                     .getPrivateKey(), bitcoinKeyPair.getPublicKey(), hdAccount
                                     .getWords());
                             encrypt(password, mBitcoinKey);
@@ -212,20 +210,21 @@ public final class CryptoManager {
                         try {
                             MnemonicCode.setInstance(new MnemonicCodeAndroid());
                             BigInteger bigInteger = DHCreate.resetPrivKey(words);
-                            KeyPair keyPair = generator.generateEcdsaKeyPair();
+                            KeyPair keyPair = generator.generateEcdsaKeyPair(bigInteger);
                             BitcoinKeyPair bitcoinKeyPair = generator.generateBitcoinKeyPair
                                     (keyPair);
 
                             String rawpriv = generator.generateRawBitcoinPrivateKey(
                                     (ECPrivateKey) keyPair.getPrivate());
-                            String rawpub = generator.generateRawBitcoinPublicKey(
-                                    (ECPublicKey) keyPair.getPublic());
 
-                            mBitcoinKey = new BitcoinKey(rawpriv, rawpub, bitcoinKeyPair
+                            mBitcoinKey = new BitcoinKey(rawpriv, bitcoinKeyPair
                                     .getPrivateKey(), bitcoinKeyPair.getPublicKey(), words);
                             encrypt(password, mBitcoinKey);
                             subscriber.onNext("");
                         } catch (IOException e) {
+                            e.printStackTrace();
+                            subscriber.onError(e);
+                        } catch (InvalidKeySpecException e) {
                             e.printStackTrace();
                             subscriber.onError(e);
                         }
