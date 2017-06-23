@@ -37,9 +37,8 @@ public class BitcoinKeyPairGenerator {
 
     private static final String EC_GEN_PARAM_SPEC = "secp256k1";
     private static final String KEY_PAIR_GEN_ALGORITHM = "ECDSA";
-    private static final String TEST_NET_PRIVATE_KEY_PREFIX = "EF";
     private static final String MAIN_NET_PRIVATE_KEY_PREFIX = "80";
-    private static final String TEST_NET_PUBLIC_KEY_PREFIX = "6F";
+    private static final String MAIN_NET_PRIVATE_KEY_SUFFIX = "01";
     private static final String MAIN_NET_PUBLIC_KEY_PREFIX = "00";
     private final ECParameterSpec ecParameterSpec;
     private final KeyPairGenerator keyPairGenerator;
@@ -80,36 +79,18 @@ public class BitcoinKeyPairGenerator {
         return generateBitcoinKeyPair(keyPair);
     }
 
-    /**
-     * Generates random mainNet or testNet Bitcoin key pair
-     *
-     * @param isTestNet indicates whether a keypair should be testNet (when true) or mainNet
-     *                  (when false)
-     * @return mainNet or testNet Bitcoin key pair
-     */
-    public BitcoinKeyPair generateBitcoinKeyPair(boolean isTestNet) {
-        KeyPair keyPair = generateEcdsaKeyPair();
-        return generateBitcoinKeyPair(keyPair, isTestNet);
-    }
-
-    public BitcoinKeyPair generateBitcoinKeyPair(KeyPair keyPair, boolean isTestNet) {
+    public BitcoinKeyPair generateBitcoinKeyPair(KeyPair keyPair) {
         ECPrivateKey ecPrivateKey = (ECPrivateKey) keyPair.getPrivate();
         ECPublicKey ecPublicKey = (ECPublicKey) keyPair.getPublic();
+        //生成出普通 raw 私钥
         String rawBitcoinPrivateKey = generateRawBitcoinPrivateKey(ecPrivateKey);
-        String rawBitcoinPublicKey = generateRawBitcoinPublicKey(ecPublicKey);
-        String bitcoinPrivateKey = generateBitcoinPrivateKey(rawBitcoinPrivateKey);
+
+        String rawBitcoinPublicKey = generateRawBitcoinPublicKey(ecPublicKey, false);
+
+        //针对 区块链生成 WIF 格式私钥
+        String bitcoinPrivateKey = generateBitcoinPrivateKey(rawBitcoinPrivateKey, false);
 
         return new BitcoinKeyPair(bitcoinPrivateKey, rawBitcoinPublicKey);
-    }
-
-    /**
-     * Generates mainnet Bitcoin key pair from an ECDSA key pair
-     *
-     * @param keyPair ECDSA (secp256k1) keypair
-     * @return mainnet Bitcoin key pair
-     */
-    public BitcoinKeyPair generateBitcoinKeyPair(KeyPair keyPair) {
-        return generateBitcoinKeyPair(keyPair, false);
     }
 
     /**
@@ -151,14 +132,17 @@ public class BitcoinKeyPairGenerator {
      * Transforms a raw Bitcoin private key into the mainNet or testNet Bitcoin private key
      *
      * @param rawBitcoinPrivateKey private key secret exponent hex
-     * @param isTestNet            indicates whether the Bitcoin private key should be testNet
-     *                             (when true) or mainNet
-     *                             (when false)
+     * @param iscompress           是否要针对私钥进行压缩
      * @return mainNet or testNet Bitcoin private key in a Wallet Import Format (WIF)
      */
-    public String generateBitcoinPrivateKey(String rawBitcoinPrivateKey, boolean isTestNet) {
-        String prefix = "80";
-        String rawBitcoinPrivateKeyWithVersionByte = prefix + rawBitcoinPrivateKey + "01";
+    public String generateBitcoinPrivateKey(String rawBitcoinPrivateKey, boolean iscompress) {
+        String rawBitcoinPrivateKeyWithVersionByte = MAIN_NET_PRIVATE_KEY_PREFIX +
+                rawBitcoinPrivateKey;
+        if (iscompress) {
+            rawBitcoinPrivateKeyWithVersionByte = rawBitcoinPrivateKeyWithVersionByte +
+                    MAIN_NET_PRIVATE_KEY_SUFFIX;
+        }
+
         String firstSha256Hash = messageDigester.digest(rawBitcoinPrivateKeyWithVersionByte,
                 SHA_256);
         String secondSha256Hash = messageDigester.digest(firstSha256Hash, SHA_256);
@@ -167,37 +151,39 @@ public class BitcoinKeyPairGenerator {
         return Base58.encode(parseHexBinary(binaryPrivateKey));
     }
 
-    /**
-     * Transforms a raw Bitcoin private key into the mainNet Bitcoin private key
-     *
-     * @param rawBitcoinPrivateKey private key secret exponent hex
-     * @return mainNet Bitcoin private key in a Wallet Import Format (WIF)
-     */
-    public String generateBitcoinPrivateKey(String rawBitcoinPrivateKey) {
-        return generateBitcoinPrivateKey(rawBitcoinPrivateKey, false);
-    }
 
     /**
      * Transforms ECDSA public key into the raw Bitcoin address
      *
      * @param ecPublicKey ECDSA public key
+     * @param iscompress  是否压缩地址
      * @return Raw Bitcoin address: 65 bytes, 1 byte 0x04, 32 bytes corresponding to X
      * coordinate, 32 bytes
      * corresponding to Y coordinate
      */
-    public String generateRawBitcoinPublicKey(ECPublicKey ecPublicKey) {
-        ECPoint q = ecPublicKey.getQ();
-        BigInteger affineXCoord = q.getAffineXCoord().toBigInteger();
-        BigInteger affineYCoord = q.getAffineYCoord().toBigInteger();
-        BigInteger remainder = affineYCoord.remainder(new BigInteger("2"));
+    public String generateRawBitcoinPublicKey(ECPublicKey ecPublicKey, boolean iscompress) {
+        if (iscompress) {
+            //生成压缩 公钥
+            ECPoint q = ecPublicKey.getQ();
+            BigInteger affineXCoord = q.getAffineXCoord().toBigInteger();
+            BigInteger affineYCoord = q.getAffineYCoord().toBigInteger();
+            BigInteger remainder = affineYCoord.remainder(new BigInteger("2"));
 
-        String prefix;
-        if (remainder.intValue() == 0) {
-            prefix = "02";
+            String prefix;
+            if (remainder.intValue() == 0) {
+                prefix = "02";
+            } else {
+                prefix = "03";
+            }
+            return prefix + String.format("%064x", affineXCoord);
         } else {
-            prefix = "03";
+            //生成未压缩 公钥
+            ECPoint q = ecPublicKey.getQ();
+            BigInteger affineXCoord = q.getAffineXCoord().toBigInteger();
+            BigInteger affineYCoord = q.getAffineYCoord().toBigInteger();
+            return "04" + String.format("%064x", affineXCoord) + String.format("%064x",
+                    affineYCoord);
         }
-        return prefix + String.format("%064x", affineXCoord);
     }
 
     /**
@@ -206,38 +192,18 @@ public class BitcoinKeyPairGenerator {
      * @param rawBitcoinPublicKey 65 bytes, 1 byte 0x04, 32 bytes corresponding to X coordinate,
      *                            32 bytes
      *                            corresponding to Y coordinate
-     * @param isTestNet           indicates whether the Bitcoin address should be testNet (when
-     *                            true) or mainNet
-     *                            (when false)
      * @return mainNet or testNet Bitcoin address in a Wallet Import Format (WIF)
      */
-    public String generateBitcoinAddress(String rawBitcoinPublicKey, boolean isTestNet) {
+    public String generateBitcoinAddress(String rawBitcoinPublicKey) {
         String firstSha256Hash = messageDigester.digest(rawBitcoinPublicKey, SHA_256);
         String ripemd160Hash = messageDigester.digest(firstSha256Hash, RIPEMD_160);
-        String prefix = "";
-        if (isTestNet) {
-            prefix = TEST_NET_PUBLIC_KEY_PREFIX;
-        } else {
-            prefix = MAIN_NET_PUBLIC_KEY_PREFIX;
-        }
+        String prefix = MAIN_NET_PUBLIC_KEY_PREFIX;
         String ripemd160HashWithVersionByte = prefix + ripemd160Hash;
         String secondSha256Hash = messageDigester.digest(ripemd160HashWithVersionByte, SHA_256);
         String thirdSha256Hash = messageDigester.digest(secondSha256Hash, SHA_256);
         String addressChecksum = thirdSha256Hash.substring(0, 8);
         String binaryBitcoinAddress = ripemd160HashWithVersionByte + addressChecksum;
         return Base58.encode(parseHexBinary(binaryBitcoinAddress));
-    }
-
-    /**
-     * Transforms a raw Bitcoin public key into the mainNet Bitcoin address
-     *
-     * @param rawBitcoinPublicKey 65 bytes, 1 byte 0x04, 32 bytes corresponding to X coordinate,
-     *                            32 bytes
-     *                            corresponding to Y coordinate
-     * @return mainNet Bitcoin address in a Wallet Import Format (WIF)
-     */
-    public String generateBitcoinAddress(String rawBitcoinPublicKey) {
-        return generateBitcoinAddress(rawBitcoinPublicKey, false);
     }
 
     /**
@@ -264,7 +230,7 @@ public class BitcoinKeyPairGenerator {
      *                          (WIF)
      * @return raw Bitcoin private key
      */
-    public static String getRawBitcoinPrivateKey(String bitcoinPrivateKey) {
+    public static String getRawBitcoinPrivateKey(String bitcoinPrivateKey, boolean iscompress) {
         byte[] decodedPrivateKey = new byte[0];
         try {
             decodedPrivateKey = Base58.decode(bitcoinPrivateKey);
@@ -272,7 +238,11 @@ public class BitcoinKeyPairGenerator {
             e.printStackTrace();
         }
         String rawPrivateKey = printHexBinary(decodedPrivateKey);
-        return rawPrivateKey.substring(2, rawPrivateKey.length() - 8);
+        if (iscompress) {
+            return rawPrivateKey.substring(2, rawPrivateKey.length() - 10);
+        } else {
+            return rawPrivateKey.substring(2, rawPrivateKey.length() - 8);
+        }
     }
 
 }

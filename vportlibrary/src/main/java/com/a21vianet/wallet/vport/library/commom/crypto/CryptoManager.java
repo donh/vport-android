@@ -268,6 +268,11 @@ public final class CryptoManager {
         });
     }
 
+    public String getRawBitcoinPrivateKey() throws NoDecryptException {
+        checkEnCode();
+        return generator.getRawBitcoinPrivateKey(mBitcoinKey.getPrivKey(), false);
+    }
+
     /**
      * 生成地址
      *
@@ -437,7 +442,7 @@ public final class CryptoManager {
     public void signJWTToken(final Context context, String jsonStr, OnFinishedListener listener)
             throws NoDecryptException {
         checkEnCode();
-        JWT.signToken(context, mBitcoinKey.getRawPrivKey(), jsonStr, listener);
+        JWT.signToken(context, getRawBitcoinPrivateKey(), jsonStr, listener);
     }
 
     /**

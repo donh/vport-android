@@ -200,7 +200,7 @@ public class CreateKeyActivity extends BaseActivity {
             BitcoinKey coinKey = CryptoManager.getInstance().getCoinKey();
             vPortCreateRequestBean.setName(contract.getNickname());
             vPortCreateRequestBean.setPhone("");
-            vPortCreateRequestBean.setPrivateKey(coinKey.getPrivKey());
+            vPortCreateRequestBean.setPrivateKey(CryptoManager.getInstance().getRawBitcoinPrivateKey());
             vPortCreateRequestBean.setPublicKey(coinKey.getPubKey());
             vPortCreateRequestBean.setAddress(CryptoManager.getInstance().generateBitcoinAddress());
         } catch (NoDecryptException e) {
