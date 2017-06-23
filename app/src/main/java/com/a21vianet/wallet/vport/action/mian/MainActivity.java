@@ -1,7 +1,9 @@
 package com.a21vianet.wallet.vport.action.mian;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.action.historyoperation.HistoryOperationActivity;
@@ -13,6 +15,7 @@ import com.a21vianet.wallet.vport.action.setting.SettingActivity;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.littlesparkle.growler.core.am.ActivityUtility;
 import com.littlesparkle.growler.core.ui.activity.BaseMainActivity;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.security.GeneralSecurityException;
 
@@ -23,6 +26,7 @@ import static com.github.orangegangsters.lollipin.lib.managers.AppLockActivity.E
 
 public class MainActivity extends BaseMainActivity {
     private static final int REQUEST_ENTER_PASSWORD = 0x1;
+    public static final int REQUEST_CODE_SCAN = 8080;
 
     @Override
     protected void initData() {
@@ -55,7 +59,7 @@ public class MainActivity extends BaseMainActivity {
                 intent = new Intent(this, HistoryOperationActivity.class);
                 break;
             case R.id.imgv_main_scan:
-                intent = new Intent(this, ScanActivity.class);
+                startActivityForResult(new Intent(this, ScanActivity.class), REQUEST_CODE_SCAN);
                 break;
             case R.id.imgv_main_setting:
                 intent = new Intent(this, SettingActivity.class);
@@ -82,6 +86,20 @@ public class MainActivity extends BaseMainActivity {
                     }
                 } else {
                     finish();
+                }
+                break;
+            case REQUEST_CODE_SCAN:
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle == null) {
+                        return;
+                    }
+                    if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                        String result = bundle.getString(CodeUtils.RESULT_STRING);
+                        Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
+                    } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                        Toast.makeText(MainActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
         }
