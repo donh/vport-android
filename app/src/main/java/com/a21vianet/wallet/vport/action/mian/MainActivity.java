@@ -1,8 +1,15 @@
 package com.a21vianet.wallet.vport.action.mian;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatImageButton;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.action.historyoperation.HistoryOperationActivity;
@@ -18,11 +25,15 @@ import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTBean;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.LoginTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserLoginTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnFinishedListener;
+import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnVerifiedListener;
+import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.a21vianet.wallet.vport.library.event.ScanResultEvent;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.littlesparkle.growler.core.am.ActivityUtility;
 import com.littlesparkle.growler.core.ui.activity.BaseMainActivity;
+import com.littlesparkle.growler.core.ui.view.GlideCircleImage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,9 +53,56 @@ public class MainActivity extends BaseMainActivity {
     public static final String SUB_LOGIN_TOKEN = "login token";
     public static final String SUB_AUTHORIZATION_TOKEN = "authorization token";
 
+    private AlertDialog alertDialogLogin;
+    private String userJWT = "";
+    private String serverJWT = "";
+    private String serverUrl = "";
+
+    public void initLoginDialog() {
+        RelativeLayout relativeLoginDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_login, null);
+        alertDialogLogin = new AlertDialog.Builder(this).setView(relativeLoginDialog).create();
+        AppCompatButton btCancel = (AppCompatButton) relativeLoginDialog.findViewById(R.id.bt_login_dialog_cancel);
+        AppCompatButton btOK = (AppCompatButton) relativeLoginDialog.findViewById(R.id.bt_login_dialog_ok);
+        AppCompatImageButton btClose = (AppCompatImageButton) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_close);
+        ImageView imageViewUser = (ImageView) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_user);
+        ImageView imageViewCompany = (ImageView) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_server);
+
+        Glide.with(this).load(getHeaderUrl()).transform(new GlideCircleImage(this)).placeholder(R.drawable.icon_header).into(imageViewUser);
+
+        btCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (alertDialogLogin != null && alertDialogLogin.isShowing()) {
+                    alertDialogLogin.dismiss();
+                }
+            }
+        });
+        btOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!TextUtils.isEmpty(userJWT) && !TextUtils.isEmpty(serverJWT) && !TextUtils.isEmpty(serverUrl)) {
+
+                } else Toast.makeText(MainActivity.this, "数据错误，请稍候重试", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (alertDialogLogin != null && alertDialogLogin.isShowing()) {
+                    alertDialogLogin.dismiss();
+                }
+            }
+        });
+    }
+
+    public String getHeaderUrl() {
+        return SysConstant.getIPFSIP() + SysConstant.getHradImageUrlHash();
+    }
+
     @Override
     protected void initData() {
         checkEnCode();
+        initLoginDialog();
     }
 
     @Override
@@ -128,30 +186,44 @@ public class MainActivity extends BaseMainActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScanResultGet(final ScanResultEvent scanResultEvent) {
+        showProgress();
         CryptoManager.getInstance().decodeJWTToken(this, scanResultEvent.result, new OnFinishedListener() {
             @Override
             public void onFinished(String s) {
-                Gson gson = new Gson();
+                final Gson gson = new Gson();
                 JWTBean<Object> jwtBean = gson.fromJson(s, new TypeToken<JWTBean<Object>>() {
                 }.getType());
                 switch (jwtBean.payload.sub) {
                     case SUB_LOGIN_TOKEN:
-                        JWTBean<LoginTokenContext> loginTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<LoginTokenContext>>() {
+                        final JWTBean<LoginTokenContext> loginTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<LoginTokenContext>>() {
                         }.getType());
-                        JWTBean<UserLoginTokenContext> userLoginTokenContextJWTBean = new ScanDataTask().getJWTBeanFromSeverJWTBean(loginTokenContextJWTBean);
-                        if (userLoginTokenContextJWTBean != null) {
-                            try {
-                                CryptoManager.getInstance().signJWTToken(MainActivity.this
-                                        , gson.toJson(userLoginTokenContextJWTBean)
-                                        , new OnFinishedListener() {
-                                            @Override
-                                            public void onFinished(String s) {
-                                                System.out.println(s);
-                                            }
-                                        });
-                            } catch (NoDecryptException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            CryptoManager.getInstance().verifyJWTToken(MainActivity.this, loginTokenContextJWTBean.payload.context.serverPublicKey, scanResultEvent.result, new OnVerifiedListener() {
+                                @Override
+                                public void onVerified(boolean isValid) {
+                                    JWTBean<UserLoginTokenContext> userLoginTokenContextJWTBean = new ScanDataTask().getJWTBeanFromSeverJWTBean(loginTokenContextJWTBean);
+                                    if (userLoginTokenContextJWTBean != null) {
+                                        try {
+                                            CryptoManager.getInstance().signJWTToken(MainActivity.this
+                                                    , gson.toJson(userLoginTokenContextJWTBean)
+                                                    , new OnFinishedListener() {
+                                                        @Override
+                                                        public void onFinished(String s) {
+                                                            userJWT = s;
+                                                            serverJWT = scanResultEvent.result;
+                                                            serverUrl = loginTokenContextJWTBean.payload.context.serverURL;
+                                                            alertDialogLogin.show();
+                                                            dismissProgress();
+                                                        }
+                                                    });
+                                        } catch (NoDecryptException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        } catch (NoDecryptException e) {
+                            e.printStackTrace();
                         }
                         break;
                     case SUB_AUTHORIZATION_TOKEN:

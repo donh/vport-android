@@ -37,7 +37,6 @@ public class ScanActivity extends BaseFragmentActivity {
         analyzeCallback = new CodeUtils.AnalyzeCallback() {
             @Override
             public void onAnalyzeSuccess(Bitmap mBitmap, String result) {
-                result = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJ2cG9ydC5jaGFuY2hlbmcuc2VydmVyIiwiYXVkIjoidnBvcnQuY2hhbmNoZW5nLnVzZXIiLCJpYXQiOjE0OTgwNDUwNDUsImV4cCI6MTQ5ODA0NTM0NSwic3ViIjoibG9naW4gdG9rZW4iLCJjb250ZXh0Ijp7ImNsaWVudElEIjoidjAwMWNoYW5jaGVuZyIsImNsaWVudFVSTCI6Imh0dHBzOi8vZGFwcC5leGFtcGxlLnZwb3J0LmNvbSIsInNjb3BlIjoibmFtZSxwaG9uZSxwdWJsaWNLZXkscHJveHksY29udHJvbGxlcixyZWNvdmVyeSxjaXR5Iiwic2VydmVyUHVibGljS2V5IjoiMDQ2MDJlMzU1ODY2NGU2NDQ2MGU0NjkwYmVjZTdhZGJiZDMwNmI3NjU0MDk0NjBhYTYxYzJkMjcyYmI5NzNiYTAwZDRmODMzY2RiYjFhNWZlMDM1MTM5MWFjN2UxMDA2ZmVmZmYyZDA1OTBlOTg5YWE1ZTdhYTUzN2NmODZiZWU0YSIsInNlcnZlclVSTCI6Imh0dHBzOi8vbWVzc2FnaW5nLXNlcnZlci5leGFtcGxlLnZwb3J0LmNvbSIsInRva2VuIjoiNDFkMjQzZmFmM2IyNDI5ZDgwNzdmYjA5MjhiMTliMjQifX0.cYsEa9dvHbTxOVCmTWBex5Kv1nEm_pfmAq_NOR_62sBkyo-fvVZU9NlNndChyT_z6AsiW2ulKe9i3li0XPSwyw";
                 startActivity(new Intent(ScanActivity.this, MainActivity.class));
                 EventBus.getDefault().postSticky(new ScanResultEvent(result));
                 ScanActivity.this.finish();
