@@ -1,18 +1,19 @@
 package com.a21vianet.wallet.vport.dao.entity;
 
+import com.a21vianet.wallet.vport.dao.gen.DaoSession;
+import com.a21vianet.wallet.vport.dao.gen.OperatingDataDao;
+import com.a21vianet.wallet.vport.dao.gen.OperationTypeDao;
+
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.Date;
 import java.util.List;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
-import com.a21vianet.wallet.vport.dao.gen.DaoSession;
-import com.a21vianet.wallet.vport.dao.gen.OperationTypeDao;
-import org.greenrobot.greendao.annotation.NotNull;
-import com.a21vianet.wallet.vport.dao.gen.OperatingDataDao;
 
 /**
  * Created by wang.rongqiang on 2017/6/27.
@@ -48,6 +49,9 @@ public class OperatingData {
     @Generated(hash = 1778719501)
     private transient OperatingDataDao myDao;
 
+    @Generated(hash = 993601222)
+    private transient Long operationtype__resolvedKey;
+
     @Generated(hash = 1959987320)
     public OperatingData(Long id, String username, String userimg, String appname,
             String appimg, String appurl, String operationmsg, long operationtypeId,
@@ -67,9 +71,6 @@ public class OperatingData {
     @Generated(hash = 1127590806)
     public OperatingData() {
     }
-
-    @Generated(hash = 993601222)
-    private transient Long operationtype__resolvedKey;
 
     public List<IdentityCard> getIdentityCardBeans() {
         return IdentityCardBeans;

@@ -10,16 +10,17 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class IdentityCard {
     @Id(autoincrement = true)
-    private long id;
+    private Long id;
 
     private String name;
-    private long number;
+    private String number;
     private String begintime;
     private String endtime;
     private String agencies;
+    //1. 待认证 2.认证成功 3.认证失败
     private int state;
-    @Generated(hash = 854298168)
-    public IdentityCard(long id, String name, long number, String begintime,
+    @Generated(hash = 123320716)
+    public IdentityCard(Long id, String name, String number, String begintime,
             String endtime, String agencies, int state) {
         this.id = id;
         this.name = name;
@@ -32,10 +33,10 @@ public class IdentityCard {
     @Generated(hash = 1367070082)
     public IdentityCard() {
     }
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getName() {
@@ -44,10 +45,10 @@ public class IdentityCard {
     public void setName(String name) {
         this.name = name;
     }
-    public long getNumber() {
+    public String getNumber() {
         return this.number;
     }
-    public void setNumber(long number) {
+    public void setNumber(String number) {
         this.number = number;
     }
     public String getBegintime() {
@@ -74,5 +75,6 @@ public class IdentityCard {
     public void setState(int state) {
         this.state = state;
     }
+
 
 }

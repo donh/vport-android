@@ -15,6 +15,7 @@ import java.util.List;
 
 public class OperatingDataManager {
     public static void insert(final OperatingData data) {
+        data.setId(null);
         OperatingDataDao operatingDataDao = GreenDaoManager.getInstance().getSession()
                 .getOperatingDataDao();
 

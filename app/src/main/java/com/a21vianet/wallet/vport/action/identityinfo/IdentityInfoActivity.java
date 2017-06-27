@@ -8,11 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.a21vianet.wallet.vport.R;
-import com.a21vianet.wallet.vport.action.identityinfo.bean.IdentityInfo;
+import com.a21vianet.wallet.vport.dao.IdentityCardManager;
+import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.bumptech.glide.Glide;
 import com.littlesparkle.growler.core.am.ActivityUtility;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
@@ -21,7 +23,6 @@ import com.littlesparkle.growler.core.utility.DensityUtility;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -37,9 +38,11 @@ public class IdentityInfoActivity extends BaseActivity {
     TextView mTvUsername;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.btn_addid)
+    Button mButtonAddid;
 
     private IdCardAdapter mIdCardAdapter;
-    private List<IdentityInfo> mIdentityInfoList = new ArrayList<>();
+    private List<IdentityCard> mIdentityInfoList = new ArrayList<>();
 
     @Override
     protected void initData() {
@@ -55,11 +58,30 @@ public class IdentityInfoActivity extends BaseActivity {
         initIdInfo();
     }
 
-    private void initIdInfo() {
-        IdentityInfo identityInfo = new IdentityInfo();
-        identityInfo.setId("123456200808081234");
-        mIdentityInfoList.add(identityInfo);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initIdDate();
+    }
 
+    private void initIdDate() {
+        mIdentityInfoList.clear();
+        mIdentityInfoList.addAll(IdentityCardManager.load());
+        if (mIdentityInfoList.size() == 0) {
+            mButtonAddid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityUtility.startActivityWithAnim(IdentityInfoActivity.this,
+                            PerfectIdentityInfoActivity.class);
+                }
+            });
+            mButtonAddid.setVisibility(View.VISIBLE);
+        } else {
+            mButtonAddid.setVisibility(View.GONE);
+        }
+    }
+
+    private void initIdInfo() {
         mIdCardAdapter = new IdCardAdapter(this);
         mIdCardAdapter.setDataList(mIdentityInfoList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -85,12 +107,13 @@ public class IdentityInfoActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.img_add:
-                ActivityUtility.startActivityWithAnim(IdentityInfoActivity.this, PerfectIdentityInfoActivity.class);
+                ActivityUtility.startActivityWithAnim(IdentityInfoActivity.this,
+                        PerfectIdentityInfoActivity.class);
                 break;
         }
     }
 
-    static class IdCardAdapter extends RecyclerBaseAdapter<ViewHolder, IdentityInfo> {
+    static class IdCardAdapter extends RecyclerBaseAdapter<ViewHolder, IdentityCard> {
         private final int strokeWidth;
         private final int roundRadius;
 
@@ -101,25 +124,25 @@ public class IdentityInfoActivity extends BaseActivity {
         }
 
         @Override
-        protected void onBindViewHolderItem(ViewHolder holder, IdentityInfo item, int position) {
+        protected void onBindViewHolderItem(ViewHolder holder, IdentityCard item, int position) {
 
-            holder.mIdCardTextView.setText(item.getId());
+            holder.mIdCardTextView.setText(item.getNumber());
 
             String staetStr = "";
             @ColorInt
             int typeColor;
-            switch (new Random().nextInt(3)) {
-                case 0:
+            switch (item.getState()) {
+                case 1:
                     //待认证
                     staetStr = "待认证";
                     typeColor = 0xFF7d7d7d;
                     break;
-                case 1:
+                case 2:
                     //认证成功
                     staetStr = "认证成功";
                     typeColor = 0xFF1b93ef;
                     break;
-                case 2:
+                case 3:
                 default:
                     //认证失败
                     staetStr = "认证失败";

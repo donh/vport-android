@@ -11,12 +11,12 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class OperationType {
     @Id(autoincrement = true)
-    private long id;
+    private Long id;
 
     private String name;
 
-    @Generated(hash = 1769149080)
-    public OperationType(long id, String name) {
+    @Generated(hash = 1731733871)
+    public OperationType(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -25,11 +25,11 @@ public class OperationType {
     public OperationType() {
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -40,4 +40,6 @@ public class OperationType {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }

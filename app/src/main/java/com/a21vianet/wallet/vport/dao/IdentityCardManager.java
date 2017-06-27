@@ -11,6 +11,7 @@ import java.util.List;
 
 public class IdentityCardManager {
     public static void insert(IdentityCard card) {
+        card.setId(null);
         IdentityCardDao identityCardDao = GreenDaoManager.getInstance().getSession()
                 .getIdentityCardDao();
         identityCardDao.insertOrReplace(card);
@@ -31,6 +32,7 @@ public class IdentityCardManager {
     public static List<IdentityCard> load() {
         IdentityCardDao identityCardDao = GreenDaoManager.getInstance().getSession()
                 .getIdentityCardDao();
-        return identityCardDao.loadAll();
+        List<IdentityCard> identityCards = identityCardDao.loadAll();
+        return identityCards;
     }
 }

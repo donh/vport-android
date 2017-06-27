@@ -6,8 +6,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.a21vianet.wallet.vport.R;
+import com.a21vianet.wallet.vport.dao.IdentityCardManager;
+import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
+import com.a21vianet.wallet.vport.exception.RegularException;
 import com.bigkoo.pickerview.TimePickerView;
 import com.bigkoo.pickerview.lib.WheelView;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
@@ -15,6 +19,8 @@ import com.littlesparkle.growler.core.utility.TimeUtility;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -55,7 +61,8 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
         startDateBegin.set(1949, 0, 1);
         endDateEnd.set(2049, 0, 1);
 
-        timeBeginPickerView = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+        timeBeginPickerView = new TimePickerView.Builder(this, new TimePickerView
+                .OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 tvTimeBegin.setText(TimeUtility.formatDate(date));
@@ -80,7 +87,8 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
                 .setDividerType(WheelView.DividerType.FILL)
                 .build();
 
-        timeEndPickerView = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+        timeEndPickerView = new TimePickerView.Builder(this, new TimePickerView
+                .OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 tvTimeEnd.setText(TimeUtility.formatDate(date));
@@ -111,13 +119,15 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
         return R.layout.activity_perfect_identity_info;
     }
 
-    @OnClick({R.id.title_bar_back_btn, R.id.title_bar_add, R.id.relative_time_begin, R.id.relative_time_end})
+    @OnClick({R.id.title_bar_back_btn, R.id.title_bar_add, R.id.relative_time_begin, R.id
+            .relative_time_end})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_bar_back_btn:
                 finish();
                 break;
             case R.id.title_bar_add:
+                save();
                 break;
             case R.id.relative_time_begin:
                 timeBeginPickerView.show();
@@ -125,6 +135,48 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
             case R.id.relative_time_end:
                 timeEndPickerView.show();
                 break;
+        }
+    }
+
+    private void save() {
+        String name = editNameValue.getText().toString().trim();
+        String number = editIdValue.getText().toString().trim();
+        String issued = editIssuedValue.getText().toString().trim();
+        String timeBegin = tvTimeBegin.getText().toString().trim();
+        String timeEnd = tvTimeEnd.getText().toString().trim();
+
+        try {
+            regular(name, "[\\s\\S]{1,16}", "请检查姓名");
+
+            regular(number, "[1-9]\\d{5}[1-9]\\d{3}(" +
+                    "(0\\d)|" +
+                    "(1[0-2]))(" +
+                    "([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)", "身份证号信息不正确");
+            regular(timeBegin, "[\\s\\S]{1,64}", "请检查有效开始时间");
+            regular(timeEnd, "[\\s\\S]{1,64}", "请检查有效结束时间");
+            regular(issued, "[\\s\\S]{1,64}", "请检查签发机关");
+
+            IdentityCardManager.insert(new IdentityCard(null, name, number, timeBegin, timeEnd,
+                    issued, 1));
+            finish();
+        } catch (RegularException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 进行正则验证
+     *
+     * @param value
+     * @param regular
+     * @param hint
+     */
+    public void regular(String value, String regular, String hint) throws RegularException {
+        Pattern pattern = Pattern.compile(regular);
+        Matcher matcher = pattern.matcher(value.trim());
+        if (!matcher.matches()) {
+            //抛出正则错误提示
+            throw new RegularException(hint);
         }
     }
 }
