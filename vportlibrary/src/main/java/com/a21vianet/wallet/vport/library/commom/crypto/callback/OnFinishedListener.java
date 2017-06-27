@@ -7,6 +7,13 @@ import android.util.Log;
  */
 public abstract class OnFinishedListener {
     public void onFinish(String s) {
+        String ErroeTag = "JSERROR.";
+
+        if (s.indexOf(ErroeTag) != -1) {
+            onError(new Exception(s));
+            return;
+        }
+
         Log.e("onFinish:========= ", s);
         String replace = s;
         char c = replace.charAt(0);
@@ -25,4 +32,6 @@ public abstract class OnFinishedListener {
     }
 
     public abstract void onFinished(String s);
+
+    public abstract void onError(Exception e);
 }

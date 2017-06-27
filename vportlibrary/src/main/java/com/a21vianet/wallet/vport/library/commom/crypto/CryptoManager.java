@@ -309,6 +309,11 @@ public final class CryptoManager {
             public void onFinished(String s) {
                 callback.onSinged(s);
             }
+
+            @Override
+            public void onError(Exception e) {
+                callback.onError(e);
+            }
         });
     }
 
@@ -333,6 +338,11 @@ public final class CryptoManager {
                             public void onFinished(String s) {
                                 subscriber.onNext(s);
                             }
+
+                            @Override
+                            public void onError(Exception e) {
+                                subscriber.onError(e);
+                            }
                         });
             }
         }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
@@ -354,6 +364,11 @@ public final class CryptoManager {
             @Override
             public void onFinished(String s) {
                 callback.onSinged(s);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                callback.onError(e);
             }
         });
     }
@@ -380,6 +395,11 @@ public final class CryptoManager {
                             public void onFinished(String s) {
                                 subscriber.onNext(s);
                             }
+
+                            @Override
+                            public void onError(Exception e) {
+                                subscriber.onError(e);
+                            }
                         });
             }
         }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
@@ -400,6 +420,11 @@ public final class CryptoManager {
             @Override
             public void onFinished(String s) {
                 callback.onSinged(s);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                callback.onError(e);
             }
         });
     }
@@ -425,6 +450,11 @@ public final class CryptoManager {
                             @Override
                             public void onFinished(String s) {
                                 subscriber.onNext(s);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                subscriber.onError(e);
                             }
                         });
             }
