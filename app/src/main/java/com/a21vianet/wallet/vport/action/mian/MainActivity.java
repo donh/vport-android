@@ -43,6 +43,11 @@ import java.security.GeneralSecurityException;
 
 import butterknife.OnClick;
 import qiu.niorgai.StatusBarCompat;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.github.orangegangsters.lollipin.lib.managers.AppLockActivity.EXT_DATA;
 
@@ -189,7 +194,7 @@ public class MainActivity extends BaseMainActivity {
         showProgress();
         CryptoManager.getInstance().decodeJWTToken(this, scanResultEvent.result, new OnFinishedListener() {
             @Override
-            public void onFinished(String s) {
+            public void onFinished(final String s) {
                 final Gson gson = new Gson();
                 JWTBean<Object> jwtBean = gson.fromJson(s, new TypeToken<JWTBean<Object>>() {
                 }.getType());
@@ -197,34 +202,94 @@ public class MainActivity extends BaseMainActivity {
                     case SUB_LOGIN_TOKEN:
                         final JWTBean<LoginTokenContext> loginTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<LoginTokenContext>>() {
                         }.getType());
-                        try {
-                            CryptoManager.getInstance().verifyJWTToken(MainActivity.this, loginTokenContextJWTBean.payload.context.serverPublicKey, scanResultEvent.result, new OnVerifiedListener() {
-                                @Override
-                                public void onVerified(boolean isValid) {
-                                    JWTBean<UserLoginTokenContext> userLoginTokenContextJWTBean = new ScanDataTask().getJWTBeanFromSeverJWTBean(loginTokenContextJWTBean);
-                                    if (userLoginTokenContextJWTBean != null) {
-                                        try {
-                                            CryptoManager.getInstance().signJWTToken(MainActivity.this
-                                                    , gson.toJson(userLoginTokenContextJWTBean)
-                                                    , new OnFinishedListener() {
-                                                        @Override
-                                                        public void onFinished(String s) {
-                                                            userJWT = s;
-                                                            serverJWT = scanResultEvent.result;
-                                                            serverUrl = loginTokenContextJWTBean.payload.context.serverURL;
-                                                            alertDialogLogin.show();
-                                                            dismissProgress();
-                                                        }
-                                                    });
-                                        } catch (NoDecryptException e) {
-                                            e.printStackTrace();
-                                        }
+                        Observable.create(new Observable.OnSubscribe<JWTBean<LoginTokenContext>>() {
+
+                            @Override
+                            public void call(Subscriber<? super JWTBean<LoginTokenContext>> subscriber) {
+                                serverJWT = scanResultEvent.result;
+                                serverUrl = loginTokenContextJWTBean.payload.context.serverURL;
+                                subscriber.onNext(loginTokenContextJWTBean);
+                                subscriber.onCompleted();
+                            }
+                        })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .flatMap(new Func1<JWTBean<LoginTokenContext>, Observable<JWTBean<UserLoginTokenContext>>>() {
+
+                                    @Override
+                                    public Observable<JWTBean<UserLoginTokenContext>> call(final JWTBean<LoginTokenContext> jwtBean) {
+                                        return Observable.create(new Observable.OnSubscribe<JWTBean<UserLoginTokenContext>>() {
+                                            @Override
+                                            public void call(final Subscriber<? super JWTBean<UserLoginTokenContext>> subscriber) {
+                                                try {
+                                                    CryptoManager.getInstance().verifyJWTToken(MainActivity.this
+                                                            , jwtBean.payload.context.serverPublicKey
+                                                            , scanResultEvent.result
+                                                            , new OnVerifiedListener() {
+                                                                @Override
+                                                                public void onVerified(boolean isValid) {
+                                                                    if (isValid) {
+                                                                        JWTBean<UserLoginTokenContext> userLoginTokenContextJWTBean =
+                                                                                new ScanDataTask().getJWTBeanFromSeverJWTBean(loginTokenContextJWTBean);
+                                                                        subscriber.onNext(userLoginTokenContextJWTBean);
+                                                                        subscriber.onCompleted();
+                                                                    } else
+                                                                        subscriber.onError(new Throwable("验证签名失败，请稍候重试"));
+                                                                }
+                                                            });
+                                                } catch (NoDecryptException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
                                     }
-                                }
-                            });
-                        } catch (NoDecryptException e) {
-                            e.printStackTrace();
-                        }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .flatMap(new Func1<JWTBean<UserLoginTokenContext>, Observable<String>>() {
+
+                                    @Override
+                                    public Observable<String> call(final JWTBean<UserLoginTokenContext> userLoginTokenContextJWTBean) {
+                                        return Observable.create(new Observable.OnSubscribe<String>() {
+                                            @Override
+                                            public void call(final Subscriber<? super String> subscriber) {
+                                                try {
+                                                    CryptoManager.getInstance().signJWTToken(MainActivity.this
+                                                            , gson.toJson(userLoginTokenContextJWTBean)
+                                                            , new OnFinishedListener() {
+                                                                @Override
+                                                                public void onFinished(String s) {
+                                                                    subscriber.onNext(s);
+                                                                    subscriber.onCompleted();
+                                                                }
+                                                            });
+                                                } catch (NoDecryptException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                    }
+                                })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Subscriber<String>() {
+                                    @Override
+                                    public void onCompleted() {
+                                        alertDialogLogin.show();
+                                        dismissProgress();
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        if (!TextUtils.isEmpty(e.getMessage())) {
+                                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                        dismissProgress();
+                                    }
+
+                                    @Override
+                                    public void onNext(String s) {
+                                        userJWT = s;
+                                    }
+                                });
                         break;
                     case SUB_AUTHORIZATION_TOKEN:
                         break;
