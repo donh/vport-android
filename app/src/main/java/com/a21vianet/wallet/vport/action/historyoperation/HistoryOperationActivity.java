@@ -11,14 +11,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a21vianet.wallet.vport.R;
-import com.a21vianet.wallet.vport.action.historyoperation.bean.History;
-import com.bumptech.glide.Glide;
+import com.a21vianet.wallet.vport.dao.OperatingDataManager;
+import com.a21vianet.wallet.vport.dao.bean.OperatingDataPage;
+import com.a21vianet.wallet.vport.dao.entity.OperatingData;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.littlesparkle.growler.core.ui.activity.BaseTitleBarActivity;
 import com.littlesparkle.growler.core.ui.adapter.RecyclerBaseAdapter;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +33,15 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class HistoryOperationActivity extends BaseTitleBarActivity {
+    private int index = 0;
+    private int size = 1;
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.layout_refresh)
     TwinklingRefreshLayout mLayoutRefresh;
 
-    private List<History> mHistoryList = new ArrayList<>();
+    private List<OperatingData> mHistoryList = new ArrayList<>();
     private MyAdapter mMyAdapter;
 
     @Override
@@ -101,14 +105,9 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
                 .create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
-                        for (int i = 0; i < 3; i++) {
-                            try {
-                                Thread.sleep(10);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            mHistoryList.add(new History());
-                        }
+                        OperatingDataPage load = OperatingDataManager.load(index, size);
+                        mHistoryList.addAll(load.getOperatingDatas());
+                        index = load.getOffset();
                         subscriber.onNext("");
                     }
                 })
@@ -123,7 +122,7 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        hideLoadMoreLayout();
                     }
                 });
     }
@@ -133,15 +132,11 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
                 .create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
+                        index = 0;
                         mHistoryList.clear();
-                        for (int i = 0; i < 5; i++) {
-                            try {
-                                Thread.sleep(10);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            mHistoryList.add(new History());
-                        }
+                        OperatingDataPage load = OperatingDataManager.load(index, size);
+                        mHistoryList.addAll(load.getOperatingDatas());
+                        index = load.getOffset();
                         subscriber.onNext("");
                     }
                 })
@@ -156,7 +151,7 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        hideRefreshLayout();
                     }
                 });
     }
@@ -190,19 +185,20 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
         }
     }
 
-    private static class MyAdapter extends RecyclerBaseAdapter<MyViewHolder, History> {
+    private static class MyAdapter extends RecyclerBaseAdapter<MyViewHolder, OperatingData> {
         public MyAdapter(Context context) {
             super(context);
         }
 
+        SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         @Override
-        protected void onBindViewHolderItem(MyViewHolder holder, History item, int position) {
-            holder.tvTitle.setText(item.getTitle());
-            holder.tvContent.setText(item.getContent());
-            holder.tvTime.setText(item.getTime());
-            holder.tvMsg.setText(item.getMsg());
-            Glide.with(mContext).load(item.getHeadimg()).into
-                    (holder.imgHead);
+        protected void onBindViewHolderItem(MyViewHolder holder, OperatingData item, int position) {
+            holder.tvTitle.setText(item.getAppname());
+            holder.tvContent.setText(item.getOperationmsg());
+            holder.tvTime.setText(mSimpleDateFormat.format(item.getOperationtime()));
+//            Glide.with(mContext).load(item.getHeadimg()).into
+//                    (holder.imgHead);
         }
 
         @Override
@@ -218,7 +214,6 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
         private final TextView tvTitle;
         private final TextView tvContent;
         private final TextView tvTime;
-        private final TextView tvMsg;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -226,7 +221,6 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
             tvTitle = (TextView) itemView.findViewById(R.id.tv_item_title);
             tvContent = (TextView) itemView.findViewById(R.id.tv_item_content);
             tvTime = (TextView) itemView.findViewById(R.id.tv_item_time);
-            tvMsg = (TextView) itemView.findViewById(R.id.tv_item_msg);
         }
     }
 }

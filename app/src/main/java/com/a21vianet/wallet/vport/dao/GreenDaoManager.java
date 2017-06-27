@@ -1,5 +1,10 @@
 package com.a21vianet.wallet.vport.dao;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCursorDriver;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQuery;
+
 import com.a21vianet.wallet.vport.WalletApplication;
 import com.a21vianet.wallet.vport.dao.gen.DaoMaster;
 import com.a21vianet.wallet.vport.dao.gen.DaoSession;
@@ -16,7 +21,17 @@ public class GreenDaoManager {
     private GreenDaoManager() {
         if (mInstance == null) {
             DaoMaster.DevOpenHelper devOpenHelper = new
-                    DaoMaster.DevOpenHelper(WalletApplication.getContext(), "vport", null);
+                    DaoMaster.DevOpenHelper(WalletApplication.getContext(), "vport", new SQLiteDatabase.CursorFactory() {
+
+                @Override
+                public Cursor newCursor(SQLiteDatabase db, SQLiteCursorDriver masterQuery, String
+                        editTable, SQLiteQuery query) {
+                    db.execSQL("insert INTO OPERATION_TYPE VALUES(1,'登录')");
+                    db.execSQL("insert INTO OPERATION_TYPE VALUES(2,'授权')");
+                    db.execSQL("insert INTO OPERATION_TYPE VALUES(3,'认证')");
+                    return null;
+                }
+            });
             //此处为自己需要处理的表
             mDaoMaster = new DaoMaster(devOpenHelper.getWritableDatabase());
             mDaoSession = mDaoMaster.newSession();

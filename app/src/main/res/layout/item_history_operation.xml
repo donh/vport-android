@@ -24,57 +24,40 @@
         android:id="@+id/tv_item_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="25dp"
-        android:gravity="center"
+        android:layout_marginTop="35dp"
         android:textColor="#252525"
         android:textSize="@dimen/common_text_smallerSize"
         app:layout_constraintLeft_toRightOf="@+id/img_item_head"
-        app:layout_constraintRight_toLeftOf="@+id/tv_item_time"
+        app:layout_constraintRight_toLeftOf="@+id/tv_item_content"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="1G6DLbZi1A1s1utakX3mLpbkrqe9HtBozgSDSDDS"/>
+        tools:text="A应用"/>
 
     <TextView
-        android:id="@+id/tv_item_content"
+        android:id="@+id/tv_item_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="6dp"
-        android:gravity="center"
-        android:textColor="#EF353C"
+        android:layout_marginTop="12dp"
         android:textSize="@dimen/common_text_smallerSize"
         app:layout_constraintLeft_toRightOf="@+id/img_item_head"
-        app:layout_constraintRight_toLeftOf="@+id/tv_item_time"
+        app:layout_constraintRight_toLeftOf="@+id/tv_item_content"
         app:layout_constraintTop_toBottomOf="@+id/tv_item_title"
         tools:text="CONTRAC"/>
 
     <TextView
-        android:id="@+id/tv_item_msg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="6dp"
-        android:textColor="#464646"
-        android:textSize="@dimen/common_text_smallerSize"
-        app:layout_constraintLeft_toRightOf="@+id/img_item_head"
-        app:layout_constraintRight_toLeftOf="@+id/tv_item_time"
-        app:layout_constraintTop_toBottomOf="@+id/tv_item_content"
-        tools:text="CONTRAC"/>
-
-    <TextView
-        android:id="@+id/tv_item_time"
+        android:id="@+id/tv_item_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="30dp"
-        android:textSize="@dimen/common_text_smallSize"
+        android:textSize="@dimen/common_text_smallerSize"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="10分钟之前"/>
+        tools:text="授权成功"/>
 
 
     <ImageView
