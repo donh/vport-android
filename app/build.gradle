@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion rootProject.ext.AndroidVersion['compileSdkVersion']
@@ -46,6 +47,12 @@ android {
         }
     }
 
+    greendao {
+        schemaVersion 1
+        daoPackage 'com.a21vianet.wallet.vport.dao.gen'
+        targetGenDir 'src/main/java'
+    }
+
 }
 
 dependencies {
@@ -72,5 +79,7 @@ dependencies {
     compile rootProject.ext.libStatusBarCompat
     compile rootProject.ext.lubTransformations
 
-    compile rootProject.ext.properties.libDataPicker
+    compile rootProject.ext.libDataPicker
+    //Dao
+    compile rootProject.ext.libGreendao
 }

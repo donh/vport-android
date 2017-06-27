@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.support.multidex.MultiDex;
 
 import com.a21vianet.wallet.vport.action.password.CustomPinActivity;
+import com.a21vianet.wallet.vport.dao.GreenDaoManager;
 import com.a21vianet.wallet.vport.library.BaseApplication;
 import com.github.orangegangsters.lollipin.lib.managers.LockManager;
 import com.littlesparkle.growler.core.common.TempDirectory;
@@ -29,8 +30,9 @@ public class WalletApplication extends BaseApplication {
         Api.init(this, config);
 
         TempDirectory.init(Environment.getExternalStorageDirectory().getPath()
-                + File.separator
-                + "gcoin_wallet");
+                + File.separator + "gcoin_wallet");
+
+        GreenDaoManager.getInstance();
     }
 
     @Override

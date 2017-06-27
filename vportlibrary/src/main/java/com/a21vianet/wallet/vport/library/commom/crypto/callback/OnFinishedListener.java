@@ -1,10 +1,13 @@
 package com.a21vianet.wallet.vport.library.commom.crypto.callback;
 
+import android.util.Log;
+
 /**
  * Created by ben on 2017/6/1.
  */
 public abstract class OnFinishedListener {
     public void onFinish(String s) {
+        Log.e("onFinish:========= ", s);
         String replace = s;
         char c = replace.charAt(0);
 
