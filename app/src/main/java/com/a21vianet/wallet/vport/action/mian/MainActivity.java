@@ -19,6 +19,7 @@ import com.a21vianet.wallet.vport.action.password.PasswordManager;
 import com.a21vianet.wallet.vport.action.scan.ScanActivity;
 import com.a21vianet.wallet.vport.action.scan.data.ScanDataTask;
 import com.a21vianet.wallet.vport.action.setting.SettingActivity;
+import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTBean;
@@ -101,7 +102,7 @@ public class MainActivity extends BaseMainActivity {
     }
 
     public String getHeaderUrl() {
-        return SysConstant.getIPFSIP() + SysConstant.getHradImageUrlHash();
+        return Api.IPFSWebApi + SysConstant.getHradImageUrlHash();
     }
 
     @Override

@@ -21,8 +21,4 @@ public class SysConstant {
     public static void clearHradImageUrlHash() {
         PrefUtility.delete(BaseApplication.getContext(), APP_HRAD_IMAGE_URL_HASH);
     }
-
-    public static String getIPFSIP() {
-        return "http://58.83.219.152:8080/ipfs/";
-    }
 }

@@ -3,22 +3,26 @@ package com.a21vianet.wallet.vport.action.identityinfo;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
+import com.a21vianet.wallet.vport.http.Api;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
+import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.bumptech.glide.Glide;
 import com.littlesparkle.growler.core.am.ActivityUtility;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
 import com.littlesparkle.growler.core.ui.adapter.RecyclerBaseAdapter;
+import com.littlesparkle.growler.core.ui.view.GlideCircleImage;
 import com.littlesparkle.growler.core.utility.DensityUtility;
 
 import java.util.ArrayList;
@@ -38,8 +42,8 @@ public class IdentityInfoActivity extends BaseActivity {
     TextView mTvUsername;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
-    @BindView(R.id.btn_addid)
-    Button mButtonAddid;
+    @BindView(R.id.layout_hintadd)
+    ConstraintLayout mLayoutHintadd;
 
     private IdCardAdapter mIdCardAdapter;
     private List<IdentityCard> mIdentityInfoList = new ArrayList<>();
@@ -54,8 +58,15 @@ public class IdentityInfoActivity extends BaseActivity {
         super.initView();
         StatusBarCompat.translucentStatusBar(this);
         showImage();
+        showName();
 
         initIdInfo();
+    }
+
+    private void showName() {
+        Contract contract = new Contract();
+        contract.get();
+        mTvUsername.setText(contract.getNickname());
     }
 
     @Override
@@ -68,16 +79,16 @@ public class IdentityInfoActivity extends BaseActivity {
         mIdentityInfoList.clear();
         mIdentityInfoList.addAll(IdentityCardManager.load());
         if (mIdentityInfoList.size() == 0) {
-            mButtonAddid.setOnClickListener(new View.OnClickListener() {
+            mLayoutHintadd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ActivityUtility.startActivityWithAnim(IdentityInfoActivity.this,
                             PerfectIdentityInfoActivity.class);
                 }
             });
-            mButtonAddid.setVisibility(View.VISIBLE);
+            mLayoutHintadd.setVisibility(View.VISIBLE);
         } else {
-            mButtonAddid.setVisibility(View.GONE);
+            mLayoutHintadd.setVisibility(View.GONE);
         }
     }
 
@@ -95,9 +106,17 @@ public class IdentityInfoActivity extends BaseActivity {
     }
 
     private void showImage() {
-        Glide.with(this).load(R.drawable.icon_header).dontAnimate().into(mImgHead);
-        Glide.with(this).load(R.drawable.icon_header).dontAnimate().bitmapTransform(new
-                BlurTransformation(this, 5, 3)).into(mImgHeadBackground);
+        if (!SysConstant.getHradImageUrlHash().equals("")) {
+            String api = Api.IPFSWebApi + SysConstant.getHradImageUrlHash();
+            Glide.with(this).load(api).dontAnimate().transform(new GlideCircleImage(this)).into
+                    (mImgHead);
+            Glide.with(this).load(api).dontAnimate().bitmapTransform(new
+                    BlurTransformation(this, 3, 3)).into(mImgHeadBackground);
+        } else {
+            Glide.with(this).load(R.drawable.icon_header).dontAnimate().into(mImgHead);
+            Glide.with(this).load(R.drawable.icon_header).dontAnimate().bitmapTransform(new
+                    BlurTransformation(this, 3, 3)).into(mImgHeadBackground);
+        }
     }
 
     @OnClick({R.id.img_back, R.id.img_add})

@@ -29,6 +29,6 @@ public class Api {
     /**
      * IPFS Web 服务器地址
      */
-    public static final String IPFSWebApi = "http://58.83.219.152:8080/";
+    public static final String IPFSWebApi = "http://58.83.219.152:8080/ipfs/";
 
 }

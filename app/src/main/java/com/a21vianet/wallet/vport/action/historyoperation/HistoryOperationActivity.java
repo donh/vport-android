@@ -40,6 +40,8 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
     RecyclerView mRecyclerView;
     @BindView(R.id.layout_refresh)
     TwinklingRefreshLayout mLayoutRefresh;
+    @BindView(R.id.tv_msg)
+    TextView mTvMsg;
 
     private List<OperatingData> mHistoryList = new ArrayList<>();
     private MyAdapter mMyAdapter;
@@ -137,6 +139,11 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
                         OperatingDataPage load = OperatingDataManager.load(index, size);
                         mHistoryList.addAll(load.getOperatingDatas());
                         index = load.getOffset();
+                        if (load.getSize() == 0) {
+                            mTvMsg.setVisibility(View.VISIBLE);
+                        } else {
+                            mTvMsg.setVisibility(View.GONE);
+                        }
                         subscriber.onNext("");
                     }
                 })

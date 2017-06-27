@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a21vianet.wallet.vport.R;
+import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
@@ -131,7 +132,7 @@ public class PersonalInfoActivity extends BaseTitleBarActivity<PersonalInfoPrese
     public void showHardImage(String image) {
         if (image != null && !image.equals("")) {
             Glide.with(this)
-                    .load(SysConstant.getIPFSIP() + image)
+                    .load(Api.IPFSWebApi + image)
                     .transform(new GlideCircleImage(this))
                     .placeholder(R.drawable.icon_header)
                     .error(R.drawable.icon_header)
@@ -206,7 +207,7 @@ public class PersonalInfoActivity extends BaseTitleBarActivity<PersonalInfoPrese
         String hradImageUrlHash = SysConstant.getHradImageUrlHash();
         if (hradImageUrlHash != null && !hradImageUrlHash.equals("")) {
             Glide.with(this)
-                    .load(SysConstant.getIPFSIP() + hradImageUrlHash)
+                    .load(Api.IPFSWebApi + hradImageUrlHash)
                     .transform(new GlideCircleImage(this))
                     .placeholder(R.drawable.icon_header)
                     .error(R.drawable.icon_header)
