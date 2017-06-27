@@ -8,13 +8,12 @@ import android.util.Log;
 public abstract class OnFinishedListener {
     public void onFinish(String s) {
         String ErroeTag = "JSERROR.";
+        Log.e("=====JSMSG===== ", s);
 
         if (s.indexOf(ErroeTag) != -1) {
             onError(new Exception(s));
             return;
         }
-
-        Log.e("onFinish:========= ", s);
         String replace = s;
         char c = replace.charAt(0);
 

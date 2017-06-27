@@ -260,6 +260,11 @@ public class MainActivity extends BaseMainActivity {
                                                                     subscriber.onNext(s);
                                                                     subscriber.onCompleted();
                                                                 }
+
+                                                                @Override
+                                                                public void onError(Exception e) {
+                                                                    subscriber.onError(e);
+                                                                }
                                                             });
                                                 } catch (NoDecryptException e) {
                                                     e.printStackTrace();
@@ -294,6 +299,11 @@ public class MainActivity extends BaseMainActivity {
                     case SUB_AUTHORIZATION_TOKEN:
                         break;
                 }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                dismissProgress();
             }
         });
     }
