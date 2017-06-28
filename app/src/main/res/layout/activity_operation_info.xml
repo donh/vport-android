@@ -194,17 +194,17 @@
                             style="@style/operation_info_accredit_layout">
 
                             <TextView
-                                android:id="@+id/tv_accredit_login_url_path_title"
+                                android:id="@+id/tv_accredit_login_url_name_title"
                                 style="@style/operation_info_accredit_layout_title"
                                 android:text="登陆网站"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"/>
 
                             <TextView
-                                android:id="@+id/tv_accredit_login_url_path"
+                                android:id="@+id/tv_accredit_login_url_name"
                                 style="@style/operation_info_accredit_layout_content"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintLeft_toRightOf="@+id/tv_accredit_login_url_path_title"
+                                app:layout_constraintLeft_toRightOf="@+id/tv_accredit_login_url_name_title"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:text="嘻嘻"/>
@@ -220,17 +220,17 @@
                             style="@style/operation_info_accredit_layout">
 
                             <TextView
-                                android:id="@+id/tv_accredit_login_url_name_title"
+                                android:id="@+id/tv_accredit_login_url_path_title"
                                 style="@style/operation_info_accredit_layout_title"
                                 android:text="登陆网址"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"/>
 
                             <TextView
-                                android:id="@+id/tv_accredit_login_url_name"
+                                android:id="@+id/tv_accredit_login_url_path"
                                 style="@style/operation_info_accredit_layout_content"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintLeft_toRightOf="@+id/tv_accredit_login_url_name_title"
+                                app:layout_constraintLeft_toRightOf="@+id/tv_accredit_login_url_path_title"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:text="嘻嘻"/>
