@@ -16,6 +16,7 @@ import com.littlesparkle.growler.core.ui.view.GlideCircleImage
 import com.littlesparkle.growler.core.utility.DensityUtility
 import kotlinx.android.synthetic.main.activity_operation_info.*
 import kotlinx.android.synthetic.main.activity_perfect_identity_info.*
+import qiu.niorgai.StatusBarCompat
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -54,6 +55,7 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
 
     override fun initView() {
         super.initView()
+        StatusBarCompat.setStatusBarColor(this, resources.getColor(R.color.colorPrimary))
         Observable
                 .create(Observable.OnSubscribe<OperatingData> {
                     val operatingData = OperatingDataManager.get(mIdentityId)

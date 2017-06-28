@@ -47,8 +47,8 @@
 
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/imgv_shared_user_header"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="28dp"
                         tools:src="@drawable/icon_company"/>
@@ -60,12 +60,12 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="25dp"
                         android:layout_toEndOf="@+id/imgv_shared_user_header"
-                        android:src="@drawable/icon_transformation"/>
+                        android:src="@drawable/icon_login_arrow"/>
 
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/imgv_shared_app_header"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="28dp"
                         android:layout_marginStart="25dp"
@@ -112,11 +112,15 @@
 
                     <TextView
                         android:id="@+id/tv_accredit_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginRight="8dp"
+                        android:ellipsize="end"
+                        android:lines="1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@+id/tv_shared_information"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_accredit_state"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:layout_editor_absoluteY="0dp"
                         tools:text="禅城中心"/>
@@ -163,6 +167,7 @@
                             style="@style/operation_info_accredit_layout">
 
                             <TextView
+                                android:id="@+id/tv_accredit_login_name_title"
                                 style="@style/operation_info_accredit_layout_title"
                                 android:text="登录昵称"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -172,6 +177,7 @@
                                 android:id="@+id/tv_accredit_login_name"
                                 style="@style/operation_info_accredit_layout_content"
                                 app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@+id/tv_accredit_login_name_title"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:text="嘻嘻"/>
@@ -187,6 +193,7 @@
                             style="@style/operation_info_accredit_layout">
 
                             <TextView
+                                android:id="@+id/tv_accredit_login_url_path_title"
                                 style="@style/operation_info_accredit_layout_title"
                                 android:text="登陆网站"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -196,6 +203,7 @@
                                 android:id="@+id/tv_accredit_login_url_path"
                                 style="@style/operation_info_accredit_layout_content"
                                 app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@+id/tv_accredit_login_url_path_title"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:text="嘻嘻"/>
@@ -211,6 +219,7 @@
                             style="@style/operation_info_accredit_layout">
 
                             <TextView
+                                android:id="@+id/tv_accredit_login_url_name_title"
                                 style="@style/operation_info_accredit_layout_title"
                                 android:text="登陆网址"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -220,6 +229,7 @@
                                 android:id="@+id/tv_accredit_login_url_name"
                                 style="@style/operation_info_accredit_layout_content"
                                 app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@+id/tv_accredit_login_url_name_title"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:text="嘻嘻"/>
@@ -236,6 +246,7 @@
                             style="@style/operation_info_accredit_layout">
 
                             <TextView
+                                android:id="@+id/tv_accredit_login_time_title"
                                 style="@style/operation_info_accredit_layout_title"
                                 android:text="登陆时间"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -245,6 +256,7 @@
                                 android:id="@+id/tv_accredit_login_time"
                                 style="@style/operation_info_accredit_layout_content"
                                 app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@+id/tv_accredit_login_time_title"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:text="嘻嘻"/>
