@@ -1,6 +1,7 @@
 package com.a21vianet.wallet.vport.action.identityinfo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
 import android.support.constraint.ConstraintLayout;
@@ -132,7 +133,7 @@ public class IdentityInfoActivity extends BaseActivity {
         }
     }
 
-    static class IdCardAdapter extends RecyclerBaseAdapter<ViewHolder, IdentityCard> {
+    class IdCardAdapter extends RecyclerBaseAdapter<ViewHolder, IdentityCard> {
         private final int strokeWidth;
         private final int roundRadius;
 
@@ -143,7 +144,8 @@ public class IdentityInfoActivity extends BaseActivity {
         }
 
         @Override
-        protected void onBindViewHolderItem(ViewHolder holder, IdentityCard item, int position) {
+        protected void onBindViewHolderItem(ViewHolder holder, final IdentityCard item, int
+                position) {
 
             holder.mIdCardTextView.setText(item.getNumber());
 
@@ -175,6 +177,16 @@ public class IdentityInfoActivity extends BaseActivity {
             gradientDrawableType.setStroke(strokeWidth, typeColor);
             holder.mCertificationStatusTextView.setBackground(gradientDrawableType);
             holder.mCertificationStatusTextView.setTextColor(typeColor);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(IdentityInfoActivity.this,
+                            PerfectIdentityInfoActivity.class);
+                    intent.putExtra(PerfectIdentityInfoActivity.IDENTITYID, item.getId());
+                    intent.putExtra(PerfectIdentityInfoActivity.ISEDIT, false);
+                    ActivityUtility.startActivityWithAnim(IdentityInfoActivity.this, intent);
+                }
+            });
         }
 
         @Override

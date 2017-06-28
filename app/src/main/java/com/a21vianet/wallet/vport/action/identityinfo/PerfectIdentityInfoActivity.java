@@ -26,6 +26,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class PerfectIdentityInfoActivity extends BaseActivity {
+    public final static String ISEDIT = "edit";
+    public final static String IDENTITYID = "mIdentityid";
+    public boolean mIsedit;
+    public long mIdentityid;
+
     @BindView(R.id.title_bar_back_btn)
     AppCompatImageButton titleBarBackBtn;
     @BindView(R.id.title_bar_add)
@@ -50,6 +55,30 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        mIsedit = getIntent().getBooleanExtra(ISEDIT, true);
+        mIdentityid = getIntent().getLongExtra(IDENTITYID, 0);
+        if (mIsedit) {
+            initDatePicker();
+        } else {
+            initNotEditDate();
+        }
+    }
+
+    private void initNotEditDate() {
+        IdentityCard identityCard = IdentityCardManager.get((int) mIdentityid);
+        titleBarAdd.setVisibility(View.GONE);
+        editNameValue.setEnabled(false);
+        editIdValue.setEnabled(false);
+        editIssuedValue.setEnabled(false);
+
+        editNameValue.setText(identityCard.getName());
+        editIdValue.setText(identityCard.getNumber());
+        editIssuedValue.setText(identityCard.getAgencies());
+        tvTimeBegin.setText(identityCard.getBegintime());
+        tvTimeEnd.setText(identityCard.getEndtime());
+    }
+
+    private void initDatePicker() {
         Calendar selectedDateBegin = Calendar.getInstance();
         Calendar startDateBegin = Calendar.getInstance();
         Calendar endDateBegin = Calendar.getInstance();
