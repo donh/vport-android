@@ -159,10 +159,14 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
                 save();
                 break;
             case R.id.relative_time_begin:
-                timeBeginPickerView.show();
+                if (mIsedit) {
+                    timeBeginPickerView.show();
+                }
                 break;
             case R.id.relative_time_end:
-                timeEndPickerView.show();
+                if (mIsedit) {
+                    timeEndPickerView.show();
+                }
                 break;
         }
     }
