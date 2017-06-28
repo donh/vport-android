@@ -93,6 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
+                    android:background="@null"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
                     app:layout_constraintLeft_toLeftOf="parent"

@@ -73,9 +73,12 @@
         <activity
             android:name=".action.identityinfo.PerfectIdentityInfoActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".action.historyoperation.info.OperationInfoActivity">
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/NoBackgroundTheme"/>
+        <activity
+            android:name=".action.historyoperation.info.OperationInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoBackgroundTheme"/>
     </application>
 
 </manifest>
