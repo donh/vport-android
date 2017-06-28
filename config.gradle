@@ -100,4 +100,6 @@ ext {
     libDataPicker = "com.contrarywind:Android-PickerView:3.2.5"
 
     libGreendao="org.greenrobot:greendao:3.2.2"
+
+    libShapetextdrawable="com.amulyakhare:com.amulyakhare.textdrawable:1.0.1"
 }

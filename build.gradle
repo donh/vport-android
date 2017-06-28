@@ -25,6 +25,9 @@ allprojects {
         maven {
             url "https://github.com/omadahealth/omada-nexus/raw/master/release"
         }
+        maven {
+            url 'http://dl.bintray.com/amulyakhare/maven'
+        }
     }
 }
 task clean(type: Delete) {

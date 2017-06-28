@@ -1,5 +1,6 @@
 package com.a21vianet.wallet.vport.dao.entity;
 
+import com.a21vianet.wallet.vport.dao.bean.OperationTypeEnum;
 import com.a21vianet.wallet.vport.dao.gen.DaoSession;
 import com.a21vianet.wallet.vport.dao.gen.OperatingDataDao;
 import com.a21vianet.wallet.vport.dao.gen.OperationTypeDao;
@@ -35,6 +36,7 @@ public class OperatingData {
     //以 1_2_3 的方式隔开身份证id
     private String identityCards;
 
+
     @Transient
     private List<IdentityCard> IdentityCardBeans;
 
@@ -51,6 +53,20 @@ public class OperatingData {
 
     @Generated(hash = 993601222)
     private transient Long operationtype__resolvedKey;
+
+    public OperatingData(String username, String userimg, String appname,
+                         String appimg, String appurl, String operationmsg, OperationTypeEnum
+                                 anEnum, String identityCards) {
+        this.username = username;
+        this.userimg = userimg;
+        this.appname = appname;
+        this.appimg = appimg;
+        this.appurl = appurl;
+        this.operationmsg = operationmsg;
+        this.operationtypeId = anEnum.typeId;
+        this.identityCards = identityCards;
+        this.operationtime = new Date();
+    }
 
     @Generated(hash = 1959987320)
     public OperatingData(Long id, String username, String userimg, String appname,
@@ -164,8 +180,7 @@ public class OperatingData {
     @Generated(hash = 1074589290)
     public OperationType getOperationtype() {
         long __key = this.operationtypeId;
-        if (operationtype__resolvedKey == null
-                || !operationtype__resolvedKey.equals(__key)) {
+        if (operationtype__resolvedKey == null || !operationtype__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -236,7 +251,5 @@ public class OperatingData {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getOperatingDataDao() : null;
     }
-
-
 
 }

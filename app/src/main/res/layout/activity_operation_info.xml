@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f0eeee">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/base_title_bar"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="0dp"/>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null">
+
+                <RelativeLayout
+                    android:id="@+id/relative_shared_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="130dp"
+                    android:background="@null"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/imgv_shared_user_header"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="28dp"
+                        tools:src="@drawable/icon_company"/>
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/imgv_icon_transformation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="25dp"
+                        android:layout_toEndOf="@+id/imgv_shared_user_header"
+                        android:src="@drawable/icon_transformation"/>
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/imgv_shared_app_header"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="28dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_toEndOf="@+id/imgv_icon_transformation"
+                        tools:src="@drawable/icon_user_header"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/view_shared_divider_one"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:background="#20454545"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/relative_shared_header"/>
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/layout_accredit_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view_shared_divider_one">
+
+                    <TextView
+                        android:id="@+id/tv_shared_information"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="授权："
+                        android:textColor="#252525"
+                        android:textSize="@dimen/common_text_normalSize"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_accredit_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_shared_information"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_editor_absoluteY="0dp"
+                        tools:text="禅城中心"/>
+
+                    <TextView
+                        android:id="@+id/tv_accredit_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:padding="4dp"
+                        android:textSize="@dimen/common_text_smallerSize"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_editor_absoluteY="0dp"
+                        tools:text="登录成功"/>
+                </android.support.constraint.ConstraintLayout>
+
+                <View
+                    android:id="@+id/view_shared_divider_two"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="#20454545"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_accredit_info"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view_shared_divider_two">
+
+                    <android.support.v7.widget.CardView
+                        style="@style/operation_info_accredit"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent">
+
+                        <android.support.constraint.ConstraintLayout
+                            style="@style/operation_info_accredit_layout">
+
+                            <TextView
+                                style="@style/operation_info_accredit_layout_title"
+                                android:text="登录昵称"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <TextView
+                                android:id="@+id/tv_accredit_login_name"
+                                style="@style/operation_info_accredit_layout_content"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="嘻嘻"/>
+                        </android.support.constraint.ConstraintLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        style="@style/operation_info_accredit"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent">
+
+                        <android.support.constraint.ConstraintLayout
+                            style="@style/operation_info_accredit_layout">
+
+                            <TextView
+                                style="@style/operation_info_accredit_layout_title"
+                                android:text="登陆网站"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <TextView
+                                android:id="@+id/tv_accredit_login_url_path"
+                                style="@style/operation_info_accredit_layout_content"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="嘻嘻"/>
+                        </android.support.constraint.ConstraintLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        style="@style/operation_info_accredit"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent">
+
+                        <android.support.constraint.ConstraintLayout
+                            style="@style/operation_info_accredit_layout">
+
+                            <TextView
+                                style="@style/operation_info_accredit_layout_title"
+                                android:text="登陆网址"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <TextView
+                                android:id="@+id/tv_accredit_login_url_name"
+                                style="@style/operation_info_accredit_layout_content"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="嘻嘻"/>
+                        </android.support.constraint.ConstraintLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        style="@style/operation_info_accredit"
+                        android:layout_marginBottom="16dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent">
+
+                        <android.support.constraint.ConstraintLayout
+                            style="@style/operation_info_accredit_layout">
+
+                            <TextView
+                                style="@style/operation_info_accredit_layout_title"
+                                android:text="登陆时间"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <TextView
+                                android:id="@+id/tv_accredit_login_time"
+                                style="@style/operation_info_accredit_layout_content"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="嘻嘻"/>
+                        </android.support.constraint.ConstraintLayout>
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

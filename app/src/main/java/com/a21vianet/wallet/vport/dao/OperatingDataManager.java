@@ -51,10 +51,15 @@ public class OperatingDataManager {
     }
 
     private static List<IdentityCard> getIdentityCard(String ids) {
+        List<IdentityCard> identityCardList = new ArrayList<>();
+
+        if (ids == null || ids.equals("")) {
+            return identityCardList;
+        }
+
         IdentityCardDao identityCardDao = GreenDaoManager.getInstance().getSession()
                 .getIdentityCardDao();
         String[] split = ids.split("_");
-        List<IdentityCard> identityCardList = new ArrayList<>();
         if (split != null) {
             for (String s : split) {
                 identityCardList.add(identityCardDao.load(Long.parseLong(s)));
