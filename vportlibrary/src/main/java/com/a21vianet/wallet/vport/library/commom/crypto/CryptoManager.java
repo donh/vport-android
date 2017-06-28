@@ -476,6 +476,40 @@ public final class CryptoManager {
     }
 
     /**
+     * JWT 签名 RxJava 方式
+     *
+     * @param context
+     * @param jsonStr
+     * @throws NoDecryptException
+     */
+    public Observable<String> signJWTToken(final Context context, final String jsonStr) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                try {
+                    JWT.signToken(context, getRawBitcoinPrivateKey(), jsonStr, new
+                            OnFinishedListener() {
+                                @Override
+                                public void onFinished(String s) {
+                                    subscriber.onNext(s);
+                                    subscriber.onCompleted();
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    subscriber.onError(e);
+                                }
+                            });
+                } catch (NoDecryptException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+
+        }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
+    }
+
+    /**
      * JWT 解密
      *
      * @param context
@@ -485,6 +519,32 @@ public final class CryptoManager {
     public void decodeJWTToken(final Context context, String tokenString, OnFinishedListener
             listener) {
         JWT.decodeToken(context, tokenString, listener);
+    }
+
+    /**
+     * JWT 解密 RxJava 方式
+     *
+     * @param context
+     * @param tokenString
+     */
+    public Observable<String> decodeJWTToken(final Context context, final String tokenString) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                JWT.decodeToken(context, tokenString, new OnFinishedListener() {
+                    @Override
+                    public void onFinished(String s) {
+                        subscriber.onNext(s);
+                        subscriber.onCompleted();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        subscriber.onError(e);
+                    }
+                });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
     }
 
     /**
@@ -514,6 +574,60 @@ public final class CryptoManager {
     public void verifyJWTToken(final Context context, String jsonStr, OnVerifiedListener
             listener) throws NoDecryptException {
         verifyJWTToken(context, mBitcoinKey.getPubKey(), jsonStr, listener);
+    }
+
+    /**
+     * JWT 验证签名 RxJava 方式
+     *
+     * @param context
+     * @param jsonStr
+     */
+    public Observable<Boolean> verifyJWTToken(final Context context, final String pubkey, final
+    String jsonStr) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(final Subscriber<? super Boolean> subscriber) {
+                try {
+                    verifyJWTToken(context, pubkey, jsonStr, new OnVerifiedListener() {
+                        @Override
+                        public void onVerified(boolean isValid) {
+                            subscriber.onNext(isValid);
+                            subscriber.onCompleted();
+                        }
+                    });
+                } catch (NoDecryptException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
+    }
+
+    /**
+     * JWT 验证签名 RxJava 方式
+     *
+     * @param context
+     * @param jsonStr
+     */
+    public Observable<Boolean> verifyJWTToken(final Context context, final String jsonStr) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(final Subscriber<? super Boolean> subscriber) {
+                try {
+                    verifyJWTToken(context, mBitcoinKey.getPubKey(), jsonStr, new
+                            OnVerifiedListener() {
+                                @Override
+                                public void onVerified(boolean isValid) {
+                                    subscriber.onNext(isValid);
+                                    subscriber.onCompleted();
+                                }
+                            });
+                } catch (NoDecryptException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread()).observeOn(Schedulers.io());
     }
 
     /**
