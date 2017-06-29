@@ -1,10 +1,12 @@
 package com.a21vianet.wallet.vport.library.commom.http.vport;
 
+import com.google.gson.JsonObject;
 import com.littlesparkle.growler.core.http.BaseHttpSubscriber;
 import com.littlesparkle.growler.core.http.Request;
 
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import rx.Observable;
 import rx.Subscription;
@@ -18,7 +20,13 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
     }
 
     public Subscription login(BaseHttpSubscriber<LoginResponse> subscriber, String userJWT) {
-        return mService.login(userJWT)
+
+        JsonObject json = new JsonObject();
+        json.addProperty("userJWT", userJWT);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json" +
+                "charset=utf-8"), json.toString());
+
+        return mService.login(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -33,10 +41,10 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
 
     interface VPortApi {
 
-        @POST(" ")
-        @FormUrlEncoded
+        @POST("jwt")
+        @Headers({"Content-Type: application/json"})
         Observable<LoginResponse> login(
-                @Field("userJWT") String userJWT
+                @Body RequestBody login
         );
 
     }

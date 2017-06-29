@@ -2,6 +2,7 @@ package com.a21vianet.wallet.vport.action.mian;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
@@ -9,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a21vianet.wallet.vport.R;
@@ -19,9 +21,13 @@ import com.a21vianet.wallet.vport.action.password.PasswordManager;
 import com.a21vianet.wallet.vport.action.scan.ScanActivity;
 import com.a21vianet.wallet.vport.action.scan.data.ScanDataTask;
 import com.a21vianet.wallet.vport.action.setting.SettingActivity;
+import com.a21vianet.wallet.vport.dao.OperatingDataManager;
+import com.a21vianet.wallet.vport.dao.bean.OperationTypeEnum;
+import com.a21vianet.wallet.vport.dao.entity.OperatingData;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTBean;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.LoginTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserLoginTokenContext;
@@ -31,6 +37,7 @@ import com.a21vianet.wallet.vport.library.commom.http.vport.LoginResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vport.VPortRequest;
 import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.a21vianet.wallet.vport.library.event.ScanResultEvent;
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -64,6 +71,7 @@ public class MainActivity extends BaseMainActivity {
 
     private AlertDialog mAlertDialogLogin;
     private ImageView imageViewCompany;
+    private TextView textViewHintDialog;
     private String userJWT = "";
     private String serverJWT = "";
     private String serverUrl = "";
@@ -75,6 +83,7 @@ public class MainActivity extends BaseMainActivity {
         RelativeLayout relativeLoginDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_login, null);
         mAlertDialogLogin = new AlertDialog.Builder(this).setView(relativeLoginDialog).create();
         imageViewCompany = (ImageView) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_server);
+        textViewHintDialog = (TextView) relativeLoginDialog.findViewById(R.id.tv_login_dialog_hint);
         AppCompatButton btCancel = (AppCompatButton) relativeLoginDialog.findViewById(R.id.bt_login_dialog_cancel);
         AppCompatButton btOK = (AppCompatButton) relativeLoginDialog.findViewById(R.id.bt_login_dialog_ok);
         AppCompatImageButton btClose = (AppCompatImageButton) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_close);
@@ -107,6 +116,25 @@ public class MainActivity extends BaseMainActivity {
                         @Override
                         protected void onSuccess(LoginResponse loginResponse) {
                             super.onSuccess(loginResponse);
+                            dismissDialog();
+                            Contract contract = new Contract();
+                            contract.get();
+                            OperatingData operatingData = new OperatingData(contract.getNickname()
+                                    , SysConstant.getHradImageUrlHash()
+                                    , mLoginTokenContextJWTBean.payload.context.clientName
+                                    , ""
+                                    , mLoginTokenContextJWTBean.payload.context.clientURL
+                                    , "登录成功"
+                                    , OperationTypeEnum.Login
+                                    , "");
+                            if (loginResponse.result.valid) {
+                                OperatingDataManager.insert(operatingData);
+                                Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                operatingData.setOperationmsg("登录失败");
+                                OperatingDataManager.insert(operatingData);
+                                Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }, userJWT);
                 } else Toast.makeText(MainActivity.this, "数据错误，请稍候重试", Toast.LENGTH_SHORT).show();
@@ -120,6 +148,13 @@ public class MainActivity extends BaseMainActivity {
         });
     }
 
+    public TextDrawable getTextDrawable(String clientName) {
+        if (!TextUtils.isEmpty(clientName)) {
+            return TextDrawable.builder().buildRound(clientName.substring(0, 1), Color.parseColor("#06bebd"));
+        } else
+            return TextDrawable.builder().buildRound("V", Color.parseColor("#06bebd"));
+    }
+
     public void dismissDialog() {
         if (mAlertDialogLogin != null && mAlertDialogLogin.isShowing()) {
             mAlertDialogLogin.dismiss();
@@ -129,6 +164,7 @@ public class MainActivity extends BaseMainActivity {
     public String getHeaderUrl() {
         return Api.IPFSWebApi + SysConstant.getHradImageUrlHash();
     }
+
 
     @Override
     protected void initData() {
@@ -281,7 +317,7 @@ public class MainActivity extends BaseMainActivity {
                                             public void call(final Subscriber<? super String> subscriber) {
                                                 try {
                                                     CryptoManager.getInstance().signJWTToken(MainActivity.this
-                                                            , gson.toJson(userLoginTokenContextJWTBean)
+                                                            , gson.toJson(userLoginTokenContextJWTBean.payload)
                                                             , new OnFinishedListener() {
                                                                 @Override
                                                                 public void onFinished(String s) {
@@ -306,6 +342,8 @@ public class MainActivity extends BaseMainActivity {
                                 .subscribe(new Subscriber<String>() {
                                     @Override
                                     public void onCompleted() {
+                                        imageViewCompany.setImageDrawable(getTextDrawable(mLoginTokenContextJWTBean.payload.context.clientName));
+                                        textViewHintDialog.setText("请确认是否登录" + mLoginTokenContextJWTBean.payload.context.clientName);
                                         mAlertDialogLogin.show();
                                         dismissProgress();
                                     }
