@@ -1,6 +1,9 @@
 package com.a21vianet.wallet.vport.dao;
 
 import com.a21vianet.wallet.vport.WalletApplication;
+import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
+import com.a21vianet.wallet.vport.dao.entity.OperatingData;
+import com.a21vianet.wallet.vport.dao.entity.OperationType;
 import com.a21vianet.wallet.vport.dao.gen.DaoMaster;
 import com.a21vianet.wallet.vport.dao.gen.DaoSession;
 
@@ -9,6 +12,8 @@ import com.a21vianet.wallet.vport.dao.gen.DaoSession;
  */
 
 public class GreenDaoManager {
+    private static final String DATABASE_NAME = "vport";
+
     private DaoMaster mDaoMaster;
     private DaoSession mDaoSession;
     private static GreenDaoManager mInstance; //单例
@@ -16,7 +21,7 @@ public class GreenDaoManager {
     private GreenDaoManager() {
         if (mInstance == null) {
             DaoMaster.DevOpenHelper devOpenHelper = new
-                    DaoMaster.DevOpenHelper(WalletApplication.getContext(), "vport", null);
+                    DaoMaster.DevOpenHelper(WalletApplication.getContext(), DATABASE_NAME, null);
             //此处为自己需要处理的表
             mDaoMaster = new DaoMaster(devOpenHelper.getWritableDatabase());
             mDaoSession = mDaoMaster.newSession();
@@ -42,6 +47,12 @@ public class GreenDaoManager {
 
     public DaoSession getSession() {
         return mDaoSession;
+    }
+
+    public void deleteDatabase() {
+        getSession().deleteAll(IdentityCard.class);
+        getSession().deleteAll(OperatingData.class);
+        getSession().deleteAll(OperationType.class);
     }
 
     public DaoSession getNewSession() {

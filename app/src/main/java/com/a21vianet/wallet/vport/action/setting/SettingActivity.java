@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.action.login.GuideLoginActivity;
 import com.a21vianet.wallet.vport.action.password.CustomPinActivity;
+import com.a21vianet.wallet.vport.dao.GreenDaoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.github.orangegangsters.lollipin.lib.managers.AppLock;
@@ -68,6 +69,7 @@ public class SettingActivity extends BaseTitleBarActivity {
                 CryptoManager.getInstance().cleanBitcoinKey();
                 new Contract().clear();
                 clearHradImageUrlHash();
+                GreenDaoManager.getInstance().deleteDatabase();
                 ActivityManager.getInstance().finishAll();
                 startActivity(new Intent(SettingActivity.this, GuideLoginActivity.class));
                 break;
