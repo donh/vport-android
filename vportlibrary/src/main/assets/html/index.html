@@ -18,12 +18,10 @@
             var tx = vchain.Transaction.fromHex(rawTransaction);
             var txb = vchain.TransactionBuilder.fromTransaction(tx);
             var signed;
-
-            txb.tx.ins.forEach(function(input, i) {
-                txb.sign(i, priv);
-            });
-
             try {
+                txb.tx.ins.forEach(function(input, i) {
+                    txb.sign(i, priv);
+                });
                 signed = txb.build().toHex();
                 return signed;
             } catch (e) {
