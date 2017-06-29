@@ -17,6 +17,7 @@ import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.action.historyoperation.info.OperationInfoActivity;
 import com.a21vianet.wallet.vport.dao.OperatingDataManager;
 import com.a21vianet.wallet.vport.dao.bean.OperatingDataPage;
+import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum;
 import com.a21vianet.wallet.vport.dao.entity.OperatingData;
 import com.a21vianet.wallet.vport.http.Api;
 import com.bumptech.glide.Glide;
@@ -224,19 +225,21 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
             holder.tvContent.setText(item.getOperationmsg());
             holder.tvTime.setText(mSimpleDateFormat.format(item.getOperationtime()));
             Glide.with(mContext).load(Api.IPFSWebApi + item.getUserimg())
+                    .error(R.drawable.icon_header)
+                    .placeholder(R.drawable.icon_header)
                     .transform(new GlideCircleImage(mContext))
                     .into(holder.imgHead);
             @ColorInt
             int typeColor;
 
-            if (item.getOperationmsg().indexOf("失败") != -1) {
-                //待认证
+            if (item.getOperationState() == OperationStateEnum.Error.state) {
+                //认证失败
                 typeColor = 0xFFeb212e;
-            } else if (item.getOperationmsg().indexOf("成功") != -1) {
+            } else if (item.getOperationState() == OperationStateEnum.Success.state) {
                 //认证成功
                 typeColor = 0xFF1b93ef;
             } else {
-                //认证失败
+                //待认证
                 typeColor = 0xFF7d7d7d;
             }
 

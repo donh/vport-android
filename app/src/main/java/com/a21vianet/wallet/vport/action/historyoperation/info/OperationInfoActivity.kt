@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.support.annotation.ColorInt
 import com.a21vianet.wallet.vport.R
 import com.a21vianet.wallet.vport.dao.OperatingDataManager
+import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum
 import com.a21vianet.wallet.vport.dao.entity.OperatingData
 import com.a21vianet.wallet.vport.http.Api
 import com.amulyakhare.textdrawable.TextDrawable
@@ -74,15 +75,19 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
                     @ColorInt
                     val typeColor: Int
 
-                    if (it.operationmsg.indexOf("失败") != -1) {
-                        //待认证
-                        typeColor = 0xFFeb212e.toInt()
-                    } else if (it.operationmsg.indexOf("成功") != -1) {
-                        //认证成功
-                        typeColor = 0xFF1b93ef.toInt()
-                    } else {
-                        //认证失败
-                        typeColor = 0xFF7d7d7d.toInt()
+                    when (it.operationState) {
+                        OperationStateEnum.Cancel.state -> {
+                            typeColor = 0xFF7d7d7d.toInt()
+                        }
+                        OperationStateEnum.Error.state -> {
+                            typeColor = 0xFFeb212e.toInt()
+                        }
+                        OperationStateEnum.Success.state -> {
+                            typeColor = 0xFF1b93ef.toInt()
+                        }
+                        else -> {
+                            typeColor = 0xFF7d7d7d.toInt()
+                        }
                     }
 
                     val gradientDrawableType = GradientDrawable()
@@ -93,6 +98,8 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
                     tv_accredit_state.background = gradientDrawableType
 
                     Glide.with(this).load(Api.IPFSWebApi + it.userimg)
+                            .error(R.drawable.icon_header)
+                            .placeholder(R.drawable.icon_header)
                             .transform(GlideCircleImage(this))
                             .into(imgv_shared_user_header)
                     if (it.appimg == null || it.appimg.equals("")) {
@@ -100,7 +107,7 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
                         var color = generator.getRandomColor()
 
                         var builder = TextDrawable.builder()
-                                .buildRoundRect(it.appname[0].toString(), color,200)
+                                .buildRoundRect(it.appname[0].toString(), color, 200)
 
                         imgv_shared_app_header.setImageDrawable(builder)
                     } else {

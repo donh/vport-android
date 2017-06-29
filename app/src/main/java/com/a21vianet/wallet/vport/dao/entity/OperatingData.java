@@ -1,5 +1,6 @@
 package com.a21vianet.wallet.vport.dao.entity;
 
+import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum;
 import com.a21vianet.wallet.vport.dao.bean.OperationTypeEnum;
 import com.a21vianet.wallet.vport.dao.gen.DaoSession;
 import com.a21vianet.wallet.vport.dao.gen.OperatingDataDao;
@@ -30,6 +31,7 @@ public class OperatingData {
     private String appname;
     private String appimg;
     private String appurl;
+    private int operationState;
     private String operationmsg;
     private long operationtypeId;
     private Date operationtime;
@@ -55,12 +57,14 @@ public class OperatingData {
     private transient Long operationtype__resolvedKey;
 
     public OperatingData(String username, String userimg, String appname,
-                         String appimg, String appurl, String operationmsg, OperationTypeEnum
+                         String appimg, String appurl, OperationStateEnum stateEnum, String
+                                 operationmsg, OperationTypeEnum
                                  anEnum, String identityCards) {
         this.username = username;
         this.userimg = userimg;
         this.appname = appname;
         this.appimg = appimg;
+        this.operationState = stateEnum.state;
         this.appurl = appurl;
         this.operationmsg = operationmsg;
         this.operationtypeId = anEnum.typeId;
@@ -68,16 +72,17 @@ public class OperatingData {
         this.operationtime = new Date();
     }
 
-    @Generated(hash = 1959987320)
+    @Generated(hash = 681330660)
     public OperatingData(Long id, String username, String userimg, String appname,
-            String appimg, String appurl, String operationmsg, long operationtypeId,
-            Date operationtime, String identityCards) {
+            String appimg, String appurl, int operationState, String operationmsg,
+            long operationtypeId, Date operationtime, String identityCards) {
         this.id = id;
         this.username = username;
         this.userimg = userimg;
         this.appname = appname;
         this.appimg = appimg;
         this.appurl = appurl;
+        this.operationState = operationState;
         this.operationmsg = operationmsg;
         this.operationtypeId = operationtypeId;
         this.operationtime = operationtime;
@@ -142,6 +147,14 @@ public class OperatingData {
 
     public void setAppurl(String appurl) {
         this.appurl = appurl;
+    }
+
+    public int getOperationState() {
+        return this.operationState;
+    }
+
+    public void setOperationState(int operationState) {
+        this.operationState = operationState;
     }
 
     public String getOperationmsg() {
@@ -251,5 +264,6 @@ public class OperatingData {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getOperatingDataDao() : null;
     }
+
 
 }
