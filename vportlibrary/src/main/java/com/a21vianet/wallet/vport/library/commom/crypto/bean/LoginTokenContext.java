@@ -9,14 +9,16 @@ public class LoginTokenContext {
     public String serverPublicKey;
     public String serverURL;
     public String token;
+    public String clientName;
 
-    public LoginTokenContext(String clientID, String clientURL, String scope, String serverPublicKey, String serverURL, String token) {
+    public LoginTokenContext(String clientID, String clientURL, String scope, String serverPublicKey, String serverURL, String token, String clientName) {
         this.clientID = clientID;
         this.clientURL = clientURL;
         this.scope = scope;
         this.serverPublicKey = serverPublicKey;
         this.serverURL = serverURL;
         this.token = token;
+        this.clientName = clientName;
     }
 
     @Override
@@ -28,6 +30,7 @@ public class LoginTokenContext {
                 ", serverPublicKey='" + serverPublicKey + '\'' +
                 ", serverURL='" + serverURL + '\'' +
                 ", token='" + token + '\'' +
+                ", clientName='" + clientName + '\'' +
                 '}';
     }
 }

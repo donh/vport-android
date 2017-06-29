@@ -27,12 +27,15 @@ import com.a21vianet.wallet.vport.library.commom.crypto.bean.LoginTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserLoginTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnFinishedListener;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnVerifiedListener;
+import com.a21vianet.wallet.vport.library.commom.http.vport.LoginResponse;
+import com.a21vianet.wallet.vport.library.commom.http.vport.VPortRequest;
 import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.a21vianet.wallet.vport.library.event.ScanResultEvent;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.littlesparkle.growler.core.am.ActivityUtility;
+import com.littlesparkle.growler.core.http.BaseHttpSubscriber;
 import com.littlesparkle.growler.core.ui.activity.BaseMainActivity;
 import com.littlesparkle.growler.core.ui.view.GlideCircleImage;
 
@@ -59,46 +62,68 @@ public class MainActivity extends BaseMainActivity {
     public static final String SUB_LOGIN_TOKEN = "login token";
     public static final String SUB_AUTHORIZATION_TOKEN = "authorization token";
 
-    private AlertDialog alertDialogLogin;
+    private AlertDialog mAlertDialogLogin;
+    private ImageView imageViewCompany;
     private String userJWT = "";
     private String serverJWT = "";
     private String serverUrl = "";
 
+    private JWTBean<LoginTokenContext> mLoginTokenContextJWTBean = null;
+    private JWTBean<UserLoginTokenContext> mUserLoginTokenContextJWTBean = null;
+
     public void initLoginDialog() {
         RelativeLayout relativeLoginDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_login, null);
-        alertDialogLogin = new AlertDialog.Builder(this).setView(relativeLoginDialog).create();
+        mAlertDialogLogin = new AlertDialog.Builder(this).setView(relativeLoginDialog).create();
+        imageViewCompany = (ImageView) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_server);
         AppCompatButton btCancel = (AppCompatButton) relativeLoginDialog.findViewById(R.id.bt_login_dialog_cancel);
         AppCompatButton btOK = (AppCompatButton) relativeLoginDialog.findViewById(R.id.bt_login_dialog_ok);
         AppCompatImageButton btClose = (AppCompatImageButton) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_close);
         ImageView imageViewUser = (ImageView) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_user);
-        ImageView imageViewCompany = (ImageView) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_server);
 
-        Glide.with(this).load(getHeaderUrl()).transform(new GlideCircleImage(this)).placeholder(R.drawable.icon_header).into(imageViewUser);
+        Glide.with(this)
+                .load(getHeaderUrl())
+                .transform(new GlideCircleImage(this))
+                .placeholder(R.drawable.icon_header)
+                .into(imageViewUser);
 
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (alertDialogLogin != null && alertDialogLogin.isShowing()) {
-                    alertDialogLogin.dismiss();
-                }
+                dismissDialog();
             }
         });
         btOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(userJWT) && !TextUtils.isEmpty(serverJWT) && !TextUtils.isEmpty(serverUrl)) {
+                if (!TextUtils.isEmpty(userJWT) && !TextUtils.isEmpty(serverUrl)) {
+                    new VPortRequest(serverUrl + "/").login(new BaseHttpSubscriber<LoginResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                            dismissDialog();
+                            Toast.makeText(MainActivity.this, "登录失败，请稍候重试", Toast.LENGTH_SHORT).show();
+                        }
 
+                        @Override
+                        protected void onSuccess(LoginResponse loginResponse) {
+                            super.onSuccess(loginResponse);
+                        }
+                    }, userJWT);
                 } else Toast.makeText(MainActivity.this, "数据错误，请稍候重试", Toast.LENGTH_SHORT).show();
             }
         });
         btClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (alertDialogLogin != null && alertDialogLogin.isShowing()) {
-                    alertDialogLogin.dismiss();
-                }
+                dismissDialog();
             }
         });
+    }
+
+    public void dismissDialog() {
+        if (mAlertDialogLogin != null && mAlertDialogLogin.isShowing()) {
+            mAlertDialogLogin.dismiss();
+        }
     }
 
     public String getHeaderUrl() {
@@ -203,6 +228,7 @@ public class MainActivity extends BaseMainActivity {
                     case SUB_LOGIN_TOKEN:
                         final JWTBean<LoginTokenContext> loginTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<LoginTokenContext>>() {
                         }.getType());
+                        mLoginTokenContextJWTBean = loginTokenContextJWTBean;
                         Observable.create(new Observable.OnSubscribe<JWTBean<LoginTokenContext>>() {
 
                             @Override
@@ -231,6 +257,7 @@ public class MainActivity extends BaseMainActivity {
                                                                     if (isValid) {
                                                                         JWTBean<UserLoginTokenContext> userLoginTokenContextJWTBean =
                                                                                 new ScanDataTask().getJWTBeanFromSeverJWTBean(loginTokenContextJWTBean);
+                                                                        mUserLoginTokenContextJWTBean = userLoginTokenContextJWTBean;
                                                                         subscriber.onNext(userLoginTokenContextJWTBean);
                                                                         subscriber.onCompleted();
                                                                     } else
@@ -279,7 +306,7 @@ public class MainActivity extends BaseMainActivity {
                                 .subscribe(new Subscriber<String>() {
                                     @Override
                                     public void onCompleted() {
-                                        alertDialogLogin.show();
+                                        mAlertDialogLogin.show();
                                         dismissProgress();
                                     }
 
