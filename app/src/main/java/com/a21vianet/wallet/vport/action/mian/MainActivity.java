@@ -22,6 +22,7 @@ import com.a21vianet.wallet.vport.action.scan.ScanActivity;
 import com.a21vianet.wallet.vport.action.scan.data.ScanDataTask;
 import com.a21vianet.wallet.vport.action.setting.SettingActivity;
 import com.a21vianet.wallet.vport.dao.OperatingDataManager;
+import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum;
 import com.a21vianet.wallet.vport.dao.bean.OperationTypeEnum;
 import com.a21vianet.wallet.vport.dao.entity.OperatingData;
 import com.a21vianet.wallet.vport.http.Api;
@@ -124,6 +125,7 @@ public class MainActivity extends BaseMainActivity {
                                     , mLoginTokenContextJWTBean.payload.context.clientName
                                     , ""
                                     , mLoginTokenContextJWTBean.payload.context.clientURL
+                                    , OperationStateEnum.Success
                                     , "登录成功"
                                     , OperationTypeEnum.Login
                                     , "");
@@ -131,6 +133,7 @@ public class MainActivity extends BaseMainActivity {
                                 OperatingDataManager.insert(operatingData);
                                 Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                             } else {
+                                operatingData.setOperationState(OperationStateEnum.Error.state);
                                 operatingData.setOperationmsg("登录失败");
                                 OperatingDataManager.insert(operatingData);
                                 Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
