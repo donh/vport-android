@@ -13,7 +13,7 @@
         var vchain = vChain.vChainlib;
         var vchainMessage = vChain.vChainMessage;
 
-        var sign = function (privateKey, rawTransaction) {
+        function sign(privateKey, rawTransaction) {
             var priv = vchain.ECPair.fromWIF(privateKey);
             var tx = vchain.Transaction.fromHex(rawTransaction);
             var txb = vchain.TransactionBuilder.fromTransaction(tx);
@@ -29,7 +29,7 @@
             }
         }
 
-        var signMultisig = function (privateKeys, redeemScript, rawTransaction) {
+        function signMultisig(privateKeys, redeemScript, rawTransaction) {
 
             var redeemScript = new Buffer(redeemScript, 'hex');
 
@@ -50,7 +50,7 @@
             }
         }
 
-        var signMessage = function (privateKey, message) {
+        function signMessage(privateKey, message) {
             var keyPair = vchain.ECPair.fromWIF(privateKey);
             privateKey = keyPair.d.toBuffer(32);
             var messagePrefix = vchain.networks.bitcoin.messagePrefix;
@@ -59,7 +59,7 @@
             return signature.toString('base64');
         }
 
-        var signToken = function (rawPrivateKey, tokenPayload) {
+        function signToken(rawPrivateKey, tokenPayload) {
             try {
                 var token = new vChain.TokenSigner('ES256k', rawPrivateKey).sign(tokenPayload);
                 return token;
@@ -68,7 +68,7 @@
             }
         }
 
-        var decodeToken = function (token) {
+        function decodeToken(token) {
             try {
                 var tokenData = vChain.decodeToken(token);
                 return tokenData;
@@ -77,7 +77,7 @@
             }
         }
 
-        var verifyToken = function (rawPublicKey, token) {
+        function verifyToken(rawPublicKey, token) {
             try {
                 var verified = new vChain.TokenVerifier('ES256k', rawPublicKey).verify(token);
                 return verified;
