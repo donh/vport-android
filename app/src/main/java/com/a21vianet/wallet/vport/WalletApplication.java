@@ -10,7 +10,6 @@ import com.a21vianet.wallet.vport.library.BaseApplication;
 import com.github.orangegangsters.lollipin.lib.managers.LockManager;
 import com.littlesparkle.growler.core.common.TempDirectory;
 import com.littlesparkle.growler.core.http.api.Api;
-import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import java.io.File;
 
@@ -18,7 +17,6 @@ public class WalletApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        ZXingLibrary.initDisplayOpinion(this);
 
         LockManager<CustomPinActivity> lockManager = LockManager.getInstance();
         lockManager.enableAppLock(this, CustomPinActivity.class);

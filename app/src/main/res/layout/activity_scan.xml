@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bt_scan_my_code"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="110dp"
+        android:layout_marginBottom="90dp"
         android:text="将二维码放入框内，即可自动扫描"
         android:textColor="#cccccc"
         android:textSize="12sp"/>

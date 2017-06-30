@@ -86,8 +86,6 @@ ext {
 
     libRatingbar = "com.hedgehog.ratingbar:app:1.1.2"
 
-    libZXing = "cn.yipianfengye.android:zxing-library:2.1"
-
     //AES加密
     libAESCrypt = "com.scottyab:aescrypt:0.0.1"
 
@@ -100,6 +98,8 @@ ext {
     libDataPicker = "com.contrarywind:Android-PickerView:3.2.5"
 
     libGreendao="org.greenrobot:greendao:3.2.2"
+
+    libZbar="me.dm7.barcodescanner:zbar:1.9.3"
 
     libShapetextdrawable="com.amulyakhare:com.amulyakhare.textdrawable:1.0.1"
 }
