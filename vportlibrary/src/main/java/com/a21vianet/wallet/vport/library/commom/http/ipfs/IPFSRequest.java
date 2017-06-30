@@ -108,6 +108,19 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .subscribe(subscriber);
     }
 
+    public Observable<String> ipfsGetJson(String hash){
+        return mService.ipfsGetJson(hash)
+                .map(new Func1<ResponseBody, String>() {
+                    @Override
+                    public String call(ResponseBody responseBody) {
+                        return getResponseBody(responseBody);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io());
+    }
+
     public Subscription ipfsAddJson(Subscriber<AddResult> subscriber,
                                     String json) {
         RequestBody requestFile = RequestBody.create(MediaType.parse("text/plain"), json);

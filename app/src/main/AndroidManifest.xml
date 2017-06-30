@@ -79,6 +79,9 @@
             android:name=".action.historyoperation.info.OperationInfoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoBackgroundTheme"/>
+        <activity
+            android:name=".action.info.changename.PersonalChangeNameActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

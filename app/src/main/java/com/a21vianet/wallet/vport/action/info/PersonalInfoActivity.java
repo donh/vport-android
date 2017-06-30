@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -12,11 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a21vianet.wallet.vport.R;
+import com.a21vianet.wallet.vport.action.info.changename.PersonalChangeNameActivity;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.constant.SysConstant;
+import com.a21vianet.wallet.vport.library.event.ChangeUserInfoEvent;
 import com.bumptech.glide.Glide;
 import com.jph.takephoto.app.TakePhoto;
 import com.jph.takephoto.app.TakePhotoImpl;
@@ -32,6 +35,10 @@ import com.littlesparkle.growler.core.ui.listener.OnPopwindowClickListener;
 import com.littlesparkle.growler.core.ui.view.GlideCircleImage;
 import com.littlesparkle.growler.core.ui.view.HeadPopWindow;
 import com.littlesparkle.growler.core.utility.DensityUtility;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -52,6 +59,8 @@ public class PersonalInfoActivity extends BaseTitleBarActivity<PersonalInfoPrese
     TextView mTvInfovPortIDContent;
     @BindView(R.id.tv_info_pubkey_content)
     TextView mTvInfoPubkeyContent;
+    @BindView(R.id.relative_info_name)
+    RelativeLayout mRelativeLayoutInfoName;
 
 
     private HeadPopWindow headPopWindow;
@@ -71,6 +80,7 @@ public class PersonalInfoActivity extends BaseTitleBarActivity<PersonalInfoPrese
     @Override
     protected void initView() {
         super.initView();
+        EventBus.getDefault().register(this);
         StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary));
     }
 
@@ -79,10 +89,17 @@ public class PersonalInfoActivity extends BaseTitleBarActivity<PersonalInfoPrese
         return new PersonalInfoPresenter();
     }
 
-    @OnClick(R.id.relative_info_header)
-    public void onViewClicked() {
-        initHeadPopWindow();
-        headPopWindow.showAsDropDown(userInfoTvForPop);
+    @OnClick({R.id.relative_info_header, R.id.relative_info_name})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.relative_info_header:
+                initHeadPopWindow();
+                headPopWindow.showAsDropDown(userInfoTvForPop);
+                break;
+            case R.id.relative_info_name:
+                ActivityUtility.startActivityWithAnim(this, PersonalChangeNameActivity.class);
+                break;
+        }
     }
 
     @Override
@@ -179,6 +196,7 @@ public class PersonalInfoActivity extends BaseTitleBarActivity<PersonalInfoPrese
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         if (headPopWindow != null && headPopWindow.isShowing()) {
             headPopWindow.dismiss();
         }
@@ -213,5 +231,10 @@ public class PersonalInfoActivity extends BaseTitleBarActivity<PersonalInfoPrese
                     .error(R.drawable.icon_header)
                     .into(imgvInfoHeader);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onChangeUserInfoEvent(ChangeUserInfoEvent event) {
+        mTvInfoNameContent.setText(event.mInfoIPFS.getName());
     }
 }
