@@ -91,6 +91,7 @@ public class IdentityInfoActivity extends BaseActivity {
         } else {
             mLayoutHintadd.setVisibility(View.GONE);
         }
+        mIdCardAdapter.notifyDataSetChanged();
     }
 
     private void initIdInfo() {
