@@ -7,14 +7,12 @@ import com.a21vianet.wallet.vport.action.info.data.IPFSResponse;
 import com.a21vianet.wallet.vport.action.info.data.PersonalInfoRequest;
 import com.a21vianet.wallet.vport.biz.CryptoBiz;
 import com.a21vianet.wallet.vport.http.Api;
-import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
-import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.IPFSRequest;
 import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFS;
-import com.a21vianet.wallet.vport.library.commom.http.ipfs.bean.UserInfoIPFSGET;
 import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.a21vianet.wallet.vport.library.event.ChangeHeadImageEvent;
+import com.google.gson.Gson;
 import com.jph.takephoto.app.TakePhoto;
 import com.jph.takephoto.compress.CompressConfig;
 import com.jph.takephoto.model.CropOptions;
@@ -133,28 +131,25 @@ public class PersonalInfoPresenter extends BasePresenter<PersonalInfoActivity> i
                 return Observable.create(new Observable.OnSubscribe<UserInfoIPFS>() {
                     @Override
                     public void call(final Subscriber<? super UserInfoIPFS> subscriber) {
-                        try {
-                            new IPFSRequest().get(new BaseHttpSubscriber<UserInfoIPFSGET>() {
-                                @Override
-                                public void onNext(UserInfoIPFSGET userInfoIPFSGET) {
-                                    super.onNext(userInfoIPFSGET);
-                                    UserInfoIPFS.ImageBean imageBean = new UserInfoIPFS.ImageBean();
-                                    imageBean.setContentUrl(ipfsResponse.Hash);
-                                    UserInfoIPFS userInfoIPFS = userInfoIPFSGET.getValue();
-                                    userInfoIPFS.setImage(imageBean);
-                                    subscriber.onNext(userInfoIPFS);
-                                }
+                        new IPFSRequest(Api.IPFSWebApi).ipfsGetJson(new BaseHttpSubscriber<String>() {
+                            @Override
+                            public void onNext(String s) {
+                                super.onNext(s);
+                                UserInfoIPFS.ImageBean imageBean = new UserInfoIPFS.ImageBean();
+                                imageBean.setContentUrl(ipfsResponse.Hash);
 
-                                @Override
-                                public void onError(Throwable e) {
-                                    super.onError(e);
-                                    subscriber.onError(e);
-                                }
-                            }, CryptoManager.getInstance().generateBitcoinAddress(), contract
-                                    .getProxy());
-                        } catch (NoDecryptException e) {
-                            e.printStackTrace();
-                        }
+                                UserInfoIPFS userInfoIPFS = new Gson().fromJson(s,
+                                        UserInfoIPFS.class);
+                                userInfoIPFS.setImage(imageBean);
+                                subscriber.onNext(userInfoIPFS);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                super.onError(e);
+                                subscriber.onError(e);
+                            }
+                        }, contract.getIpfsHex());
                     }
                 });
             }
@@ -176,6 +171,7 @@ public class PersonalInfoPresenter extends BasePresenter<PersonalInfoActivity> i
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
+                        SysConstant.clearHradImageUrlHash();
                         getView().dismissProgress();
                     }
                 });
