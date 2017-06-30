@@ -16,9 +16,7 @@ public class Signer {
                             final OnFinishedListener callback) {
         final String call = "javascript:sign('" + priv + "','" +
                 tx + "')";
-        final WebView webView = new WebView(context);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("file:///android_asset/html/index.html");
+        final WebView webView = SingleWebView.getInstance(context,"index.html");
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -36,9 +34,7 @@ public class Signer {
     String tx, final OnFinishedListener callback) {
         final String call = "javascript:signMultisig('" + priv + "','" + script + "','" +
                 tx + "')";
-        final WebView webView = new WebView(context);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("file:///android_asset/html/index.html");
+        final WebView webView = SingleWebView.getInstance(context,"index.html");
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -59,9 +55,7 @@ public class Signer {
         final String js = "javascript:signMessage('" + priv + "', " +
                 "'" + msg + "')";
 
-        final WebView webView = new WebView(context);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("file:///android_asset/html/index.html");
+        final WebView webView = SingleWebView.getInstance(context,"index.html");
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {

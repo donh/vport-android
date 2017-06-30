@@ -18,9 +18,7 @@ public class JWT {
         final String js = "javascript:signToken('" + privateKey + "', " +
                 token + ")";
 
-        final WebView webView = new WebView(context);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("file:///android_asset/html/index.html");
+        final WebView webView = SingleWebView.getInstance(context,"index.html");
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -37,9 +35,7 @@ public class JWT {
     public static void decodeToken(Context context, String tokenString, final OnFinishedListener listener) {
         final String js = "javascript:decodeToken('" + tokenString + "')";
 
-        final WebView webView = new WebView(context);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("file:///android_asset/html/index.html");
+        final WebView webView = SingleWebView.getInstance(context,"index.html");
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -57,9 +53,7 @@ public class JWT {
         final String js = "javascript:verifyToken('" + publicKey + "',\"" +
                 token + "\")";
 
-        final WebView webView = new WebView(context);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("file:///android_asset/html/index.html");
+        final WebView webView = SingleWebView.getInstance(context,"index.html");
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
