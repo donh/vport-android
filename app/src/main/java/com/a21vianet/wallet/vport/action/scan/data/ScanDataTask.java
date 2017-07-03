@@ -35,7 +35,7 @@ public class ScanDataTask {
         }
         try {
             userLoginTokenContextJWTBean.payload.context =
-                    new UserLoginTokenContext("", severJWTBean.payload.context.token
+                    new UserLoginTokenContext("name,proxy,publicKey", severJWTBean.payload.context.token
                             , contract.getProxy()
                             , CryptoManager.getInstance().getCoinKey().getPubKey());
         } catch (NoDecryptException e) {
