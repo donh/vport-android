@@ -42,6 +42,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static com.a21vianet.wallet.vport.action.historyoperation.task.OperativeUtiltiyKt.verdictOperativeState;
+
 public class HistoryOperationActivity extends BaseTitleBarActivity {
     private int index = 0;
     private int size = 10;
@@ -230,7 +232,7 @@ public class HistoryOperationActivity extends BaseTitleBarActivity {
                     .transform(new GlideCircleImage(mContext))
                     .into(holder.imgHead);
             @ColorInt
-            int typeColor;
+            int typeColor = verdictOperativeState(item.getOperationState());
 
             if (item.getOperationState() == OperationStateEnum.Error.state) {
                 //认证失败

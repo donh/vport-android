@@ -47,7 +47,8 @@ public class OperationTypeManager {
         rx.insertOrReplaceInTx(
                 new OperationType((long) 1, "登录"),
                 new OperationType((long) 2, "认证"),
-                new OperationType((long) 3, "授权")
+                new OperationType((long) 3, "授权"),
+                new OperationType((long) 4, "声明")
         ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Object[]>() {
             @Override
             public void call(Object[] objects) {

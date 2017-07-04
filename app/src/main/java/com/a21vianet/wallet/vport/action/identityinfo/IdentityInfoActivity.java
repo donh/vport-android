@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,12 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.a21vianet.wallet.vport.R;
+import com.a21vianet.wallet.vport.action.identityinfo.task.IdCardUtiltiy;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.bumptech.glide.Glide;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.littlesparkle.growler.core.am.ActivityUtility;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
 import com.littlesparkle.growler.core.ui.adapter.RecyclerBaseAdapter;
@@ -43,6 +47,8 @@ public class IdentityInfoActivity extends BaseActivity {
     TextView mTvUsername;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.refresh_recycler_view)
+    TwinklingRefreshLayout mRefreshRecyclerView;
     @BindView(R.id.layout_hintadd)
     ConstraintLayout mLayoutHintadd;
 
@@ -61,6 +67,7 @@ public class IdentityInfoActivity extends BaseActivity {
         showImage();
         showName();
 
+        initRefreshLayout();
         initIdInfo();
     }
 
@@ -134,6 +141,18 @@ public class IdentityInfoActivity extends BaseActivity {
         }
     }
 
+    private void initRefreshLayout() {
+        mRefreshRecyclerView.setOnRefreshListener(new RefreshListenerAdapter() {
+            @Override
+            public void onRefresh(TwinklingRefreshLayout refreshLayout) {
+                initIdDate();
+                if (refreshLayout != null) {
+                    refreshLayout.finishRefreshing();
+                }
+            }
+        });
+    }
+
     class IdCardAdapter extends RecyclerBaseAdapter<ViewHolder, IdentityCard> {
         private final int strokeWidth;
         private final int roundRadius;
@@ -150,26 +169,11 @@ public class IdentityInfoActivity extends BaseActivity {
 
             holder.mIdCardTextView.setText(item.getNumber());
 
-            String staetStr = "";
+            Pair<String, Integer> stringIntegerPair = IdCardUtiltiy.verdictIdState(item.getState());
+
+            String staetStr = stringIntegerPair.first;
             @ColorInt
-            int typeColor;
-            switch (item.getState()) {
-                case 1:
-                    //待认证
-                    staetStr = "待认证";
-                    typeColor = 0xFF7d7d7d;
-                    break;
-                case 2:
-                    //认证成功
-                    staetStr = "认证成功";
-                    typeColor = 0xFF1b93ef;
-                    break;
-                case 3:
-                default:
-                    //认证失败
-                    staetStr = "认证失败";
-                    typeColor = 0xFFeb212e;
-            }
+            int typeColor = stringIntegerPair.second;
 
             holder.mCertificationStatusTextView.setText(staetStr);
 

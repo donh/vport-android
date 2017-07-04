@@ -3,8 +3,8 @@ package com.a21vianet.wallet.vport.action.historyoperation.info
 import android.graphics.drawable.GradientDrawable
 import android.support.annotation.ColorInt
 import com.a21vianet.wallet.vport.R
+import com.a21vianet.wallet.vport.action.historyoperation.task.verdictOperativeState
 import com.a21vianet.wallet.vport.dao.OperatingDataManager
-import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum
 import com.a21vianet.wallet.vport.dao.entity.OperatingData
 import com.a21vianet.wallet.vport.http.Api
 import com.amulyakhare.textdrawable.TextDrawable
@@ -73,22 +73,7 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
                     tv_accredit_login_time.text = mSimpleDateFormat.format(it.operationtime)
 
                     @ColorInt
-                    val typeColor: Int
-
-                    when (it.operationState) {
-                        OperationStateEnum.Cancel.state -> {
-                            typeColor = 0xFF7d7d7d.toInt()
-                        }
-                        OperationStateEnum.Error.state -> {
-                            typeColor = 0xFFeb212e.toInt()
-                        }
-                        OperationStateEnum.Success.state -> {
-                            typeColor = 0xFF1b93ef.toInt()
-                        }
-                        else -> {
-                            typeColor = 0xFF7d7d7d.toInt()
-                        }
-                    }
+                    val typeColor: Int= verdictOperativeState(it.operationState)
 
                     val gradientDrawableType = GradientDrawable()
                     gradientDrawableType.cornerRadius = roundRadius.toFloat()
