@@ -5,11 +5,11 @@ import android.content.Intent;
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.action.mian.MainActivity;
 import com.a21vianet.wallet.vport.library.event.ScanResultEvent;
+import com.google.zxing.Result;
 import com.littlesparkle.growler.core.ui.fragment.BaseFragmentActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
-import me.dm7.barcodescanner.zbar.Result;
 import qiu.niorgai.StatusBarCompat;
 
 public class ScanActivity extends BaseFragmentActivity implements ScannerCallback {
@@ -36,7 +36,7 @@ public class ScanActivity extends BaseFragmentActivity implements ScannerCallbac
     @Override
     public void onSuccess(Result result) {
         startActivity(new Intent(ScanActivity.this, MainActivity.class));
-        EventBus.getDefault().postSticky(new ScanResultEvent(result.getContents()));
+        EventBus.getDefault().postSticky(new ScanResultEvent(result.getText()));
         ScanActivity.this.finish();
     }
 }

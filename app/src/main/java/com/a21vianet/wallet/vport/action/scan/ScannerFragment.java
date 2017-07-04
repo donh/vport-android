@@ -13,19 +13,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.zxing.Result;
+
 import me.dm7.barcodescanner.core.IViewFinder;
 import me.dm7.barcodescanner.core.ViewFinderView;
-import me.dm7.barcodescanner.zbar.Result;
-import me.dm7.barcodescanner.zbar.ZBarScannerView;
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class ScannerFragment extends Fragment implements ZBarScannerView.ResultHandler {
-    private ZBarScannerView mScannerView;
+public class ScannerFragment extends Fragment implements ZXingScannerView.ResultHandler {
+    private ZXingScannerView mScannerView;
     private ScannerCallback mScannerCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
-        mScannerView = new ZBarScannerView(getActivity()) {
+        mScannerView = new ZXingScannerView(getActivity()) {
             @Override
             protected IViewFinder createViewFinderView(Context context) {
                 return new CustomViewFinderView(context);
