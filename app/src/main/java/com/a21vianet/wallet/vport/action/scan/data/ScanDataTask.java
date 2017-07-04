@@ -15,6 +15,8 @@ public class ScanDataTask {
     public static final String SUB_LOGIN_TOKEN_SIGNED = "login token signed";
     public static final String SUB_AUTHORIZATION_TOKEN_SIGNED = "authorization token signed";
 
+    private String scope = "";
+
     public JWTBean<UserLoginTokenContext> getJWTBeanFromSeverJWTBean(JWTBean<LoginTokenContext> severJWTBean) {
         Contract contract = new Contract();
         contract.get();
@@ -27,15 +29,18 @@ public class ScanDataTask {
         userLoginTokenContextJWTBean.payload.exp = severJWTBean.payload.exp;
         switch (severJWTBean.payload.sub) {
             case MainActivity.SUB_LOGIN_TOKEN:
+                scope = severJWTBean.payload.context.scope;
                 userLoginTokenContextJWTBean.payload.sub = SUB_LOGIN_TOKEN_SIGNED;
                 break;
             case MainActivity.SUB_AUTHORIZATION_TOKEN:
+                scope = "";
                 userLoginTokenContextJWTBean.payload.sub = SUB_AUTHORIZATION_TOKEN_SIGNED;
                 break;
         }
         try {
             userLoginTokenContextJWTBean.payload.context =
-                    new UserLoginTokenContext("name,proxy,publicKey", severJWTBean.payload.context.token
+                    new UserLoginTokenContext(scope
+                            , severJWTBean.payload.context.token
                             , contract.getProxy()
                             , CryptoManager.getInstance().getCoinKey().getPubKey());
         } catch (NoDecryptException e) {

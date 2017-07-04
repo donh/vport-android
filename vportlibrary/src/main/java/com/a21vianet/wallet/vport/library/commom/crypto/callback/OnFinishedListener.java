@@ -1,14 +1,11 @@
 package com.a21vianet.wallet.vport.library.commom.crypto.callback;
 
-import android.util.Log;
-
 /**
  * Created by ben on 2017/6/1.
  */
 public abstract class OnFinishedListener {
     public void onFinish(String s) {
         String ErroeTag = "JSERROR.";
-        Log.e("=====JSMSG===== ", s);
 
         if (s.indexOf(ErroeTag) != -1) {
             onError(new Exception(s));
