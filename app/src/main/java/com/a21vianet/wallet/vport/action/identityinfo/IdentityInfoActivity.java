@@ -142,6 +142,8 @@ public class IdentityInfoActivity extends BaseActivity {
     }
 
     private void initRefreshLayout() {
+        mRefreshRecyclerView.setEnableOverScroll(false);
+        mRefreshRecyclerView.setEnableLoadmore(false);
         mRefreshRecyclerView.setOnRefreshListener(new RefreshListenerAdapter() {
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {
