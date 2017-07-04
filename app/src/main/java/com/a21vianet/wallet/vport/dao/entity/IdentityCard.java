@@ -19,9 +19,11 @@ public class IdentityCard {
     private String agencies;
     //1. 待认证 2.认证成功 3.认证失败
     private int state;
-    @Generated(hash = 123320716)
+    private String jwt;
+
+    @Generated(hash = 1390993837)
     public IdentityCard(Long id, String name, String number, String begintime,
-            String endtime, String agencies, int state) {
+            String endtime, String agencies, int state, String jwt) {
         this.id = id;
         this.name = name;
         this.number = number;
@@ -29,51 +31,75 @@ public class IdentityCard {
         this.endtime = endtime;
         this.agencies = agencies;
         this.state = state;
+        this.jwt = jwt;
     }
+
     @Generated(hash = 1367070082)
     public IdentityCard() {
     }
+
     public Long getId() {
         return this.id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getName() {
         return this.name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public String getNumber() {
         return this.number;
     }
+
     public void setNumber(String number) {
         this.number = number;
     }
+
     public String getBegintime() {
         return this.begintime;
     }
+
     public void setBegintime(String begintime) {
         this.begintime = begintime;
     }
+
     public String getEndtime() {
         return this.endtime;
     }
+
     public void setEndtime(String endtime) {
         this.endtime = endtime;
     }
+
     public String getAgencies() {
         return this.agencies;
     }
+
     public void setAgencies(String agencies) {
         this.agencies = agencies;
     }
+
     public int getState() {
         return this.state;
     }
+
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String getJwt() {
+        return this.jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
     }
 
 

@@ -35,4 +35,15 @@ public class IdentityCardManager {
         List<IdentityCard> identityCards = identityCardDao.loadAll();
         return identityCards;
     }
+
+    public static boolean exists() {
+        IdentityCardDao identityCardDao = GreenDaoManager.getInstance().getSession()
+                .getIdentityCardDao();
+        List<IdentityCard> identityCards = identityCardDao.loadAll();
+        boolean exists = false;
+        if (identityCards == null || identityCards.size() == 0) {
+            exists = true;
+        }
+        return exists;
+    }
 }
