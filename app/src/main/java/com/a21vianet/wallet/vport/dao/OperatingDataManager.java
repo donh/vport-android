@@ -38,7 +38,7 @@ public class OperatingDataManager {
         List<OperatingData> list = operatingDataDao.queryBuilder()
                 .offset(index)
                 .limit(size)
-                .orderAsc(OperatingDataDao.Properties.Operationtime)
+                .orderDesc(OperatingDataDao.Properties.Operationtime)
                 .build()
                 .list();
         for (OperatingData data : list) {
