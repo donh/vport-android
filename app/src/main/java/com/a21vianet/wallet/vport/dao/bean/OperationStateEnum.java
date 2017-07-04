@@ -5,7 +5,18 @@ package com.a21vianet.wallet.vport.dao.bean;
  */
 
 public enum OperationStateEnum {
-    Success(1), Error(2), Cancel(3);
+    /**
+     * 成功
+     */
+    Success(1),
+    /**
+     * 失败
+     */
+    Error(2),
+    /**
+     * 取消
+     */
+    Cancel(3);
 
     public final int state;
 

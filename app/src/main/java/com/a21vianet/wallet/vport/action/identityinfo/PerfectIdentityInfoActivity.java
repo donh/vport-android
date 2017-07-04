@@ -190,7 +190,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
             regular(issued, "[\\s\\S]{1,64}", "请检查签发机关");
 
             IdentityCardManager.insert(new IdentityCard(null, name, number, timeBegin, timeEnd,
-                    issued, 1, ""));
+                    issued, 1));
             finish();
         } catch (RegularException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

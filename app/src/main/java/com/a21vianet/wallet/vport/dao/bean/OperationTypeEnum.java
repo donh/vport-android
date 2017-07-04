@@ -5,7 +5,23 @@ package com.a21vianet.wallet.vport.dao.bean;
  */
 
 public enum OperationTypeEnum {
-    Login(1l), Approve(2l), Accredit(3l);
+    /**
+     * 登录
+     */
+    Login(1l),
+    /**
+     * 认证
+     */
+    Approve(2l),
+    /**
+     * 授权
+     */
+    Accredit(3l),
+    /**
+     * 声明
+     */
+    Statement(4L);
+
 
     public final long typeId;
 
