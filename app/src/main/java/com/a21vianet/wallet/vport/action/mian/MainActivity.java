@@ -99,6 +99,7 @@ public class MainActivity extends BaseMainActivity {
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                insertCancelLogin();
                 dismissDialog();
             }
         });
@@ -146,9 +147,25 @@ public class MainActivity extends BaseMainActivity {
         btClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                insertCancelLogin();
                 dismissDialog();
             }
         });
+    }
+
+    public void insertCancelLogin() {
+        Contract contract = new Contract();
+        contract.get();
+        OperatingData operatingData = new OperatingData(contract.getNickname()
+                , SysConstant.getHradImageUrlHash()
+                , mLoginTokenContextJWTBean.payload.context.clientName
+                , ""
+                , mLoginTokenContextJWTBean.payload.context.clientURL
+                , OperationStateEnum.Cancel
+                , "取消登录"
+                , OperationTypeEnum.Login
+                , "");
+        OperatingDataManager.insert(operatingData);
     }
 
     public TextDrawable getTextDrawable(String clientName) {
