@@ -40,7 +40,7 @@
         </activity>
         <activity
             android:name=".action.password.CustomPinActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".action.password.HintPasswordActivity"

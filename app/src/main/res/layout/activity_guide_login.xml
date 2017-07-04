@@ -19,7 +19,7 @@
         android:textSize="14sp"/>
 
 
-    <android.support.v7.widget.AppCompatButton
+    <Button
         android:id="@+id/bt_boot_login_create"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
