@@ -28,6 +28,7 @@ import com.a21vianet.wallet.vport.dao.entity.OperatingData;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.ClaimTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTBean;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.LoginTokenContext;
@@ -69,6 +70,7 @@ public class MainActivity extends BaseMainActivity {
     public static final int REQUEST_CODE_SCAN = 8080;
     public static final String SUB_LOGIN_TOKEN = "login token";
     public static final String SUB_AUTHORIZATION_TOKEN = "authorization token";
+    public static final String SUB_CLAIM_TOKEN = "claim token";
 
     private AlertDialog mAlertDialogLogin;
     private ImageView imageViewCompany;
@@ -79,6 +81,7 @@ public class MainActivity extends BaseMainActivity {
 
     private JWTBean<LoginTokenContext> mLoginTokenContextJWTBean = null;
     private JWTBean<UserLoginTokenContext> mUserLoginTokenContextJWTBean = null;
+    private JWTBean<ClaimTokenContext> mClaimTokenContextJWTBean = null;
 
     public void initLoginDialog() {
         RelativeLayout relativeLoginDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_login, null);
@@ -125,7 +128,7 @@ public class MainActivity extends BaseMainActivity {
                                     , SysConstant.getHradImageUrlHash()
                                     , mLoginTokenContextJWTBean.payload.context.clientName
                                     , ""
-                                    , mLoginTokenContextJWTBean.payload.context.clientURL
+                                    , mLoginTokenContextJWTBean.payload.context.serverURL
                                     , OperationStateEnum.Success
                                     , "登录成功"
                                     , OperationTypeEnum.Login
@@ -160,7 +163,7 @@ public class MainActivity extends BaseMainActivity {
                 , SysConstant.getHradImageUrlHash()
                 , mLoginTokenContextJWTBean.payload.context.clientName
                 , ""
-                , mLoginTokenContextJWTBean.payload.context.clientURL
+                , mLoginTokenContextJWTBean.payload.context.serverURL
                 , OperationStateEnum.Cancel
                 , "取消登录"
                 , OperationTypeEnum.Login
@@ -312,7 +315,7 @@ public class MainActivity extends BaseMainActivity {
                                                                 public void onVerified(boolean isValid) {
                                                                     if (isValid) {
                                                                         JWTBean<UserLoginTokenContext> userLoginTokenContextJWTBean =
-                                                                                new ScanDataTask().getJWTBeanFromSeverJWTBean(loginTokenContextJWTBean);
+                                                                                new ScanDataTask().getLoginJWTBeanFromSeverJWTBean(loginTokenContextJWTBean);
                                                                         mUserLoginTokenContextJWTBean = userLoginTokenContextJWTBean;
                                                                         subscriber.onNext(userLoginTokenContextJWTBean);
                                                                         subscriber.onCompleted();
@@ -383,6 +386,12 @@ public class MainActivity extends BaseMainActivity {
                                 });
                         break;
                     case SUB_AUTHORIZATION_TOKEN:
+                        break;
+                    case SUB_CLAIM_TOKEN:
+                        final JWTBean<ClaimTokenContext> claimTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<ClaimTokenContext>>() {
+                        }.getType());
+                        mClaimTokenContextJWTBean = claimTokenContextJWTBean;
+
                         break;
                 }
             }
