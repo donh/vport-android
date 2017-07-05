@@ -128,7 +128,6 @@ public class MainActivity extends BaseMainActivity {
                             if (claimResponse.result.valid) {
                                 IdentityCard identityCard = IdentityCardManager.get(0);
                                 identityCard.setState(IdentityCardState.PENDING.state);
-                                identityCard.setJwt(claimResponse.result.claim.content);
                                 IdentityCardManager.update(identityCard);
                                 Toast.makeText(MainActivity.this, "声明信息提交成功", Toast.LENGTH_SHORT).show();
                             } else {

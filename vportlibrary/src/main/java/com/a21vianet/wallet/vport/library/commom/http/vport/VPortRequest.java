@@ -7,10 +7,10 @@ import com.littlesparkle.growler.core.http.Request;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -84,7 +84,7 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
         @POST("claims/add")
         @FormUrlEncoded
         Observable<CertificationResult> certificate(
-                @Query("") String certificate
+                @Field("") String certificate
         );
     }
 }
