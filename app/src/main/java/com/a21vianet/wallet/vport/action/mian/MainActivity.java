@@ -25,8 +25,10 @@ import com.a21vianet.wallet.vport.action.setting.SettingActivity;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.common.ActivityStartUtility;
 import com.a21vianet.wallet.vport.dao.OperatingDataManager;
+import com.a21vianet.wallet.vport.dao.bean.IdentityCardState;
 import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum;
 import com.a21vianet.wallet.vport.dao.bean.OperationTypeEnum;
+import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.dao.entity.OperatingData;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
@@ -90,9 +92,7 @@ public class MainActivity extends BaseMainActivity {
     private String serverUrl = "";
 
     private JWTBean<LoginTokenContext> mLoginTokenContextJWTBean = null;
-    private JWTBean<UserLoginTokenContext> mUserLoginTokenContextJWTBean = null;
     private JWTBean<ClaimTokenContext> mClaimTokenContextJWTBean = null;
-    private JWTBean<UserClaimTokenContext> mUserClaimTokenContextJWTBean = null;
 
     public void initClaimDialog() {
         RelativeLayout relativeClaimDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_claim, null);
@@ -126,6 +126,10 @@ public class MainActivity extends BaseMainActivity {
                             super.onSuccess(claimResponse);
                             dismissDialog(mAlertDialogClaim);
                             if (claimResponse.result.valid) {
+                                IdentityCard identityCard = IdentityCardManager.get(0);
+                                identityCard.setState(IdentityCardState.PENDING.state);
+                                identityCard.setJwt(claimResponse.result.claim.content);
+                                IdentityCardManager.update(identityCard);
                                 Toast.makeText(MainActivity.this, "声明信息提交成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(MainActivity.this, "声明信息提交失败", Toast.LENGTH_SHORT).show();
@@ -171,7 +175,7 @@ public class MainActivity extends BaseMainActivity {
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                insertCancelLogin();
+                insertCancelLoginToDb();
                 dismissDialog(mAlertDialogLogin);
             }
         });
@@ -219,13 +223,13 @@ public class MainActivity extends BaseMainActivity {
         btClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                insertCancelLogin();
+                insertCancelLoginToDb();
                 dismissDialog(mAlertDialogLogin);
             }
         });
     }
 
-    public void insertCancelLogin() {
+    public void insertCancelLoginToDb() {
         Contract contract = new Contract();
         contract.get();
         OperatingData operatingData = new OperatingData(contract.getNickname()
@@ -386,7 +390,6 @@ public class MainActivity extends BaseMainActivity {
                                                                     if (isValid) {
                                                                         JWTBean<UserLoginTokenContext> userLoginTokenContextJWTBean =
                                                                                 new ScanDataTask().getLoginJWTBeanFromSeverJWTBean(loginTokenContextJWTBean);
-                                                                        mUserLoginTokenContextJWTBean = userLoginTokenContextJWTBean;
                                                                         subscriber.onNext(userLoginTokenContextJWTBean);
                                                                         subscriber.onCompleted();
                                                                     } else
@@ -487,7 +490,6 @@ public class MainActivity extends BaseMainActivity {
                                                                         if (IdentityCardManager.exists()) {
                                                                             JWTBean<UserClaimTokenContext> userClaimTokenContextJWTBean =
                                                                                     new ScanDataTask().getClaimJWTBeanFromSeverJWTBean(claimTokenContextJWTBean);
-                                                                            mUserClaimTokenContextJWTBean = userClaimTokenContextJWTBean;
                                                                             subscriber.onNext(userClaimTokenContextJWTBean);
                                                                             subscriber.onCompleted();
                                                                         } else {

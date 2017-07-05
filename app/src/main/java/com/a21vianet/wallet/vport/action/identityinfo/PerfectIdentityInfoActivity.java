@@ -1,8 +1,10 @@
 package com.a21vianet.wallet.vport.action.identityinfo;
 
 
+import android.app.Activity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -165,12 +167,22 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
                 if (mIsedit) {
                     timeBeginPickerView.show();
                 }
+                hideKeyboard(this);
                 break;
             case R.id.relative_time_end:
                 if (mIsedit) {
                     timeEndPickerView.show();
                 }
+                hideKeyboard(this);
                 break;
+        }
+    }
+
+    public void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 
