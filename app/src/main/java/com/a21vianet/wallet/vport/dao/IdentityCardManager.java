@@ -26,7 +26,8 @@ public class IdentityCardManager {
     public static IdentityCard get(int id) {
         IdentityCardDao identityCardDao = GreenDaoManager.getInstance().getSession()
                 .getIdentityCardDao();
-        return identityCardDao.load((long) id);
+//        return identityCardDao.load((long) id);
+        return identityCardDao.loadAll().get(0);
     }
 
     public static List<IdentityCard> load() {
