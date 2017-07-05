@@ -23,6 +23,7 @@ import com.a21vianet.wallet.vport.action.scan.ScanActivity;
 import com.a21vianet.wallet.vport.action.scan.data.ScanDataTask;
 import com.a21vianet.wallet.vport.action.setting.SettingActivity;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
+import com.a21vianet.wallet.vport.common.ActivityStartUtility;
 import com.a21vianet.wallet.vport.dao.OperatingDataManager;
 import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum;
 import com.a21vianet.wallet.vport.dao.bean.OperationTypeEnum;
@@ -302,7 +303,7 @@ public class MainActivity extends BaseMainActivity {
                 intent = new Intent(this, HistoryOperationActivity.class);
                 break;
             case R.id.imgv_main_scan:
-                startActivityForResult(new Intent(this, ScanActivity.class), REQUEST_CODE_SCAN);
+                ActivityStartUtility.startScanActivity(this,new Intent(this, ScanActivity.class), REQUEST_CODE_SCAN);
                 break;
             case R.id.imgv_main_setting:
                 intent = new Intent(this, SettingActivity.class);
