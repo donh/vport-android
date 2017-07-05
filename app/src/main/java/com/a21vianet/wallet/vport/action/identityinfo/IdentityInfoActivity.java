@@ -17,14 +17,19 @@ import android.widget.TextView;
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.action.identityinfo.task.IdCardUtiltiy;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
+import com.a21vianet.wallet.vport.dao.bean.IdentityCardState;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
+import com.a21vianet.wallet.vport.library.commom.http.vport.VPortRequest;
+import com.a21vianet.wallet.vport.library.commom.http.vport.bean.CertificationResult;
 import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.bumptech.glide.Glide;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.littlesparkle.growler.core.am.ActivityUtility;
+import com.littlesparkle.growler.core.http.BaseHttpSubscriber;
+import com.littlesparkle.growler.core.http.ErrorResponse;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
 import com.littlesparkle.growler.core.ui.adapter.RecyclerBaseAdapter;
 import com.littlesparkle.growler.core.ui.view.GlideCircleImage;
@@ -86,6 +91,11 @@ public class IdentityInfoActivity extends BaseActivity {
     private void initIdDate() {
         mIdentityInfoList.clear();
         mIdentityInfoList.addAll(IdentityCardManager.load());
+
+        for (int i = 0; i < mIdentityInfoList.size(); i++) {
+            uodateIdentityData(i);
+        }
+
         if (mIdentityInfoList.size() == 0) {
             mLayoutHintadd.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -107,6 +117,34 @@ public class IdentityInfoActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mIdCardAdapter);
         mIdCardAdapter.notifyDataSetChanged();
+    }
+
+    private void uodateIdentityData(final int i) {
+        new VPortRequest().certificate(new BaseHttpSubscriber<CertificationResult>() {
+            @Override
+            protected void onError(ErrorResponse error) {
+                super.onError(error);
+
+            }
+
+            @Override
+            protected void onSuccess(CertificationResult certificationResult) {
+                super.onSuccess(certificationResult);
+                switch (certificationResult.getStatus()) {
+                    case "APPROVED":
+                        mIdentityInfoList.get(i).setState(IdentityCardState.APPROVED.state);
+                        mIdentityInfoList.get(i).setJwt(certificationResult.getAttestation());
+                        break;
+                    case "PENDING":
+                        mIdentityInfoList.get(i).setState(IdentityCardState.PENDING.state);
+                        break;
+                    case "REJECTED":
+                        mIdentityInfoList.get(i).setState(IdentityCardState.REJECTED.state);
+                        break;
+                }
+                mIdCardAdapter.notifyDataSetChanged();
+            }
+        }, mIdentityInfoList.get(i).getToken());
     }
 
     @Override

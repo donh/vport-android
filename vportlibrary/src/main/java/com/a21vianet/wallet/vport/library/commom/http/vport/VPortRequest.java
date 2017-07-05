@@ -1,19 +1,26 @@
 package com.a21vianet.wallet.vport.library.commom.http.vport;
 
+import com.a21vianet.wallet.vport.library.commom.http.vport.bean.CertificationResult;
 import com.google.gson.JsonObject;
 import com.littlesparkle.growler.core.http.BaseHttpSubscriber;
 import com.littlesparkle.growler.core.http.Request;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class VPortRequest extends Request<VPortRequest.VPortApi> {
+
+    public VPortRequest() {
+        super();
+    }
 
     public VPortRequest(String url) {
         super(url);
@@ -46,6 +53,14 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 .subscribe(subscriber);
     }
 
+    public Subscription certificate(BaseHttpSubscriber<CertificationResult> subscriber, String token) {
+        return mService.certificate(token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
+    }
+
 
     @Override
     protected Class<VPortApi> getServiceClass() {
@@ -64,6 +79,12 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
         @Headers({"Content-Type: application/json"})
         Observable<ClaimResponse> claim(
                 @Body RequestBody claim
+        );
+
+        @POST("claims/add")
+        @FormUrlEncoded
+        Observable<CertificationResult> certificate(
+                @Query("") String certificate
         );
     }
 }
