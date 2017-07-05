@@ -9,11 +9,11 @@ import com.google.gson.annotations.SerializedName;
 public class GetColor1Response {
 
     /**
-     * loginResult : Successful!
+     * result : Successful!
      * tx_id : 2f135cbc55173edaa0d65deb2ca6bd0efbbb420f92799f6d9697b2f312a58490
      */
 
-    @SerializedName("loginResult")
+    @SerializedName("result")
     private String result;
     @SerializedName("tx_id")
     private String txId;
