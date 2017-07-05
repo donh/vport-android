@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a21vianet.wallet.vport.R;
+import com.a21vianet.wallet.vport.common.ValidationUtility;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.exception.RegularException;
@@ -200,6 +201,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
                     "(0\\d)|" +
                     "(1[0-2]))(" +
                     "([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)", "身份证号信息不正确");
+            reagulerId(number, "身份证号信息不正确");
             regular(timeBegin, "[\\s\\S]{1,64}", "请检查有效开始时间");
             regular(timeEnd, "[\\s\\S]{1,64}", "请检查有效结束时间");
             regular(issued, "[\\s\\S]{1,64}", "请检查签发机关");
@@ -209,6 +211,12 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
             finish();
         } catch (RegularException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void reagulerId(String number, String s) throws RegularException {
+        if (!ValidationUtility.reagulerIdEntityNumber(number)) {
+            throw new RegularException(s);
         }
     }
 
