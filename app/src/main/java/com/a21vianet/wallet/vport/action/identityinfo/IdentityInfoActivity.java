@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.a21vianet.wallet.vport.R;
-import com.a21vianet.wallet.vport.action.identityinfo.task.IdCardUtiltiy;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.bean.IdentityCardState;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
@@ -42,6 +41,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import qiu.niorgai.StatusBarCompat;
+
+import static com.a21vianet.wallet.vport.action.identityinfo.task.IdCardUtiltiyKt.verdictIdState;
 
 public class IdentityInfoActivity extends BaseActivity {
     @BindView(R.id.img_head_background)
@@ -209,7 +210,7 @@ public class IdentityInfoActivity extends BaseActivity {
 
             holder.mIdCardTextView.setText(item.getNumber());
 
-            Pair<String, Integer> stringIntegerPair = IdCardUtiltiy.verdictIdState(item.getState());
+            Pair<String, Integer> stringIntegerPair = verdictIdState(item.getState());
 
             String staetStr = stringIntegerPair.first;
             @ColorInt
