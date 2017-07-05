@@ -15,10 +15,11 @@ import com.a21vianet.wallet.vport.exception.RegularException;
 import com.bigkoo.pickerview.TimePickerView;
 import com.bigkoo.pickerview.lib.WheelView;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
-import com.littlesparkle.growler.core.utility.TimeUtility;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +31,8 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
     public final static String IDENTITYID = "mIdentityid";
     public boolean mIsedit;
     public long mIdentityid;
+
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     @BindView(R.id.title_bar_back_btn)
     AppCompatImageButton titleBarBackBtn;
@@ -94,7 +97,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
                 .OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
-                tvTimeBegin.setText(TimeUtility.formatDate(date));
+                tvTimeBegin.setText(formatter.format(date));
             }
         })
                 .setCancelText("取消")//取消按钮文字
@@ -120,7 +123,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
                 .OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
-                tvTimeEnd.setText(TimeUtility.formatDate(date));
+                tvTimeEnd.setText(formatter.format(date));
             }
         })
                 .setCancelText("取消")//取消按钮文字
