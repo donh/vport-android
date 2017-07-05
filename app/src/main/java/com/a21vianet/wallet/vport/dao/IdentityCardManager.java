@@ -41,10 +41,19 @@ public class IdentityCardManager {
         IdentityCardDao identityCardDao = GreenDaoManager.getInstance().getSession()
                 .getIdentityCardDao();
         List<IdentityCard> identityCards = identityCardDao.loadAll();
-        boolean exists = false;
+        boolean exists = true;
         if (identityCards == null || identityCards.size() == 0) {
-            exists = true;
+            exists = false;
         }
         return exists;
+    }
+
+    public static String getUserGender(String idCard) {
+        char gender = idCard.charAt(17);
+        if ((int) gender % 2 == 0) {
+            return "女";
+        } else {
+            return "男";
+        }
     }
 }

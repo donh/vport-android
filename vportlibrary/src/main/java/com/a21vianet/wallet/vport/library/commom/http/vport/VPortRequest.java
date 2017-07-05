@@ -33,6 +33,19 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 .subscribe(subscriber);
     }
 
+    public Subscription claim(BaseHttpSubscriber<ClaimResponse> subscriber, String claimJWT) {
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("claimJWT", claimJWT);
+        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json" +
+                "charset=utf-8"), jsonObject.toString());
+        return mService.claim(requestBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
+    }
+
 
     @Override
     protected Class<VPortApi> getServiceClass() {
@@ -47,5 +60,10 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 @Body RequestBody login
         );
 
+        @POST("claims/add")
+        @Headers({"Content-Type: application/json"})
+        Observable<ClaimResponse> claim(
+                @Body RequestBody claim
+        );
     }
 }

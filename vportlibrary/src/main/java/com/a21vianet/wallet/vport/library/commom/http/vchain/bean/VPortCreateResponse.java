@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class VPortCreateResponse {
 
-    @SerializedName("result")
+    @SerializedName("loginResult")
     private ResultBean result;
     @SerializedName("time")
     private String time;

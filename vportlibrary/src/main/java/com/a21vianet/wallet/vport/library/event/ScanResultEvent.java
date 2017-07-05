@@ -12,7 +12,7 @@ public class ScanResultEvent {
     @Override
     public String toString() {
         return "ScanResultEvent{" +
-                "result='" + result + '\'' +
+                "loginResult='" + result + '\'' +
                 '}';
     }
 }

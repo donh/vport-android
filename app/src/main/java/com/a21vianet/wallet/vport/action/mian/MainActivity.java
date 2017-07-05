@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -21,6 +22,7 @@ import com.a21vianet.wallet.vport.action.password.PasswordManager;
 import com.a21vianet.wallet.vport.action.scan.ScanActivity;
 import com.a21vianet.wallet.vport.action.scan.data.ScanDataTask;
 import com.a21vianet.wallet.vport.action.setting.SettingActivity;
+import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.OperatingDataManager;
 import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum;
 import com.a21vianet.wallet.vport.dao.bean.OperationTypeEnum;
@@ -32,9 +34,11 @@ import com.a21vianet.wallet.vport.library.commom.crypto.bean.ClaimTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTBean;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.LoginTokenContext;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserClaimTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserLoginTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnFinishedListener;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnVerifiedListener;
+import com.a21vianet.wallet.vport.library.commom.http.vport.ClaimResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vport.LoginResponse;
 import com.a21vianet.wallet.vport.library.commom.http.vport.VPortRequest;
 import com.a21vianet.wallet.vport.library.constant.SysConstant;
@@ -75,16 +79,80 @@ public class MainActivity extends BaseMainActivity {
     private AlertDialog mAlertDialogLogin;
     private ImageView imageViewCompany;
     private TextView textViewHintDialog;
+
+    private AlertDialog mAlertDialogClaim;
+    private ImageView imageViewClaimCompany;
+    private TextView textViewClaimHintDialog;
+
     private String userJWT = "";
-    private String serverJWT = "";
+    private String userClaimJWT = "";
     private String serverUrl = "";
 
     private JWTBean<LoginTokenContext> mLoginTokenContextJWTBean = null;
     private JWTBean<UserLoginTokenContext> mUserLoginTokenContextJWTBean = null;
     private JWTBean<ClaimTokenContext> mClaimTokenContextJWTBean = null;
+    private JWTBean<UserClaimTokenContext> mUserClaimTokenContextJWTBean = null;
+
+    public void initClaimDialog() {
+        RelativeLayout relativeClaimDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_claim, null);
+        mAlertDialogClaim = new AlertDialog.Builder(this).setView(relativeClaimDialog).create();
+        imageViewClaimCompany = (ImageView) relativeClaimDialog.findViewById(R.id.imgv_claim_dialog_server);
+        textViewClaimHintDialog = (TextView) relativeClaimDialog.findViewById(R.id.tv_claim_dialog_hint);
+        AppCompatButton btCancel = (AppCompatButton) relativeClaimDialog.findViewById(R.id.bt_claim_dialog_cancel);
+        AppCompatButton btOK = (AppCompatButton) relativeClaimDialog.findViewById(R.id.bt_claim_dialog_ok);
+        AppCompatImageButton btClose = (AppCompatImageButton) relativeClaimDialog.findViewById(R.id.imgv_claim_dialog_close);
+        ImageView imageViewUser = (ImageView) relativeClaimDialog.findViewById(R.id.imgv_claim_dialog_user);
+
+        Glide.with(this)
+                .load(getHeaderUrl())
+                .transform(new GlideCircleImage(this))
+                .placeholder(R.drawable.icon_header)
+                .into(imageViewUser);
+
+        btOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!TextUtils.isEmpty(userClaimJWT)) {
+                    new VPortRequest(Api.ClaimApi).claim(new BaseHttpSubscriber<ClaimResponse>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                            dismissDialog(mAlertDialogClaim);
+                        }
+
+                        @Override
+                        protected void onSuccess(ClaimResponse claimResponse) {
+                            super.onSuccess(claimResponse);
+                            dismissDialog(mAlertDialogClaim);
+                            if (claimResponse.result.valid) {
+                                Toast.makeText(MainActivity.this, "声明信息提交成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MainActivity.this, "声明信息提交失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, userClaimJWT);
+                } else Toast.makeText(MainActivity.this, "数据错误，请稍候重试", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissDialog(mAlertDialogClaim);
+            }
+        });
+
+        btClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissDialog(mAlertDialogClaim);
+            }
+        });
+
+    }
 
     public void initLoginDialog() {
-        RelativeLayout relativeLoginDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_login, null);
+        final RelativeLayout relativeLoginDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_login, null);
         mAlertDialogLogin = new AlertDialog.Builder(this).setView(relativeLoginDialog).create();
         imageViewCompany = (ImageView) relativeLoginDialog.findViewById(R.id.imgv_login_dialog_server);
         textViewHintDialog = (TextView) relativeLoginDialog.findViewById(R.id.tv_login_dialog_hint);
@@ -103,7 +171,7 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View view) {
                 insertCancelLogin();
-                dismissDialog();
+                dismissDialog(mAlertDialogLogin);
             }
         });
         btOK.setOnClickListener(new View.OnClickListener() {
@@ -114,14 +182,14 @@ public class MainActivity extends BaseMainActivity {
                         @Override
                         public void onError(Throwable e) {
                             super.onError(e);
-                            dismissDialog();
+                            dismissDialog(mAlertDialogLogin);
                             Toast.makeText(MainActivity.this, "登录失败，请稍候重试", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         protected void onSuccess(LoginResponse loginResponse) {
                             super.onSuccess(loginResponse);
-                            dismissDialog();
+                            dismissDialog(mAlertDialogLogin);
                             Contract contract = new Contract();
                             contract.get();
                             OperatingData operatingData = new OperatingData(contract.getNickname()
@@ -133,7 +201,7 @@ public class MainActivity extends BaseMainActivity {
                                     , "登录成功"
                                     , OperationTypeEnum.Login
                                     , "");
-                            if (loginResponse.result.valid) {
+                            if (loginResponse.loginResult.valid) {
                                 OperatingDataManager.insert(operatingData);
                                 Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                             } else {
@@ -151,7 +219,7 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View view) {
                 insertCancelLogin();
-                dismissDialog();
+                dismissDialog(mAlertDialogLogin);
             }
         });
     }
@@ -178,9 +246,9 @@ public class MainActivity extends BaseMainActivity {
             return TextDrawable.builder().buildRound("V", Color.parseColor("#06bebd"));
     }
 
-    public void dismissDialog() {
-        if (mAlertDialogLogin != null && mAlertDialogLogin.isShowing()) {
-            mAlertDialogLogin.dismiss();
+    public void dismissDialog(AlertDialog alertDialog) {
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
         }
     }
 
@@ -193,6 +261,7 @@ public class MainActivity extends BaseMainActivity {
     protected void initData() {
         checkEnCode();
         initLoginDialog();
+        initClaimDialog();
     }
 
     @Override
@@ -281,8 +350,9 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onFinished(final String s) {
                 final Gson gson = new Gson();
-                JWTBean<Object> jwtBean = gson.fromJson(s, new TypeToken<JWTBean<Object>>() {
+                final JWTBean<Object> jwtBean = gson.fromJson(s, new TypeToken<JWTBean<Object>>() {
                 }.getType());
+                Log.d("MainActivity", "jwtBean:" + jwtBean);
                 switch (jwtBean.payload.sub) {
                     case SUB_LOGIN_TOKEN:
                         final JWTBean<LoginTokenContext> loginTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<LoginTokenContext>>() {
@@ -292,7 +362,6 @@ public class MainActivity extends BaseMainActivity {
 
                             @Override
                             public void call(Subscriber<? super JWTBean<LoginTokenContext>> subscriber) {
-                                serverJWT = scanResultEvent.result;
                                 serverUrl = loginTokenContextJWTBean.payload.context.serverURL;
                                 subscriber.onNext(loginTokenContextJWTBean);
                                 subscriber.onCompleted();
@@ -391,7 +460,103 @@ public class MainActivity extends BaseMainActivity {
                         final JWTBean<ClaimTokenContext> claimTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<ClaimTokenContext>>() {
                         }.getType());
                         mClaimTokenContextJWTBean = claimTokenContextJWTBean;
+                        Log.d("MainActivity", "claimTokenContextJWTBean:" + claimTokenContextJWTBean);
+                        Observable.create(new Observable.OnSubscribe<JWTBean<ClaimTokenContext>>() {
+                            @Override
+                            public void call(Subscriber<? super JWTBean<ClaimTokenContext>> subscriber) {
+                                subscriber.onNext(claimTokenContextJWTBean);
+                                subscriber.onCompleted();
+                            }
+                        })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .flatMap(new Func1<JWTBean<ClaimTokenContext>, Observable<JWTBean<UserClaimTokenContext>>>() {
+                                    @Override
+                                    public Observable<JWTBean<UserClaimTokenContext>> call(final JWTBean<ClaimTokenContext> claimTokenContextJWTBean) {
+                                        return Observable.create(new Observable.OnSubscribe<JWTBean<UserClaimTokenContext>>() {
+                                            @Override
+                                            public void call(final Subscriber<? super JWTBean<UserClaimTokenContext>> subscriber) {
+                                                try {
+                                                    CryptoManager.getInstance().verifyJWTToken(MainActivity.this
+                                                            , claimTokenContextJWTBean.payload.context.serverPublicKey
+                                                            , scanResultEvent.result
+                                                            , new OnVerifiedListener() {
+                                                                @Override
+                                                                public void onVerified(boolean isValid) {
+                                                                    if (isValid) {
+                                                                        if (IdentityCardManager.exists()) {
+                                                                            JWTBean<UserClaimTokenContext> userClaimTokenContextJWTBean =
+                                                                                    new ScanDataTask().getClaimJWTBeanFromSeverJWTBean(claimTokenContextJWTBean);
+                                                                            mUserClaimTokenContextJWTBean = userClaimTokenContextJWTBean;
+                                                                            subscriber.onNext(userClaimTokenContextJWTBean);
+                                                                            subscriber.onCompleted();
+                                                                        } else {
+                                                                            subscriber.onError(new Throwable("暂无声明信息"));
+                                                                        }
 
+                                                                    } else {
+                                                                        subscriber.onError(new Throwable("验证签名失败，请稍候重试"));
+                                                                    }
+                                                                }
+                                                            });
+                                                } catch (NoDecryptException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .flatMap(new Func1<JWTBean<UserClaimTokenContext>, Observable<String>>() {
+                                    @Override
+                                    public Observable<String> call(final JWTBean<UserClaimTokenContext> userClaimTokenContextJWTBean) {
+                                        return Observable.create(new Observable.OnSubscribe<String>() {
+                                            @Override
+                                            public void call(final Subscriber<? super String> subscriber) {
+                                                try {
+                                                    CryptoManager.getInstance().signJWTToken(MainActivity.this
+                                                            , gson.toJson(userClaimTokenContextJWTBean.payload)
+                                                            , new OnFinishedListener() {
+                                                                @Override
+                                                                public void onFinished(String s) {
+                                                                    subscriber.onNext(s);
+                                                                    subscriber.onCompleted();
+                                                                }
+
+                                                                @Override
+                                                                public void onError(Exception e) {
+                                                                    subscriber.onError(e);
+                                                                }
+                                                            });
+                                                } catch (NoDecryptException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                    }
+                                })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Subscriber<String>() {
+                                    @Override
+                                    public void onCompleted() {
+                                        imageViewClaimCompany.setImageDrawable(getTextDrawable(mClaimTokenContextJWTBean.payload.context.clientName));
+                                        mAlertDialogClaim.show();
+                                        dismissProgress();
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        dismissProgress();
+                                        if (!TextUtils.isEmpty(e.getMessage())) {
+                                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onNext(String s) {
+                                        userClaimJWT = s;
+                                    }
+                                });
                         break;
                 }
             }

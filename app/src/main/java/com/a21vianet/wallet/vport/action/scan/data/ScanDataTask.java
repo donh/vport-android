@@ -1,6 +1,8 @@
 package com.a21vianet.wallet.vport.action.scan.data;
 
 
+import com.a21vianet.wallet.vport.dao.IdentityCardManager;
+import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.ClaimTokenContext;
@@ -49,6 +51,8 @@ public class ScanDataTask {
         Contract contract = new Contract();
         contract.get();
 
+        IdentityCard identityCard = IdentityCardManager.get(0);
+
         JWTBean<UserClaimTokenContext> userClaimTokenContextJWTBean = new JWTBean<>();
         userClaimTokenContextJWTBean.payload = new JWTPayload<>();
         userClaimTokenContextJWTBean.payload.iss = claimTokenContextJWTBean.payload.aud;
@@ -57,7 +61,19 @@ public class ScanDataTask {
         userClaimTokenContextJWTBean.payload.exp = claimTokenContextJWTBean.payload.exp;
         userClaimTokenContextJWTBean.payload.sub = SUB_CLAIM_TOKEN_SIGNED;
 
-//        userClaimTokenContextJWTBean.payload.context = new UserClaimTokenContext();
+        try {
+            userClaimTokenContextJWTBean.payload.context = new UserClaimTokenContext(identityCard.getAgencies()
+                    , identityCard.getEndtime()
+                    , IdentityCardManager.getUserGender(identityCard.getNumber())
+                    , identityCard.getNumber()
+                    , identityCard.getBegintime()
+                    , identityCard.getName()
+                    , claimTokenContextJWTBean.payload.context.token
+                    , contract.getProxy()
+                    , CryptoManager.getInstance().getCoinKey().getPubKey());
+        } catch (NoDecryptException e) {
+            e.printStackTrace();
+        }
 
         return userClaimTokenContextJWTBean;
     }

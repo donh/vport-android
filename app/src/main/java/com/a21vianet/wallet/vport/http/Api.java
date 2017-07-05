@@ -31,4 +31,9 @@ public class Api {
      */
     public static final String IPFSWebApi = "http://58.83.219.152:8080/ipfs/";
 
+
+    /**
+     * 声明 服务器地址
+     */
+    public static final String ClaimApi = " http://58.83.219.147:8000/api/v1/";
 }

@@ -1,17 +1,17 @@
 package com.a21vianet.wallet.vport.library.commom.http.vport;
 
 
-import com.a21vianet.wallet.vport.library.commom.http.vport.bean.Result;
+import com.a21vianet.wallet.vport.library.commom.http.vport.bean.LoginResult;
 
 public class LoginResponse {
 
-    public Result result;
+    public LoginResult loginResult;
     public String time;
 
     @Override
     public String toString() {
         return "LoginResponse{" +
-                "result=" + result +
+                "loginResult=" + loginResult +
                 ", time='" + time + '\'' +
                 '}';
     }
