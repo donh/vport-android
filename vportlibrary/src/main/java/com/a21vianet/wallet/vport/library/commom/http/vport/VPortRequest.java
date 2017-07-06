@@ -7,8 +7,6 @@ import com.littlesparkle.growler.core.http.Request;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Url;
@@ -27,14 +25,14 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
         super(url);
     }
 
-    public Subscription login(BaseHttpSubscriber<LoginResponse> subscriber, String userJWT,String url) {
+    public Subscription login(BaseHttpSubscriber<LoginResponse> subscriber, String userJWT, String url) {
 
         JsonObject json = new JsonObject();
         json.addProperty("userJWT", userJWT);
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json" +
                 "charset=utf-8"), json.toString());
 
-        return mService.login(url,body)
+        return mService.login(url, body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -54,8 +52,13 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 .subscribe(subscriber);
     }
 
-    public Subscription certificate(BaseHttpSubscriber<CertificationResult> subscriber, String token) {
-        return mService.certificate(token)
+    public Subscription certificate(BaseHttpSubscriber<CertificationResult> subscriber, String tx) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("attestationJWT", tx);
+
+        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json" +
+                "charset=utf-8"), jsonObject.toString());
+        return mService.certificate(requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -83,10 +86,10 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 @Body RequestBody claim
         );
 
-        @POST("claims/add")
-        @FormUrlEncoded
+        @POST("attestations")
+        @Headers({"Content-Type: application/json"})
         Observable<CertificationResult> certificate(
-                @Field("") String certificate
+                @Body RequestBody claim
         );
     }
 }

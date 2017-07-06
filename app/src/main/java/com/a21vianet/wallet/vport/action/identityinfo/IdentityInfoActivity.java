@@ -19,11 +19,15 @@ import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.bean.IdentityCardState;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.http.Api;
+import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
+import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
+import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnFinishedListener;
 import com.a21vianet.wallet.vport.library.commom.http.vport.VPortRequest;
 import com.a21vianet.wallet.vport.library.commom.http.vport.bean.CertificationResult;
 import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.littlesparkle.growler.core.am.ActivityUtility;
@@ -93,8 +97,37 @@ public class IdentityInfoActivity extends BaseActivity {
         mIdentityInfoList.clear();
         mIdentityInfoList.addAll(IdentityCardManager.load());
 
-        for (int i = 0; i < mIdentityInfoList.size(); i++) {
-            uodateIdentityData(i);
+        try {
+            Contract contract = new Contract();
+            contract.get();
+            String pubKey = CryptoManager.getInstance().getCoinKey().getPubKey();
+
+            JsonObject contextjsonObject = new JsonObject();
+            contextjsonObject.addProperty("userProxy", contract.getProxy());
+            contextjsonObject.addProperty("userPublicKey", pubKey);
+
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("iss", "vport.chancheng.user");
+            jsonObject.addProperty("iat", System.currentTimeMillis() / 1000);
+            jsonObject.addProperty("exp", (System.currentTimeMillis() / 1000) + 5000);
+            jsonObject.addProperty("sub", "attestation retrieval for ID");
+            jsonObject.add("context", contextjsonObject);
+
+            CryptoManager.getInstance().signJWTToken(this, jsonObject.toString(), new OnFinishedListener() {
+                @Override
+                public void onFinished(String s) {
+                    for (int i = 0; i < mIdentityInfoList.size(); i++) {
+                        uodateIdentityData(i, s);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
+        } catch (NoDecryptException e) {
+            e.printStackTrace();
         }
 
         if (mIdentityInfoList.size() == 0) {
@@ -120,8 +153,8 @@ public class IdentityInfoActivity extends BaseActivity {
         mIdCardAdapter.notifyDataSetChanged();
     }
 
-    private void uodateIdentityData(final int i) {
-        new VPortRequest().certificate(new BaseHttpSubscriber<CertificationResult>() {
+    private void uodateIdentityData(final int i, String tx) {
+        new VPortRequest(Api.ClaimApi).certificate(new BaseHttpSubscriber<CertificationResult>() {
             @Override
             protected void onError(ErrorResponse error) {
                 super.onError(error);
@@ -143,9 +176,10 @@ public class IdentityInfoActivity extends BaseActivity {
                         mIdentityInfoList.get(i).setState(IdentityCardState.REJECTED.state);
                         break;
                 }
+                IdentityCardManager.update(mIdentityInfoList.get(i));
                 mIdCardAdapter.notifyDataSetChanged();
             }
-        }, mIdentityInfoList.get(i).getToken());
+        }, tx);
     }
 
     @Override
