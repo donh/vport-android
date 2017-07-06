@@ -125,14 +125,30 @@ public class MainActivity extends BaseMainActivity {
                         protected void onSuccess(ClaimResponse claimResponse) {
                             super.onSuccess(claimResponse);
                             dismissDialog(mAlertDialogClaim);
+
+                            Contract contract = new Contract();
+                            contract.get();
+                            OperatingData operatingData = new OperatingData(contract.getNickname()
+                                    , SysConstant.getHradImageUrlHash()
+                                    , mClaimTokenContextJWTBean.payload.context.clientName
+                                    , ""
+                                    , ""
+                                    , OperationStateEnum.Success
+                                    , "声明成功"
+                                    , OperationTypeEnum.Statement
+                                    , "");
+
                             if (claimResponse.result.valid) {
+                                Toast.makeText(MainActivity.this, "声明信息提交成功", Toast.LENGTH_SHORT).show();
                                 IdentityCard identityCard = IdentityCardManager.get(0);
                                 identityCard.setState(IdentityCardState.PENDING.state);
                                 IdentityCardManager.update(identityCard);
-                                Toast.makeText(MainActivity.this, "声明信息提交成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(MainActivity.this, "声明信息提交失败", Toast.LENGTH_SHORT).show();
+                                operatingData.setOperationState(OperationStateEnum.Error.state);
+                                operatingData.setOperationmsg("声明失败");
                             }
+                            OperatingDataManager.insert(operatingData);
                         }
                     }, userClaimJWT);
                 } else Toast.makeText(MainActivity.this, "数据错误，请稍候重试", Toast.LENGTH_SHORT).show();
@@ -143,6 +159,7 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View view) {
                 dismissDialog(mAlertDialogClaim);
+                insertCancelClaimToDb();
             }
         });
 
@@ -150,6 +167,7 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View view) {
                 dismissDialog(mAlertDialogClaim);
+                insertCancelClaimToDb();
             }
         });
 
@@ -194,6 +212,7 @@ public class MainActivity extends BaseMainActivity {
                         protected void onSuccess(LoginResponse loginResponse) {
                             super.onSuccess(loginResponse);
                             dismissDialog(mAlertDialogLogin);
+
                             Contract contract = new Contract();
                             contract.get();
                             OperatingData operatingData = new OperatingData(contract.getNickname()
@@ -206,14 +225,14 @@ public class MainActivity extends BaseMainActivity {
                                     , OperationTypeEnum.Login
                                     , "");
                             if (loginResponse.loginResult.valid) {
-                                OperatingDataManager.insert(operatingData);
                                 Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 operatingData.setOperationState(OperationStateEnum.Error.state);
                                 operatingData.setOperationmsg("登录失败");
-                                OperatingDataManager.insert(operatingData);
                                 Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
                             }
+                            OperatingDataManager.insert(operatingData);
+
                         }
                     }, userJWT);
                 } else Toast.makeText(MainActivity.this, "数据错误，请稍候重试", Toast.LENGTH_SHORT).show();
@@ -226,6 +245,21 @@ public class MainActivity extends BaseMainActivity {
                 dismissDialog(mAlertDialogLogin);
             }
         });
+    }
+
+    public void insertCancelClaimToDb() {
+        Contract contract = new Contract();
+        contract.get();
+        OperatingData operatingData = new OperatingData(contract.getNickname()
+                , SysConstant.getHradImageUrlHash()
+                , mClaimTokenContextJWTBean.payload.context.clientName
+                , ""
+                , ""
+                , OperationStateEnum.Cancel
+                , "取消声明"
+                , OperationTypeEnum.Statement
+                , "");
+        OperatingDataManager.insert(operatingData);
     }
 
     public void insertCancelLoginToDb() {
@@ -306,7 +340,7 @@ public class MainActivity extends BaseMainActivity {
                 intent = new Intent(this, HistoryOperationActivity.class);
                 break;
             case R.id.imgv_main_scan:
-                ActivityStartUtility.startScanActivity(this,new Intent(this, ScanActivity.class), REQUEST_CODE_SCAN);
+                ActivityStartUtility.startScanActivity(this, new Intent(this, ScanActivity.class), REQUEST_CODE_SCAN);
                 break;
             case R.id.imgv_main_setting:
                 intent = new Intent(this, SettingActivity.class);
