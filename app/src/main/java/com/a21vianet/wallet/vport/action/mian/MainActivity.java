@@ -202,8 +202,7 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(userJWT) && !TextUtils.isEmpty(serverUrl)) {
-                    Pair<String, String> stringStringPair = UrlUtitly.substringUrl(serverUrl);
-                    new VPortRequest(stringStringPair.first).login(new BaseHttpSubscriber<LoginResponse>() {
+                    new VPortRequest(Api.ClaimApi).login(new BaseHttpSubscriber<LoginResponse>() {
                         @Override
                         public void onError(Throwable e) {
                             super.onError(e);
@@ -238,7 +237,7 @@ public class MainActivity extends BaseMainActivity {
                             OperatingDataManager.insert(operatingData);
 
                         }
-                    }, userJWT, stringStringPair.second);
+                    }, userJWT);
                 } else Toast.makeText(MainActivity.this, "数据错误，请稍候重试", Toast.LENGTH_SHORT).show();
             }
         });
