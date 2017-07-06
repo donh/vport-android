@@ -3,10 +3,12 @@ package com.a21vianet.wallet.vport;
 import android.content.Context;
 import android.os.Environment;
 import android.support.multidex.MultiDex;
+import android.webkit.WebView;
 
 import com.a21vianet.wallet.vport.action.password.CustomPinActivity;
 import com.a21vianet.wallet.vport.dao.GreenDaoManager;
 import com.a21vianet.wallet.vport.library.BaseApplication;
+import com.a21vianet.wallet.vport.library.commom.crypto.SingleWebView;
 import com.github.orangegangsters.lollipin.lib.managers.LockManager;
 import com.littlesparkle.growler.core.common.TempDirectory;
 import com.littlesparkle.growler.core.http.api.Api;
@@ -31,6 +33,13 @@ public class WalletApplication extends BaseApplication {
                 + File.separator + "gcoin_wallet");
 
         GreenDaoManager.getInstance();
+
+        SingleWebView.getInstance(this, new SingleWebView.WebViewInitCallback() {
+            @Override
+            public void onSuccess(WebView webView) {
+                
+            }
+        });
     }
 
     @Override
