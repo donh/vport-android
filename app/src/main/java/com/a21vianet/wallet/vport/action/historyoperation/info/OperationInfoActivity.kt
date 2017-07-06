@@ -65,6 +65,13 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    tv_shared_information.text = "${it.operationtype.name}："
+                    tv_accredit_login_name_title.text = "${it.operationtype.name}昵称"
+                    tv_accredit_login_url_name_title.text = "${it.operationtype.name}网站"
+                    tv_accredit_login_url_path_title.text = "${it.operationtype.name}地址"
+                    tv_accredit_login_time_title.text = "${it.operationtype.name}时间"
+
+
                     title_bar_text.text = it.operationtype.name
                     tv_accredit_name.text = it.appname
                     tv_accredit_login_name.text = it.username
@@ -73,7 +80,7 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
                     tv_accredit_login_time.text = mSimpleDateFormat.format(it.operationtime)
 
                     @ColorInt
-                    val typeColor: Int= verdictOperativeState(it.operationState)
+                    val typeColor: Int = verdictOperativeState(it.operationState)
 
                     val gradientDrawableType = GradientDrawable()
                     gradientDrawableType.cornerRadius = roundRadius.toFloat()

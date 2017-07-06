@@ -105,7 +105,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:text="授权："
+                        tools:text="授权："
                         android:textColor="#252525"
                         android:textSize="@dimen/common_text_normalSize"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -170,7 +170,7 @@
                             <TextView
                                 android:id="@+id/tv_accredit_login_name_title"
                                 style="@style/operation_info_accredit_layout_title"
-                                android:text="登录昵称"
+                                tools:text="登录昵称"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -196,7 +196,7 @@
                             <TextView
                                 android:id="@+id/tv_accredit_login_url_name_title"
                                 style="@style/operation_info_accredit_layout_title"
-                                android:text="登陆网站"
+                                tools:text="登陆网站"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -222,7 +222,7 @@
                             <TextView
                                 android:id="@+id/tv_accredit_login_url_path_title"
                                 style="@style/operation_info_accredit_layout_title"
-                                android:text="登陆网址"
+                                tools:text="登陆网址"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -249,7 +249,7 @@
                             <TextView
                                 android:id="@+id/tv_accredit_login_time_title"
                                 style="@style/operation_info_accredit_layout_title"
-                                android:text="登陆时间"
+                                tools:text="登陆时间"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"/>
 

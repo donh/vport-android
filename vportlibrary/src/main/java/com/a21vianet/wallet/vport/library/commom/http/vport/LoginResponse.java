@@ -5,13 +5,13 @@ import com.a21vianet.wallet.vport.library.commom.http.vport.bean.LoginResult;
 
 public class LoginResponse {
 
-    public LoginResult loginResult;
+    public LoginResult result;
     public String time;
 
     @Override
     public String toString() {
         return "LoginResponse{" +
-                "loginResult=" + loginResult +
+                "result=" + result +
                 ", time='" + time + '\'' +
                 '}';
     }

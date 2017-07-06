@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ import com.a21vianet.wallet.vport.action.password.PasswordManager;
 import com.a21vianet.wallet.vport.action.scan.ScanActivity;
 import com.a21vianet.wallet.vport.action.scan.data.ScanDataTask;
 import com.a21vianet.wallet.vport.action.setting.SettingActivity;
+import com.a21vianet.wallet.vport.common.UrlUtitly;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.common.ActivityStartUtility;
 import com.a21vianet.wallet.vport.dao.OperatingDataManager;
@@ -200,7 +202,8 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(userJWT) && !TextUtils.isEmpty(serverUrl)) {
-                    new VPortRequest(serverUrl + "/").login(new BaseHttpSubscriber<LoginResponse>() {
+                    Pair<String, String> stringStringPair = UrlUtitly.substringUrl(serverUrl);
+                    new VPortRequest(stringStringPair.first).login(new BaseHttpSubscriber<LoginResponse>() {
                         @Override
                         public void onError(Throwable e) {
                             super.onError(e);
@@ -224,7 +227,8 @@ public class MainActivity extends BaseMainActivity {
                                     , "登录成功"
                                     , OperationTypeEnum.Login
                                     , "");
-                            if (loginResponse.loginResult.valid) {
+                            if (loginResponse.result.valid) {
+                                OperatingDataManager.insert(operatingData);
                                 Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 operatingData.setOperationState(OperationStateEnum.Error.state);
@@ -234,7 +238,7 @@ public class MainActivity extends BaseMainActivity {
                             OperatingDataManager.insert(operatingData);
 
                         }
-                    }, userJWT);
+                    }, userJWT, stringStringPair.second);
                 } else Toast.makeText(MainActivity.this, "数据错误，请稍候重试", Toast.LENGTH_SHORT).show();
             }
         });

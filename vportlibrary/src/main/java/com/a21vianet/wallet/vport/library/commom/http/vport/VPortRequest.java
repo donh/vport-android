@@ -11,6 +11,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Url;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -26,14 +27,14 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
         super(url);
     }
 
-    public Subscription login(BaseHttpSubscriber<LoginResponse> subscriber, String userJWT) {
+    public Subscription login(BaseHttpSubscriber<LoginResponse> subscriber, String userJWT,String url) {
 
         JsonObject json = new JsonObject();
         json.addProperty("userJWT", userJWT);
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json" +
                 "charset=utf-8"), json.toString());
 
-        return mService.login(body)
+        return mService.login(url,body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -69,9 +70,10 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
 
     interface VPortApi {
 
-        @POST("jwt")
+        @POST
         @Headers({"Content-Type: application/json"})
         Observable<LoginResponse> login(
+                @Url String path,
                 @Body RequestBody login
         );
 
