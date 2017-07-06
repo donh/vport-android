@@ -37,7 +37,7 @@ public class WalletApplication extends BaseApplication {
         SingleWebView.getInstance(this, new SingleWebView.WebViewInitCallback() {
             @Override
             public void onSuccess(WebView webView) {
-                
+
             }
         });
     }

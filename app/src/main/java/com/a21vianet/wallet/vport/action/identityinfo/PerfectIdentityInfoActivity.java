@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.common.ValidationUtility;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
+import com.a21vianet.wallet.vport.dao.bean.IdentityCardState;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.exception.RegularException;
 import com.bigkoo.pickerview.TimePickerView;
@@ -207,7 +208,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
             regular(issued, "[\\s\\S]{1,64}", "请检查签发机关");
 
             IdentityCardManager.insert(new IdentityCard(null, name, number, timeBegin, timeEnd,
-                    issued, 1));
+                    issued, IdentityCardState.NONE.state));
             finish();
         } catch (RegularException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
