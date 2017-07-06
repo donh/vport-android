@@ -3,7 +3,6 @@ package com.a21vianet.wallet.vport.library.commom.crypto;
 import android.content.Context;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnFinishedListener;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnVerifiedListener;
@@ -18,10 +17,9 @@ public class JWT {
         final String js = "javascript:signToken('" + privateKey + "', " +
                 token + ")";
 
-        final WebView webView = SingleWebView.getInstance(context,"index.html");
-        webView.setWebViewClient(new WebViewClient() {
+        SingleWebView.getInstance(context, new SingleWebView.WebViewInitCallback() {
             @Override
-            public void onPageFinished(WebView view, String url) {
+            public void onSuccess(WebView webView) {
                 webView.evaluateJavascript(js, new ValueCallback<String>() {
                     @Override
                     public void onReceiveValue(final String s) {
@@ -35,10 +33,9 @@ public class JWT {
     public static void decodeToken(Context context, String tokenString, final OnFinishedListener listener) {
         final String js = "javascript:decodeToken('" + tokenString + "')";
 
-        final WebView webView = SingleWebView.getInstance(context,"index.html");
-        webView.setWebViewClient(new WebViewClient() {
+        SingleWebView.getInstance(context, new SingleWebView.WebViewInitCallback() {
             @Override
-            public void onPageFinished(WebView view, String url) {
+            public void onSuccess(WebView webView) {
                 webView.evaluateJavascript(js, new ValueCallback<String>() {
                     @Override
                     public void onReceiveValue(final String s) {
@@ -53,10 +50,9 @@ public class JWT {
         final String js = "javascript:verifyToken('" + publicKey + "',\"" +
                 token + "\")";
 
-        final WebView webView = SingleWebView.getInstance(context,"index.html");
-        webView.setWebViewClient(new WebViewClient() {
+        SingleWebView.getInstance(context, new SingleWebView.WebViewInitCallback() {
             @Override
-            public void onPageFinished(WebView view, String url) {
+            public void onSuccess(WebView webView) {
                 webView.evaluateJavascript(js, new ValueCallback<String>() {
                     @Override
                     public void onReceiveValue(final String s) {
