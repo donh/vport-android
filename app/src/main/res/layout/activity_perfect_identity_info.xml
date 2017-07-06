@@ -182,4 +182,16 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/perfect_info_pop_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true" />
+
+    <TextView
+        android:id="@+id/perfect_info_tv_for_pop"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true" />
+
 </RelativeLayout>

@@ -72,7 +72,7 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
     }
 
     interface VPortApi {
-
+        
         @POST
         @Headers({"Content-Type: application/json"})
         Observable<LoginResponse> login(

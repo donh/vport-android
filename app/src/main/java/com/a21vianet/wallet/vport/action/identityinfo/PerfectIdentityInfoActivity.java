@@ -6,6 +6,7 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,9 +17,13 @@ import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.bean.IdentityCardState;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.exception.RegularException;
+import com.a21vianet.wallet.vport.view.OnTimePopupWindowClickListener;
+import com.a21vianet.wallet.vport.view.TimePopWindow;
 import com.bigkoo.pickerview.TimePickerView;
 import com.bigkoo.pickerview.lib.WheelView;
+import com.littlesparkle.growler.core.am.ActivityUtility;
 import com.littlesparkle.growler.core.ui.activity.BaseActivity;
+import com.littlesparkle.growler.core.utility.DensityUtility;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,9 +61,15 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
     TextView tvTimeBegin;
     @BindView(R.id.tv_time_end)
     TextView tvTimeEnd;
+    @BindView(R.id.perfect_info_pop_relative_layout)
+    RelativeLayout perfectInfoPopRelativeLayout;
+    @BindView(R.id.perfect_info_tv_for_pop)
+    TextView perfectInfoTvForPop;
 
     private TimePickerView timeBeginPickerView;
     private TimePickerView timeEndPickerView;
+
+    private TimePopWindow timePopWindow;
 
     @Override
     protected void initData() {
@@ -173,11 +184,38 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
                 break;
             case R.id.relative_time_end:
                 if (mIsedit) {
-                    timeEndPickerView.show();
+                    initHeadPopWindow();
+                    timePopWindow.showAsDropDown(perfectInfoTvForPop);
                 }
                 hideKeyboard(this);
                 break;
         }
+    }
+
+    public void initHeadPopWindow() {
+        timePopWindow = new TimePopWindow(this, "非长期身份证", "长期身份证");
+        timePopWindow.setWidth(perfectInfoPopRelativeLayout.getWidth());
+        timePopWindow.setHeight(DensityUtility.dp2px(this, 150));
+        timePopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                ActivityUtility.backgroundAlpha(PerfectIdentityInfoActivity.this, 1.0f);
+            }
+        });
+        ActivityUtility.backgroundAlpha(this, 0.7f);
+        timePopWindow.setOnPopupWindowClickListener(new OnTimePopupWindowClickListener() {
+            @Override
+            public void onLongTermChoose() {
+                tvTimeEnd.setText("NONE");
+                timePopWindow.dismiss();
+            }
+
+            @Override
+            public void onFixedDateChoose() {
+                timeEndPickerView.show();
+                timePopWindow.dismiss();
+            }
+        });
     }
 
     public void hideKeyboard(Activity activity) {
