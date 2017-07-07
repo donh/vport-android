@@ -109,7 +109,7 @@ public class IdentityInfoActivity extends BaseActivity {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("iss", "vport.chancheng.user");
             jsonObject.addProperty("iat", System.currentTimeMillis() / 1000);
-            jsonObject.addProperty("exp", (System.currentTimeMillis() / 1000) + 5000);
+            jsonObject.addProperty("exp", (System.currentTimeMillis() / 1000) + 900);
             jsonObject.addProperty("sub", "attestation retrieval for ID");
             jsonObject.add("context", contextjsonObject);
 
@@ -164,16 +164,18 @@ public class IdentityInfoActivity extends BaseActivity {
             @Override
             protected void onSuccess(CertificationResult certificationResult) {
                 super.onSuccess(certificationResult);
-                switch (certificationResult.getStatus()) {
+                switch (certificationResult.getResult().getStatus()) {
                     case "APPROVED":
                         mIdentityInfoList.get(i).setState(IdentityCardState.APPROVED.state);
-                        mIdentityInfoList.get(i).setJwt(certificationResult.getAttestation());
+                        mIdentityInfoList.get(i).setJwt(certificationResult.getResult().getAttestation());
                         break;
                     case "PENDING":
                         mIdentityInfoList.get(i).setState(IdentityCardState.PENDING.state);
+                        mIdentityInfoList.get(i).setJwt("");
                         break;
                     case "REJECTED":
                         mIdentityInfoList.get(i).setState(IdentityCardState.REJECTED.state);
+                        mIdentityInfoList.get(i).setJwt("");
                         break;
                 }
                 IdentityCardManager.update(mIdentityInfoList.get(i));

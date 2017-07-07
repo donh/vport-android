@@ -8,33 +8,23 @@ import com.google.gson.annotations.SerializedName;
 
 public class CertificationResult {
 
+
     /**
-     * status : PENDING
-     * attestation :
-     * time : 2017-07-03 13:59:28
+     * result : {"status":"PENDING"}
+     * time : 2017-07-07 10:47:20
      */
 
-    @SerializedName("status")
-    private String status;
-    @SerializedName("attestation")
-    private String attestation;
+    @SerializedName("result")
+    private ResultBean result;
     @SerializedName("time")
     private String time;
 
-    public String getStatus() {
-        return status;
+    public ResultBean getResult() {
+        return result;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getAttestation() {
-        return attestation;
-    }
-
-    public void setAttestation(String attestation) {
-        this.attestation = attestation;
+    public void setResult(ResultBean result) {
+        this.result = result;
     }
 
     public String getTime() {
@@ -43,5 +33,32 @@ public class CertificationResult {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public static class ResultBean {
+        /**
+         * status : PENDING
+         */
+
+        @SerializedName("status")
+        private String status;
+        @SerializedName("attestation")
+        private String attestation;
+
+        public String getAttestation() {
+            return attestation;
+        }
+
+        public void setAttestation(String attestation) {
+            this.attestation = attestation;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
     }
 }
