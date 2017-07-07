@@ -38,10 +38,11 @@ import butterknife.OnClick;
 public class PerfectIdentityInfoActivity extends BaseActivity {
     public final static String ISEDIT = "edit";
     public final static String IDENTITYID = "mIdentityid";
-    public boolean mIsedit;
-    public long mIdentityid;
+    private boolean mIsInsert;
+    private long mIdentityid;
+    private IdentityCard mIdentityCard;
 
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     @BindView(R.id.title_bar_back_btn)
     AppCompatImageButton titleBarBackBtn;
@@ -73,27 +74,41 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        mIsedit = getIntent().getBooleanExtra(ISEDIT, true);
+        mIsInsert = getIntent().getBooleanExtra(ISEDIT, true);
         mIdentityid = getIntent().getLongExtra(IDENTITYID, 0);
-        if (mIsedit) {
+        //判断录入还是修改
+        if (mIsInsert) {
+            //录入
             initDatePicker();
         } else {
-            initNotEditDate();
+            //修改
+            mIdentityCard = IdentityCardManager.get((int) mIdentityid);
+            if (checkEdit()) {
+                //待认证，认证失败状态可以修改
+                initDatePicker();
+            } else {
+                //其他状态不能修改
+                initNotEditDate();
+            }
+            //设置数据
+            setViewData();
         }
     }
 
-    private void initNotEditDate() {
+    private void setViewData() {
         IdentityCard identityCard = IdentityCardManager.get((int) mIdentityid);
-        titleBarAdd.setVisibility(View.GONE);
-        editNameValue.setEnabled(false);
-        editIdValue.setEnabled(false);
-        editIssuedValue.setEnabled(false);
-
         editNameValue.setText(identityCard.getName());
         editIdValue.setText(identityCard.getNumber());
         editIssuedValue.setText(identityCard.getAgencies());
         tvTimeBegin.setText(identityCard.getBegintime());
         tvTimeEnd.setText(identityCard.getEndtime());
+    }
+
+    private void initNotEditDate() {
+        titleBarAdd.setVisibility(View.GONE);
+        editNameValue.setEnabled(false);
+        editIdValue.setEnabled(false);
+        editIssuedValue.setEnabled(false);
     }
 
     private void initDatePicker() {
@@ -177,13 +192,13 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
                 save();
                 break;
             case R.id.relative_time_begin:
-                if (mIsedit) {
+                if (mIsInsert || checkEdit()) {
                     timeBeginPickerView.show();
                 }
                 hideKeyboard(this);
                 break;
             case R.id.relative_time_end:
-                if (mIsedit) {
+                if (mIsInsert || checkEdit()) {
                     initHeadPopWindow();
                     timePopWindow.showAsDropDown(perfectInfoTvForPop);
                 }
@@ -192,7 +207,18 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
         }
     }
 
-    public void initHeadPopWindow() {
+    private boolean checkEdit() {
+        if (mIdentityCard == null) {
+            return false;
+        }
+        int state = mIdentityCard.getState();
+        if (state == IdentityCardState.NONE.state || state == IdentityCardState.REJECTED.state) {
+            return true;
+        }
+        return false;
+    }
+
+    private void initHeadPopWindow() {
         timePopWindow = new TimePopWindow(this, "非长期身份证", "长期身份证");
         timePopWindow.setWidth(perfectInfoPopRelativeLayout.getWidth());
         timePopWindow.setHeight(DensityUtility.dp2px(this, 150));
@@ -218,7 +244,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
         });
     }
 
-    public void hideKeyboard(Activity activity) {
+    private void hideKeyboard(Activity activity) {
         View view = activity.getCurrentFocus();
         if (view != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -245,8 +271,18 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
             regular(timeEnd, "[\\s\\S]{1,64}", "请检查有效结束时间");
             regular(issued, "[\\s\\S]{1,64}", "请检查签发机关");
 
-            IdentityCardManager.insert(new IdentityCard(null, name, number, timeBegin, timeEnd,
-                    issued, IdentityCardState.NONE.state));
+            if (mIsInsert) {
+                IdentityCardManager.insert(new IdentityCard(null, name, number, timeBegin, timeEnd,
+                        issued, IdentityCardState.NONE.state));
+            } else {
+                mIdentityCard.setName(name);
+                mIdentityCard.setNumber(number);
+                mIdentityCard.setBegintime(timeBegin);
+                mIdentityCard.setEndtime(timeEnd);
+                mIdentityCard.setAgencies(issued);
+                mIdentityCard.setState(IdentityCardState.NONE.state);
+                IdentityCardManager.update(mIdentityCard);
+            }
             finish();
         } catch (RegularException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -266,7 +302,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
      * @param regular
      * @param hint
      */
-    public void regular(String value, String regular, String hint) throws RegularException {
+    private void regular(String value, String regular, String hint) throws RegularException {
         Pattern pattern = Pattern.compile(regular);
         Matcher matcher = pattern.matcher(value.trim());
         if (!matcher.matches()) {
