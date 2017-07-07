@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
 import android.text.TextUtils;
@@ -23,9 +22,8 @@ import com.a21vianet.wallet.vport.action.password.PasswordManager;
 import com.a21vianet.wallet.vport.action.scan.ScanActivity;
 import com.a21vianet.wallet.vport.action.scan.data.ScanDataTask;
 import com.a21vianet.wallet.vport.action.setting.SettingActivity;
-import com.a21vianet.wallet.vport.common.UrlUtitly;
-import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.common.ActivityStartUtility;
+import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.OperatingDataManager;
 import com.a21vianet.wallet.vport.dao.bean.IdentityCardState;
 import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum;
@@ -287,7 +285,7 @@ public class MainActivity extends BaseMainActivity {
             return TextDrawable.builder().buildRound("V", Color.parseColor("#06bebd"));
     }
 
-    public void dismissDialog(AlertDialog alertDialog) {
+    private void dismissDialog(AlertDialog alertDialog) {
         if (alertDialog != null && alertDialog.isShowing()) {
             alertDialog.dismiss();
         }
@@ -297,8 +295,13 @@ public class MainActivity extends BaseMainActivity {
         return Api.IPFSWebApi + SysConstant.getHradImageUrlHash();
     }
 
+    private boolean claimable() {
+        IdentityCard identityCard = IdentityCardManager.get(0);
+        return identityCard.getState() == IdentityCardState.NONE.state;
+    }
 
     @Override
+
     protected void initData() {
         checkEnCode();
         initLoginDialog();
@@ -579,7 +582,9 @@ public class MainActivity extends BaseMainActivity {
                                     @Override
                                     public void onCompleted() {
                                         imageViewClaimCompany.setImageDrawable(getTextDrawable(mClaimTokenContextJWTBean.payload.context.clientName));
-                                        mAlertDialogClaim.show();
+                                        if (claimable()) {
+                                            mAlertDialogClaim.show();
+                                        }
                                         dismissProgress();
                                     }
 
