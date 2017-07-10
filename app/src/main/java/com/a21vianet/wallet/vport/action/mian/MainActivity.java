@@ -225,7 +225,6 @@ public class MainActivity extends BaseMainActivity {
                                     , OperationTypeEnum.Login
                                     , "");
                             if (loginResponse.result.valid) {
-                                OperatingDataManager.insert(operatingData);
                                 Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 operatingData.setOperationState(OperationStateEnum.Error.state);
