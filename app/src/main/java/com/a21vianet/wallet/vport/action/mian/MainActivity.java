@@ -85,7 +85,6 @@ public class MainActivity extends BaseMainActivity {
 
     private AlertDialog mAlertDialogClaim;
     private ImageView imageViewClaimCompany;
-    private TextView textViewClaimHintDialog;
 
     private String userJWT = "";
     private String userClaimJWT = "";
@@ -98,7 +97,6 @@ public class MainActivity extends BaseMainActivity {
         RelativeLayout relativeClaimDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_claim, null);
         mAlertDialogClaim = new AlertDialog.Builder(this).setView(relativeClaimDialog).create();
         imageViewClaimCompany = (ImageView) relativeClaimDialog.findViewById(R.id.imgv_claim_dialog_server);
-        textViewClaimHintDialog = (TextView) relativeClaimDialog.findViewById(R.id.tv_claim_dialog_hint);
         AppCompatButton btCancel = (AppCompatButton) relativeClaimDialog.findViewById(R.id.bt_claim_dialog_cancel);
         AppCompatButton btOK = (AppCompatButton) relativeClaimDialog.findViewById(R.id.bt_claim_dialog_ok);
         AppCompatImageButton btClose = (AppCompatImageButton) relativeClaimDialog.findViewById(R.id.imgv_claim_dialog_close);
