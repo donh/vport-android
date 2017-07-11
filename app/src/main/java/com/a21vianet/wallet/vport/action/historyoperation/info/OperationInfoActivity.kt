@@ -65,47 +65,48 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    tv_shared_information.text = "${it.operationtype.name}："
-                    tv_accredit_login_name_title.text = "${it.operationtype.name}昵称"
-                    tv_accredit_login_url_name_title.text = "${it.operationtype.name}网站"
-                    tv_accredit_login_url_path_title.text = "${it.operationtype.name}地址"
-                    tv_accredit_login_time_title.text = "${it.operationtype.name}时间"
+                    if (it != null) {
+                        tv_shared_information.text = "${it.operationtype.name}："
+                        tv_accredit_login_name_title.text = "${it.operationtype.name}昵称"
+                        tv_accredit_login_url_name_title.text = "${it.operationtype.name}网站"
+                        tv_accredit_login_url_path_title.text = "${it.operationtype.name}地址"
+                        tv_accredit_login_time_title.text = "${it.operationtype.name}时间"
 
+                        title_bar_text.text = it.operationtype.name
+                        tv_accredit_name.text = it.appname
+                        tv_accredit_login_name.text = it.username
+                        tv_accredit_login_url_name.text = it.appname
+                        tv_accredit_login_url_path.text = it.appurl
+                        tv_accredit_login_time.text = mSimpleDateFormat.format(it.operationtime)
 
-                    title_bar_text.text = it.operationtype.name
-                    tv_accredit_name.text = it.appname
-                    tv_accredit_login_name.text = it.username
-                    tv_accredit_login_url_name.text = it.appname
-                    tv_accredit_login_url_path.text = it.appurl
-                    tv_accredit_login_time.text = mSimpleDateFormat.format(it.operationtime)
+                        @ColorInt
+                        val typeColor: Int = verdictOperativeState(it.operationState)
 
-                    @ColorInt
-                    val typeColor: Int = verdictOperativeState(it.operationState)
+                        val gradientDrawableType = GradientDrawable()
+                        gradientDrawableType.cornerRadius = roundRadius.toFloat()
+                        gradientDrawableType.setStroke(strokeWidth, typeColor)
+                        tv_accredit_state.text = it.operationmsg
+                        tv_accredit_state.setTextColor(typeColor)
+                        tv_accredit_state.background = gradientDrawableType
 
-                    val gradientDrawableType = GradientDrawable()
-                    gradientDrawableType.cornerRadius = roundRadius.toFloat()
-                    gradientDrawableType.setStroke(strokeWidth, typeColor)
-                    tv_accredit_state.text = it.operationmsg
-                    tv_accredit_state.setTextColor(typeColor)
-                    tv_accredit_state.background = gradientDrawableType
-
-                    Glide.with(this).load(Api.IPFSWebApi + it.userimg)
-                            .error(R.drawable.icon_header)
-                            .placeholder(R.drawable.icon_header)
-                            .transform(GlideCircleImage(this))
-                            .into(imgv_shared_user_header)
-                    if (it.appimg == null || it.appimg.equals("")) {
-                        val generator = ColorGenerator.MATERIAL
-                        var color = generator.getRandomColor()
-
-                        var builder = TextDrawable.builder()
-                                .buildRoundRect(it.appname[0].toString(), color, 200)
-
-                        imgv_shared_app_header.setImageDrawable(builder)
-                    } else {
-                        Glide.with(this).load(Api.IPFSWebApi + it.appimg)
+                        Glide.with(this).load(Api.IPFSWebApi + it.userimg)
+                                .error(R.drawable.icon_header)
+                                .placeholder(R.drawable.icon_header)
                                 .transform(GlideCircleImage(this))
-                                .into(imgv_shared_app_header)
+                                .into(imgv_shared_user_header)
+                        if (it.appimg == null || it.appimg.equals("")) {
+                            val generator = ColorGenerator.MATERIAL
+                            var color = generator.getRandomColor()
+
+                            var builder = TextDrawable.builder()
+                                    .buildRoundRect(it.appname[0].toString(), color, 200)
+
+                            imgv_shared_app_header.setImageDrawable(builder)
+                        } else {
+                            Glide.with(this).load(Api.IPFSWebApi + it.appimg)
+                                    .transform(GlideCircleImage(this))
+                                    .into(imgv_shared_app_header)
+                        }
                     }
                 }, {
                     it.printStackTrace()

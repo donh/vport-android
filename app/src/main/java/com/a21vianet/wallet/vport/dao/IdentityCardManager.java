@@ -49,7 +49,7 @@ public class IdentityCardManager {
     }
 
     public static String getUserGender(String idCard) {
-        char gender = idCard.charAt(17);
+        char gender = idCard.charAt(16);
         if ((int) gender % 2 == 0) {
             return "女";
         } else {

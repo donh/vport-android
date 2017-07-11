@@ -174,8 +174,10 @@ public class IdentityInfoActivity extends BaseActivity {
                         mIdentityInfoList.get(i).setJwt("");
                         break;
                     case "REJECTED":
-                        mIdentityInfoList.get(i).setState(IdentityCardState.REJECTED.state);
-                        mIdentityInfoList.get(i).setJwt("");
+                        if (mIdentityInfoList.get(i).getState() != IdentityCardState.NONE.state) {
+                            mIdentityInfoList.get(i).setState(IdentityCardState.REJECTED.state);
+                            mIdentityInfoList.get(i).setJwt("");
+                        }
                         break;
                 }
                 IdentityCardManager.update(mIdentityInfoList.get(i));
