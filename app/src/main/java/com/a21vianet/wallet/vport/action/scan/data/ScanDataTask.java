@@ -5,18 +5,20 @@ import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.AuthTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.ClaimTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTBean;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTPayload;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.LoginTokenContext;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserAuthTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserClaimTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserLoginTokenContext;
 
 public class ScanDataTask {
 
     public static final String SUB_LOGIN_TOKEN_SIGNED = "login token signed";
-    public static final String SUB_AUTHORIZATION_TOKEN_SIGNED = "authorization token signed";
+    public static final String SUB_AUTHORIZATION_TOKEN_SIGNED = "authorization";
     public static final String SUB_CLAIM_TOKEN_SIGNED = "claim for ID";
 
     private String scope = "";
@@ -47,6 +49,30 @@ public class ScanDataTask {
         return userLoginTokenContextJWTBean;
     }
 
+    public JWTBean<UserAuthTokenContext> getAuthJwtBeanFromServerJWTBean(JWTBean<AuthTokenContext> authTokenContextJWTBean) {
+        Contract contract = new Contract();
+        contract.get();
+
+        JWTBean<UserAuthTokenContext> userAuthTokenContextJWTBean = new JWTBean<>();
+        userAuthTokenContextJWTBean.payload = new JWTPayload<>();
+        userAuthTokenContextJWTBean.payload.iss = authTokenContextJWTBean.payload.aud;
+        userAuthTokenContextJWTBean.payload.aud = authTokenContextJWTBean.payload.iss;
+        userAuthTokenContextJWTBean.payload.iat = (int) (System.currentTimeMillis() / 1000);
+        userAuthTokenContextJWTBean.payload.exp = authTokenContextJWTBean.payload.exp;
+        userAuthTokenContextJWTBean.payload.sub = SUB_AUTHORIZATION_TOKEN_SIGNED;
+
+        try {
+            userAuthTokenContextJWTBean.payload.context =
+                    new UserAuthTokenContext(authTokenContextJWTBean.payload.context.scope
+                            , authTokenContextJWTBean.payload.context.token
+                            , contract.getProxy()
+                            , CryptoManager.getInstance().getCoinKey().getPubKey());
+        } catch (NoDecryptException e) {
+            e.printStackTrace();
+        }
+        return userAuthTokenContextJWTBean;
+    }
+
     public JWTBean<UserClaimTokenContext> getClaimJWTBeanFromSeverJWTBean(JWTBean<ClaimTokenContext> claimTokenContextJWTBean) {
         Contract contract = new Contract();
         contract.get();
@@ -62,15 +88,16 @@ public class ScanDataTask {
         userClaimTokenContextJWTBean.payload.sub = SUB_CLAIM_TOKEN_SIGNED;
 
         try {
-            userClaimTokenContextJWTBean.payload.context = new UserClaimTokenContext(identityCard.getAgencies()
-                    , identityCard.getEndtime()
-                    , IdentityCardManager.getUserGender(identityCard.getNumber())
-                    , identityCard.getNumber()
-                    , identityCard.getBegintime()
-                    , identityCard.getName()
-                    , claimTokenContextJWTBean.payload.context.token
-                    , contract.getProxy()
-                    , CryptoManager.getInstance().getCoinKey().getPubKey());
+            userClaimTokenContextJWTBean.payload.context =
+                    new UserClaimTokenContext(identityCard.getAgencies()
+                            , identityCard.getEndtime()
+                            , IdentityCardManager.getUserGender(identityCard.getNumber())
+                            , identityCard.getNumber()
+                            , identityCard.getBegintime()
+                            , identityCard.getName()
+                            , claimTokenContextJWTBean.payload.context.token
+                            , contract.getProxy()
+                            , CryptoManager.getInstance().getCoinKey().getPubKey());
         } catch (NoDecryptException e) {
             e.printStackTrace();
         }

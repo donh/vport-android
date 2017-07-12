@@ -33,10 +33,12 @@ import com.a21vianet.wallet.vport.dao.entity.OperatingData;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.AuthTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.ClaimTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTBean;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.LoginTokenContext;
+import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserAuthTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserClaimTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserLoginTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnFinishedListener;
@@ -87,11 +89,12 @@ public class MainActivity extends BaseMainActivity {
     private ImageView imageViewClaimCompany;
 
     private String userJWT = "";
+    private String userAuthJWT = "";
     private String userClaimJWT = "";
-    private String serverUrl = "";
 
     private JWTBean<LoginTokenContext> mLoginTokenContextJWTBean = null;
     private JWTBean<ClaimTokenContext> mClaimTokenContextJWTBean = null;
+    private JWTBean<AuthTokenContext> mAuthTokenContextJwtBean = null;
 
     public void initClaimDialog() {
         RelativeLayout relativeClaimDialog = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog_claim, null);
@@ -130,7 +133,7 @@ public class MainActivity extends BaseMainActivity {
                                     , SysConstant.getHradImageUrlHash()
                                     , mClaimTokenContextJWTBean.payload.context.clientName
                                     , ""
-                                    , ""
+                                    , Api.ClaimServerUrl
                                     , OperationStateEnum.Success
                                     , "声明成功"
                                     , OperationTypeEnum.Statement
@@ -197,7 +200,7 @@ public class MainActivity extends BaseMainActivity {
         btOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(userJWT) && !TextUtils.isEmpty(serverUrl)) {
+                if (!TextUtils.isEmpty(userJWT)) {
                     new VPortRequest(Api.ClaimApi).login(new BaseHttpSubscriber<LoginResponse>() {
                         @Override
                         public void onError(Throwable e) {
@@ -217,7 +220,7 @@ public class MainActivity extends BaseMainActivity {
                                     , SysConstant.getHradImageUrlHash()
                                     , mLoginTokenContextJWTBean.payload.context.clientName
                                     , ""
-                                    , mLoginTokenContextJWTBean.payload.context.serverURL
+                                    , Api.LoginServerUrl
                                     , OperationStateEnum.Success
                                     , "登录成功"
                                     , OperationTypeEnum.Login
@@ -245,6 +248,9 @@ public class MainActivity extends BaseMainActivity {
         });
     }
 
+    /**
+     * 向数据库插入取消声明数据
+     */
     public void insertCancelClaimToDb() {
         Contract contract = new Contract();
         contract.get();
@@ -260,6 +266,9 @@ public class MainActivity extends BaseMainActivity {
         OperatingDataManager.insert(operatingData);
     }
 
+    /**
+     * 向数据库插入取消登录数据
+     */
     public void insertCancelLoginToDb() {
         Contract contract = new Contract();
         contract.get();
@@ -275,6 +284,10 @@ public class MainActivity extends BaseMainActivity {
         OperatingDataManager.insert(operatingData);
     }
 
+    /**
+     * @param clientName serverName
+     * @return serverName 首字图片
+     */
     public TextDrawable getTextDrawable(String clientName) {
         if (!TextUtils.isEmpty(clientName)) {
             return TextDrawable.builder().buildRound(clientName.substring(0, 1), Color.parseColor("#06bebd"));
@@ -298,7 +311,6 @@ public class MainActivity extends BaseMainActivity {
     }
 
     @Override
-
     protected void initData() {
         checkEnCode();
         initLoginDialog();
@@ -403,7 +415,6 @@ public class MainActivity extends BaseMainActivity {
 
                             @Override
                             public void call(Subscriber<? super JWTBean<LoginTokenContext>> subscriber) {
-                                serverUrl = loginTokenContextJWTBean.payload.context.serverURL;
                                 subscriber.onNext(loginTokenContextJWTBean);
                                 subscriber.onCompleted();
                             }
@@ -495,6 +506,95 @@ public class MainActivity extends BaseMainActivity {
                                 });
                         break;
                     case SUB_AUTHORIZATION_TOKEN:
+                        final JWTBean<AuthTokenContext> authTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<AuthTokenContext>>() {
+                        }.getType());
+                        mAuthTokenContextJwtBean = authTokenContextJWTBean;
+                        Observable.create(new Observable.OnSubscribe<JWTBean<AuthTokenContext>>() {
+
+                            @Override
+                            public void call(Subscriber<? super JWTBean<AuthTokenContext>> subscriber) {
+                                subscriber.onNext(authTokenContextJWTBean);
+                                subscriber.onCompleted();
+                            }
+                        })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .flatMap(new Func1<JWTBean<AuthTokenContext>, Observable<JWTBean<UserAuthTokenContext>>>() {
+                                    @Override
+                                    public Observable<JWTBean<UserAuthTokenContext>> call(final JWTBean<AuthTokenContext> authTokenContextJWTBean) {
+                                        return Observable.create(new Observable.OnSubscribe<JWTBean<UserAuthTokenContext>>() {
+                                            @Override
+                                            public void call(final Subscriber<? super JWTBean<UserAuthTokenContext>> subscriber) {
+                                                try {
+                                                    CryptoManager.getInstance().verifyJWTToken(MainActivity.this
+                                                            , authTokenContextJWTBean.payload.context.serverPublicKey
+                                                            , scanResultEvent.result
+                                                            , new OnVerifiedListener() {
+                                                                @Override
+                                                                public void onVerified(boolean isValid) {
+                                                                    if (isValid) {
+                                                                        JWTBean<UserAuthTokenContext> userAuthTokenContextJWTBean =
+                                                                                new ScanDataTask().getAuthJwtBeanFromServerJWTBean(authTokenContextJWTBean);
+                                                                        subscriber.onNext(userAuthTokenContextJWTBean);
+                                                                        subscriber.onCompleted();
+                                                                    } else {
+                                                                        subscriber.onError(new Throwable("验证签名失败，请稍候重试"));
+                                                                    }
+                                                                }
+                                                            });
+                                                } catch (NoDecryptException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .flatMap(new Func1<JWTBean<UserAuthTokenContext>, Observable<String>>() {
+                                    @Override
+                                    public Observable<String> call(final JWTBean<UserAuthTokenContext> userAuthTokenContextJWTBean) {
+                                        return Observable.create(new Observable.OnSubscribe<String>() {
+                                            @Override
+                                            public void call(final Subscriber<? super String> subscriber) {
+                                                try {
+                                                    CryptoManager.getInstance().signJWTToken(MainActivity.this
+                                                            , gson.toJson(userAuthTokenContextJWTBean.payload)
+                                                            , new OnFinishedListener() {
+                                                                @Override
+                                                                public void onFinished(String s) {
+                                                                    subscriber.onNext(s);
+                                                                    subscriber.onCompleted();
+                                                                }
+
+                                                                @Override
+                                                                public void onError(Exception e) {
+                                                                    subscriber.onError(e);
+                                                                }
+                                                            });
+                                                } catch (NoDecryptException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                    }
+                                })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Subscriber<String>() {
+                                    @Override
+                                    public void onCompleted() {
+                                        dismissProgress();
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        dismissProgress();
+                                    }
+
+                                    @Override
+                                    public void onNext(String s) {
+                                        userAuthJWT = s;
+                                    }
+                                });
                         break;
                     case SUB_CLAIM_TOKEN:
                         final JWTBean<ClaimTokenContext> claimTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<ClaimTokenContext>>() {

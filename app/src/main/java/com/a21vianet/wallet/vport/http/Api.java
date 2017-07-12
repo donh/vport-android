@@ -36,4 +36,8 @@ public class Api {
      * 声明 服务器地址
      */
     public static final String ClaimApi = " http://58.83.219.147:8000/api/v1/";
+
+    public static final String LoginServerUrl = "http://58.83.219.147:8000/api/v1/login/jwt";
+
+    public static final String ClaimServerUrl = "http://58.83.219.147:8000/api/v1/claims/add";
 }
