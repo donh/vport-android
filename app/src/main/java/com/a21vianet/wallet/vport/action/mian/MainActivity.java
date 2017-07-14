@@ -836,6 +836,8 @@ public class MainActivity extends BaseMainActivity {
                                         imageViewClaimCompany.setImageDrawable(getTextDrawable(mClaimTokenContextJWTBean.payload.context.clientName));
                                         if (claimable()) {
                                             mAlertDialogClaim.show();
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "声明状态错误，请查看身份证声明状态后重试", Toast.LENGTH_SHORT).show();
                                         }
                                         dismissProgress();
                                     }
