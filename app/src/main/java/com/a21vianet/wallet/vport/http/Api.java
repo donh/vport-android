@@ -40,4 +40,6 @@ public class Api {
     public static final String LoginServerUrl = "http://58.83.219.147:8000/api/v1/login/jwt";
 
     public static final String ClaimServerUrl = "http://58.83.219.147:8000/api/v1/claims/add";
+
+    public static final String AuthServerUrl = "http://58.83.219.147:8000/api/v1/authorizations/jwt";
 }

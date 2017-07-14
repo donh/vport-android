@@ -44,6 +44,7 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
         jsonObject.addProperty("claimJWT", claimJWT);
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json" +
                 "charset=utf-8"), jsonObject.toString());
+
         return mService.claim(requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -51,12 +52,27 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 .subscribe(subscriber);
     }
 
-    public Subscription certificate(BaseHttpSubscriber<CertificationResult> subscriber, String tx) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("attestationJWT", tx);
+    public Subscription auth(BaseHttpSubscriber<AuthResponse> subscriber, String authJWT) {
 
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("authorizationJWT", authJWT);
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json" +
                 "charset=utf-8"), jsonObject.toString());
+
+        return mService.authorizations(requestBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
+    }
+
+    public Subscription certificate(BaseHttpSubscriber<CertificationResult> subscriber, String tx) {
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("attestationJWT", tx);
+        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json" +
+                "charset=utf-8"), jsonObject.toString());
+
         return mService.certificate(requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -87,7 +103,13 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
         @POST("attestations")
         @Headers({"Content-Type: application/json"})
         Observable<CertificationResult> certificate(
-                @Body RequestBody claim
+                @Body RequestBody attestations
+        );
+
+        @POST("authorizations/jwt")
+        @Headers({"Content-Type: application/json"})
+        Observable<AuthResponse> authorizations(
+                @Body RequestBody auth
         );
     }
 }
