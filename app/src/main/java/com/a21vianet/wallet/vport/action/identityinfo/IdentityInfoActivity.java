@@ -16,8 +16,12 @@ import android.widget.TextView;
 
 import com.a21vianet.wallet.vport.R;
 import com.a21vianet.wallet.vport.dao.IdentityCardManager;
+import com.a21vianet.wallet.vport.dao.OperatingDataManager;
 import com.a21vianet.wallet.vport.dao.bean.IdentityCardState;
+import com.a21vianet.wallet.vport.dao.bean.OperationStateEnum;
+import com.a21vianet.wallet.vport.dao.bean.OperationTypeEnum;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
+import com.a21vianet.wallet.vport.dao.entity.OperatingData;
 import com.a21vianet.wallet.vport.http.Api;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
@@ -154,6 +158,9 @@ public class IdentityInfoActivity extends BaseActivity {
     }
 
     private void uodateIdentityData(final int i, String tx) {
+        if (mIdentityInfoList.get(i).getState() != IdentityCardState.PENDING.state) {
+            return;
+        }
         new VPortRequest(Api.ClaimApi).certificate(new BaseHttpSubscriber<CertificationResult>() {
             @Override
             protected void onError(ErrorResponse error) {
@@ -164,8 +171,23 @@ public class IdentityInfoActivity extends BaseActivity {
             @Override
             protected void onSuccess(CertificationResult certificationResult) {
                 super.onSuccess(certificationResult);
+                Contract contract = new Contract();
+                contract.get();
+                OperatingData operatingData = new OperatingData(contract.getNickname()
+                        , SysConstant.getHradImageUrlHash()
+                        , "智信禅城"
+                        , ""
+                        , Api.ClaimApi+"attestations"
+                        , OperationStateEnum.Success
+                        , "取消登录"
+                        , OperationTypeEnum.Approve
+                        , "");
                 switch (certificationResult.getResult().getStatus()) {
                     case "APPROVED":
+                        operatingData.setOperationState(OperationStateEnum.Success.state);
+                        operatingData.setOperationmsg("认证成功");
+                        OperatingDataManager.insert(operatingData);
+
                         mIdentityInfoList.get(i).setState(IdentityCardState.APPROVED.state);
                         mIdentityInfoList.get(i).setJwt(certificationResult.getResult().getAttestation());
                         break;
@@ -174,10 +196,12 @@ public class IdentityInfoActivity extends BaseActivity {
                         mIdentityInfoList.get(i).setJwt("");
                         break;
                     case "REJECTED":
-                        if (mIdentityInfoList.get(i).getState() != IdentityCardState.NONE.state) {
-                            mIdentityInfoList.get(i).setState(IdentityCardState.REJECTED.state);
-                            mIdentityInfoList.get(i).setJwt("");
-                        }
+                        operatingData.setOperationState(OperationStateEnum.Error.state);
+                        operatingData.setOperationmsg("认证失败");
+                        OperatingDataManager.insert(operatingData);
+
+                        mIdentityInfoList.get(i).setState(IdentityCardState.REJECTED.state);
+                        mIdentityInfoList.get(i).setJwt("");
                         break;
                 }
                 IdentityCardManager.update(mIdentityInfoList.get(i));

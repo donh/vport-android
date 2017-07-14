@@ -7,11 +7,14 @@ import android.webkit.WebView;
 
 import com.a21vianet.wallet.vport.action.password.CustomPinActivity;
 import com.a21vianet.wallet.vport.dao.GreenDaoManager;
+import com.a21vianet.wallet.vport.dao.OperationTypeManager;
 import com.a21vianet.wallet.vport.library.BaseApplication;
 import com.a21vianet.wallet.vport.library.commom.crypto.SingleWebView;
+import com.a21vianet.wallet.vport.library.constant.SysConstant;
 import com.github.orangegangsters.lollipin.lib.managers.LockManager;
 import com.littlesparkle.growler.core.common.TempDirectory;
 import com.littlesparkle.growler.core.http.api.Api;
+import com.littlesparkle.growler.core.utility.PrefUtility;
 
 import java.io.File;
 
@@ -19,6 +22,11 @@ public class WalletApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (!PrefUtility.getBoolean(this, SysConstant.IS_INIT_TABLE, false)) {
+            OperationTypeManager.inittable();
+            PrefUtility.setBoolean(this, SysConstant.IS_INIT_TABLE, true);
+        }
 
         LockManager<CustomPinActivity> lockManager = LockManager.getInstance();
         lockManager.enableAppLock(this, CustomPinActivity.class);
@@ -40,6 +48,7 @@ public class WalletApplication extends BaseApplication {
 
             }
         });
+
     }
 
     @Override

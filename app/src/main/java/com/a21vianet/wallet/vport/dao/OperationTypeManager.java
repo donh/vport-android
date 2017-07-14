@@ -3,13 +3,7 @@ package com.a21vianet.wallet.vport.dao;
 import com.a21vianet.wallet.vport.dao.entity.OperationType;
 import com.a21vianet.wallet.vport.dao.gen.OperationTypeDao;
 
-import org.greenrobot.greendao.rx.RxDao;
-
 import java.util.List;
-
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by wang.rongqiang on 2017/6/27.
@@ -42,18 +36,11 @@ public class OperationTypeManager {
     }
 
     public static void inittable() {
-        RxDao<OperationType, Long> rx = GreenDaoManager.getInstance().getSession()
-                .getOperationTypeDao().rx();
-        rx.insertOrReplaceInTx(
-                new OperationType((long) 1, "登录"),
-                new OperationType((long) 2, "认证"),
-                new OperationType((long) 3, "授权"),
-                new OperationType((long) 4, "声明")
-        ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Object[]>() {
-            @Override
-            public void call(Object[] objects) {
-
-            }
-        });
+        OperationTypeDao operationTypeDao = GreenDaoManager.getInstance().getSession()
+                .getOperationTypeDao();
+        operationTypeDao.insertOrReplace(new OperationType((long) 1, "登录"));
+        operationTypeDao.insertOrReplace(new OperationType((long) 2, "认证"));
+        operationTypeDao.insertOrReplace(new OperationType((long) 3, "授权"));
+        operationTypeDao.insertOrReplace(new OperationType((long) 4, "声明"));
     }
 }

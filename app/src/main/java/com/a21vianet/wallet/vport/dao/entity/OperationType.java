@@ -10,7 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class OperationType {
-    @Id(autoincrement = true)
+    @Id
     private Long id;
 
     private String name;

@@ -2,10 +2,10 @@ package com.a21vianet.wallet.vport.action.historyoperation.info
 
 import android.graphics.drawable.GradientDrawable
 import android.support.annotation.ColorInt
+import android.util.Log
 import com.a21vianet.wallet.vport.R
 import com.a21vianet.wallet.vport.action.historyoperation.task.verdictOperativeState
 import com.a21vianet.wallet.vport.dao.OperatingDataManager
-import com.a21vianet.wallet.vport.dao.entity.OperatingData
 import com.a21vianet.wallet.vport.http.Api
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
@@ -57,22 +57,17 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
     override fun initView() {
         super.initView()
         StatusBarCompat.setStatusBarColor(this, resources.getColor(R.color.colorPrimary))
+        Log.e("======详情ID", "操作记录ID:" + mIdentityId)
         Observable
-                .create(Observable.OnSubscribe<OperatingData> {
-                    val operatingData = OperatingDataManager.get(mIdentityId)
-                    it.onNext(operatingData)
-                })
+                .just(mIdentityId)
+                .map {
+                    val operatingData = OperatingDataManager.get(it)
+                    operatingData
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it != null) {
-                        tv_shared_information.text = "${it.operationtype.name}："
-                        tv_accredit_login_name_title.text = "${it.operationtype.name}昵称"
-                        tv_accredit_login_url_name_title.text = "${it.operationtype.name}网站"
-                        tv_accredit_login_url_path_title.text = "${it.operationtype.name}地址"
-                        tv_accredit_login_time_title.text = "${it.operationtype.name}时间"
-
-                        title_bar_text.text = it.operationtype.name
                         tv_accredit_name.text = it.appname
                         tv_accredit_login_name.text = it.username
                         tv_accredit_login_url_name.text = it.appname
@@ -107,6 +102,14 @@ class OperationInfoActivity : BaseTitleBarActivity<BasePresenter<BaseView>>() {
                                     .transform(GlideCircleImage(this))
                                     .into(imgv_shared_app_header)
                         }
+
+                        tv_shared_information.text = "${it.operationtype.name}："
+                        tv_accredit_login_name_title.text = "${it.operationtype.name}昵称"
+                        tv_accredit_login_url_name_title.text = "${it.operationtype.name}网站"
+                        tv_accredit_login_url_path_title.text = "${it.operationtype.name}地址"
+                        tv_accredit_login_time_title.text = "${it.operationtype.name}时间"
+
+                        title_bar_text.text = it.operationtype.name
                     }
                 }, {
                     it.printStackTrace()

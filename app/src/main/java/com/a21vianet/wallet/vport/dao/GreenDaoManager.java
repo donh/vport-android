@@ -34,7 +34,6 @@ public class GreenDaoManager {
 
                 if (mInstance == null) {
                     mInstance = new GreenDaoManager();
-                    OperationTypeManager.inittable();
                 }
             }
         }

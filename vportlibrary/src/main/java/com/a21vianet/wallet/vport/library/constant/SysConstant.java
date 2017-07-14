@@ -10,6 +10,8 @@ import com.littlesparkle.growler.core.utility.PrefUtility;
 public class SysConstant {
     private static final String APP_HRAD_IMAGE_URL_HASH = "app_hardimage_url_hash";
 
+    public static final String IS_INIT_TABLE = "isinittable";
+
     public static void setHradImageUrlHash(String hash) {
         PrefUtility.setString(BaseApplication.getContext(), APP_HRAD_IMAGE_URL_HASH, hash);
     }
