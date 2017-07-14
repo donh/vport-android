@@ -231,59 +231,54 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(userAuthJWT)) {
-                    if (IdentityCardManager.get(0).getState() == IdentityCardState.APPROVED.state) {
-                        new VPortRequest(Api.ClaimApi).auth(new BaseHttpSubscriber<AuthResponse>() {
-                            @Override
-                            protected void onSuccess(AuthResponse authResponse) {
-                                super.onSuccess(authResponse);
-                                dismissDialog(mAlertDialogAuth);
+                    new VPortRequest(Api.ClaimApi).auth(new BaseHttpSubscriber<AuthResponse>() {
+                        @Override
+                        protected void onSuccess(AuthResponse authResponse) {
+                            super.onSuccess(authResponse);
+                            dismissDialog(mAlertDialogAuth);
 
-                                Contract contract = new Contract();
-                                contract.get();
-                                OperatingData operatingData = new OperatingData(contract.getNickname()
-                                        , SysConstant.getHradImageUrlHash()
-                                        , mAuthTokenContextJwtBean.payload.context.requesterName
-                                        , ""
-                                        , Api.AuthServerUrl
-                                        , OperationStateEnum.Success
-                                        , "授权成功"
-                                        , OperationTypeEnum.Accredit
-                                        , "");
-                                if (authResponse.result.valid) {
-                                    Toast.makeText(MainActivity.this, "授权成功", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    operatingData.setOperationState(OperationStateEnum.Error.state);
-                                    operatingData.setOperationmsg("授权失败");
-                                    Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
-                                }
-                                OperatingDataManager.insert(operatingData);
+                            Contract contract = new Contract();
+                            contract.get();
+                            OperatingData operatingData = new OperatingData(contract.getNickname()
+                                    , SysConstant.getHradImageUrlHash()
+                                    , mAuthTokenContextJwtBean.payload.context.requesterName
+                                    , ""
+                                    , Api.AuthServerUrl
+                                    , OperationStateEnum.Success
+                                    , "授权成功"
+                                    , OperationTypeEnum.Accredit
+                                    , "");
+                            if (authResponse.result.valid) {
+                                Toast.makeText(MainActivity.this, "授权成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                operatingData.setOperationState(OperationStateEnum.Error.state);
+                                operatingData.setOperationmsg("授权失败");
+                                Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
                             }
+                            OperatingDataManager.insert(operatingData);
+                        }
 
-                            @Override
-                            protected void onError(ErrorResponse error) {
-                                super.onError(error);
-                                dismissDialog(mAlertDialogAuth);
+                        @Override
+                        protected void onError(ErrorResponse error) {
+                            super.onError(error);
+                            dismissDialog(mAlertDialogAuth);
 
-                                Contract contract = new Contract();
-                                contract.get();
-                                OperatingData operatingData = new OperatingData(contract.getNickname()
-                                        , SysConstant.getHradImageUrlHash()
-                                        , mAuthTokenContextJwtBean.payload.context.requesterName
-                                        , ""
-                                        , Api.AuthServerUrl
-                                        , OperationStateEnum.Error
-                                        , "授权失败"
-                                        , OperationTypeEnum.Accredit
-                                        , "");
-                                OperatingDataManager.insert(operatingData);
+                            Contract contract = new Contract();
+                            contract.get();
+                            OperatingData operatingData = new OperatingData(contract.getNickname()
+                                    , SysConstant.getHradImageUrlHash()
+                                    , mAuthTokenContextJwtBean.payload.context.requesterName
+                                    , ""
+                                    , Api.AuthServerUrl
+                                    , OperationStateEnum.Error
+                                    , "授权失败"
+                                    , OperationTypeEnum.Accredit
+                                    , "");
+                            OperatingDataManager.insert(operatingData);
 
-                                Toast.makeText(MainActivity.this, "授权失败，请稍候重试", Toast.LENGTH_SHORT).show();
-                            }
-                        }, userAuthJWT);
-                    } else {
-                        Toast.makeText(MainActivity.this, "身份证信息未认证，请先认证身份证信息", Toast.LENGTH_SHORT).show();
-                    }
-
+                            Toast.makeText(MainActivity.this, "授权失败，请稍候重试", Toast.LENGTH_SHORT).show();
+                        }
+                    }, userAuthJWT);
                 } else {
                     Toast.makeText(MainActivity.this, "数据错误，请稍候重试", Toast.LENGTH_SHORT).show();
                 }
@@ -653,6 +648,16 @@ public class MainActivity extends BaseMainActivity {
                                 });
                         break;
                     case SUB_AUTHORIZATION_TOKEN:
+                        if (!IdentityCardManager.exists()) {
+                            Toast.makeText(MainActivity.this, "请先添加身份证信息", Toast.LENGTH_SHORT).show();
+                            dismissProgress();
+                            return;
+                        }
+                        if (IdentityCardManager.get(0).getState() != IdentityCardState.APPROVED.state) {
+                            Toast.makeText(MainActivity.this, "身份证信息未认证，请先认证身份证信息", Toast.LENGTH_SHORT).show();
+                            dismissProgress();
+                            return;
+                        }
                         final JWTBean<AuthTokenContext> authTokenContextJWTBean = gson.fromJson(s, new TypeToken<JWTBean<AuthTokenContext>>() {
                         }.getType());
                         mAuthTokenContextJwtBean = authTokenContextJWTBean;
