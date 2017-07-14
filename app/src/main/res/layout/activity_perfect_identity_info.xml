@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#f2f3f6">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#f2f3f6">
 
     <RelativeLayout
         android:id="@+id/title_bar"
@@ -19,7 +19,7 @@
             android:layout_centerVertical="true"
             android:background="@null"
             android:padding="6dp"
-            android:src="@drawable/arrow_left" />
+            android:src="@drawable/arrow_left"/>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/title_bar_text"
@@ -29,16 +29,18 @@
             android:gravity="center"
             android:text="身份信息"
             android:textColor="#fff"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
-        <android.support.v7.widget.AppCompatImageButton
+        <TextView
             android:id="@+id/title_bar_add"
-            android:layout_width="40dp"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@null"
-            android:src="@drawable/icon_add" />
+            android:gravity="center"
+            android:text="保存"
+            android:textColor="#ffffff"/>
     </RelativeLayout>
 
 
@@ -57,21 +59,21 @@
             <TextView
                 android:id="@+id/tv_name_key"
                 style="@style/perfect_identity_info_key"
-                android:text="姓名" />
+                android:text="姓名"/>
 
             <EditText
                 android:id="@+id/edit_name_value"
                 style="@style/perfect_identity_info_value"
                 android:layout_toEndOf="@+id/tv_name_key"
                 android:hint="请填写姓名信息"
-                android:labelFor="@+id/edit_name_value" />
+                android:labelFor="@+id/edit_name_value"/>
 
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#15454545" />
+            android:background="#15454545"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -81,21 +83,21 @@
             <TextView
                 android:id="@+id/tv_id_key"
                 style="@style/perfect_identity_info_key"
-                android:text="身份证" />
+                android:text="身份证"/>
 
             <EditText
                 android:id="@+id/edit_id_value"
                 style="@style/perfect_identity_info_value"
                 android:layout_toEndOf="@+id/tv_id_key"
                 android:hint="请填写身份证信息"
-                android:labelFor="@+id/edit_id_value" />
+                android:labelFor="@+id/edit_id_value"/>
 
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#15454545" />
+            android:background="#15454545"/>
 
         <RelativeLayout
             android:id="@+id/relative_time_begin"
@@ -106,7 +108,7 @@
             <TextView
                 android:id="@+id/tv_time_begin_key"
                 style="@style/perfect_identity_info_key"
-                android:text="有效期开始日期" />
+                android:text="有效期开始日期"/>
 
             <TextView
                 android:id="@+id/tv_time_begin"
@@ -121,13 +123,13 @@
                 android:drawablePadding="10dp"
                 android:gravity="end"
                 android:textColor="#363636"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#15454545" />
+            android:background="#15454545"/>
 
         <RelativeLayout
             android:id="@+id/relative_time_end"
@@ -138,7 +140,7 @@
             <TextView
                 android:id="@+id/tv_time_end_value"
                 style="@style/perfect_identity_info_key"
-                android:text="有效期结束日期" />
+                android:text="有效期结束日期"/>
 
             <TextView
                 android:id="@+id/tv_time_end"
@@ -153,14 +155,14 @@
                 android:drawablePadding="10dp"
                 android:gravity="end"
                 android:textColor="#363636"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#15454545" />
+            android:background="#15454545"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -170,14 +172,14 @@
             <TextView
                 android:id="@+id/tv_issued_key"
                 style="@style/perfect_identity_info_key"
-                android:text="签发机关" />
+                android:text="签发机关"/>
 
             <EditText
                 android:id="@+id/edit_issued_value"
                 style="@style/perfect_identity_info_value"
                 android:layout_toEndOf="@+id/tv_issued_key"
                 android:hint="请填写签发机关"
-                android:labelFor="@+id/edit_id_value" />
+                android:labelFor="@+id/edit_id_value"/>
 
         </RelativeLayout>
     </LinearLayout>
@@ -186,12 +188,12 @@
         android:id="@+id/perfect_info_pop_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"/>
 
     <TextView
         android:id="@+id/perfect_info_tv_for_pop"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

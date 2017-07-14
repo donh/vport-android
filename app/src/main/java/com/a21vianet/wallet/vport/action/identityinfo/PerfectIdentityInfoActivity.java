@@ -47,7 +47,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
     @BindView(R.id.title_bar_back_btn)
     AppCompatImageButton titleBarBackBtn;
     @BindView(R.id.title_bar_add)
-    AppCompatImageButton titleBarAdd;
+    TextView titleBarAdd;
     @BindView(R.id.edit_name_value)
     EditText editNameValue;
     @BindView(R.id.edit_id_value)
