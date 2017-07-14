@@ -3,7 +3,6 @@ package com.a21vianet.wallet.vport.dao;
 import com.a21vianet.wallet.vport.WalletApplication;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.dao.entity.OperatingData;
-import com.a21vianet.wallet.vport.dao.entity.OperationType;
 import com.a21vianet.wallet.vport.dao.gen.DaoMaster;
 import com.a21vianet.wallet.vport.dao.gen.DaoSession;
 
@@ -51,7 +50,6 @@ public class GreenDaoManager {
     public void deleteDatabase() {
         getSession().deleteAll(IdentityCard.class);
         getSession().deleteAll(OperatingData.class);
-        getSession().deleteAll(OperationType.class);
     }
 
     public DaoSession getNewSession() {

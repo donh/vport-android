@@ -23,11 +23,6 @@ public class WalletApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
 
-        if (!PrefUtility.getBoolean(this, SysConstant.IS_INIT_TABLE, false)) {
-            OperationTypeManager.inittable();
-            PrefUtility.setBoolean(this, SysConstant.IS_INIT_TABLE, true);
-        }
-
         LockManager<CustomPinActivity> lockManager = LockManager.getInstance();
         lockManager.enableAppLock(this, CustomPinActivity.class);
         lockManager.getAppLock().setLogoId(R.drawable.security_lock);
@@ -41,6 +36,11 @@ public class WalletApplication extends BaseApplication {
                 + File.separator + "gcoin_wallet");
 
         GreenDaoManager.getInstance();
+
+        if (!PrefUtility.getBoolean(this, SysConstant.IS_INIT_TABLE, false)) {
+            OperationTypeManager.inittable();
+            PrefUtility.setBoolean(this, SysConstant.IS_INIT_TABLE, true);
+        }
 
         SingleWebView.getInstance(this, new SingleWebView.WebViewInitCallback() {
             @Override
