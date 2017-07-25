@@ -121,7 +121,7 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(userClaimJWT)) {
-                    new VPortRequest(Api.ClaimApi).claim(new BaseHttpSubscriber<ClaimResponse>() {
+                    new VPortRequest(Api.vPortServiceApi).claim(new BaseHttpSubscriber<ClaimResponse>() {
                         @Override
                         public void onError(Throwable e) {
                             super.onError(e);
@@ -133,7 +133,7 @@ public class MainActivity extends BaseMainActivity {
                                     , SysConstant.getHradImageUrlHash()
                                     , mClaimTokenContextJWTBean.payload.context.clientName
                                     , ""
-                                    , Api.ClaimServerUrl
+                                    , Api.vPortServiceApi + "claims/add"
                                     , OperationStateEnum.Error
                                     , "声明失败"
                                     , OperationTypeEnum.Statement
@@ -154,7 +154,7 @@ public class MainActivity extends BaseMainActivity {
                                     , SysConstant.getHradImageUrlHash()
                                     , mClaimTokenContextJWTBean.payload.context.clientName
                                     , ""
-                                    , Api.ClaimServerUrl
+                                    , Api.vPortServiceApi + "claims/add"
                                     , OperationStateEnum.Success
                                     , "声明成功"
                                     , OperationTypeEnum.Statement
@@ -231,7 +231,7 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(userAuthJWT)) {
-                    new VPortRequest(Api.ClaimApi).auth(new BaseHttpSubscriber<AuthResponse>() {
+                    new VPortRequest(Api.vPortServiceApi).auth(new BaseHttpSubscriber<AuthResponse>() {
                         @Override
                         protected void onSuccess(AuthResponse authResponse) {
                             super.onSuccess(authResponse);
@@ -243,7 +243,7 @@ public class MainActivity extends BaseMainActivity {
                                     , SysConstant.getHradImageUrlHash()
                                     , mAuthTokenContextJwtBean.payload.context.requesterName
                                     , ""
-                                    , Api.AuthServerUrl
+                                    , Api.vPortServiceApi + "authorizations/jwt"
                                     , OperationStateEnum.Success
                                     , "授权成功"
                                     , OperationTypeEnum.Accredit
@@ -269,7 +269,7 @@ public class MainActivity extends BaseMainActivity {
                                     , SysConstant.getHradImageUrlHash()
                                     , mAuthTokenContextJwtBean.payload.context.requesterName
                                     , ""
-                                    , Api.AuthServerUrl
+                                    , Api.vPortServiceApi + "authorizations/jwt"
                                     , OperationStateEnum.Error
                                     , "授权失败"
                                     , OperationTypeEnum.Accredit
@@ -313,7 +313,7 @@ public class MainActivity extends BaseMainActivity {
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(userJWT)) {
-                    new VPortRequest(Api.ClaimApi).login(new BaseHttpSubscriber<LoginResponse>() {
+                    new VPortRequest(Api.vPortServiceApi).login(new BaseHttpSubscriber<LoginResponse>() {
                         @Override
                         public void onError(Throwable e) {
                             super.onError(e);
@@ -325,7 +325,7 @@ public class MainActivity extends BaseMainActivity {
                                     , SysConstant.getHradImageUrlHash()
                                     , mLoginTokenContextJWTBean.payload.context.clientName
                                     , ""
-                                    , Api.LoginServerUrl
+                                    , Api.vPortServiceApi + "login/jwt"
                                     , OperationStateEnum.Error
                                     , "登录失败"
                                     , OperationTypeEnum.Login
@@ -346,7 +346,7 @@ public class MainActivity extends BaseMainActivity {
                                     , SysConstant.getHradImageUrlHash()
                                     , mLoginTokenContextJWTBean.payload.context.clientName
                                     , ""
-                                    , Api.LoginServerUrl
+                                    , Api.vPortServiceApi + "login/jwt"
                                     , OperationStateEnum.Success
                                     , "登录成功"
                                     , OperationTypeEnum.Login
@@ -384,7 +384,7 @@ public class MainActivity extends BaseMainActivity {
                 , SysConstant.getHradImageUrlHash()
                 , mClaimTokenContextJWTBean.payload.context.clientName
                 , ""
-                , Api.ClaimServerUrl
+                , Api.vPortServiceApi + "claims/add"
                 , OperationStateEnum.Cancel
                 , "取消声明"
                 , OperationTypeEnum.Statement
@@ -399,7 +399,7 @@ public class MainActivity extends BaseMainActivity {
                 , SysConstant.getHradImageUrlHash()
                 , mAuthTokenContextJwtBean.payload.context.requesterName
                 , ""
-                , Api.AuthServerUrl
+                , Api.vPortServiceApi + "authorizations/jwt"
                 , OperationStateEnum.Cancel
                 , "取消授权"
                 , OperationTypeEnum.Accredit
@@ -417,7 +417,7 @@ public class MainActivity extends BaseMainActivity {
                 , SysConstant.getHradImageUrlHash()
                 , mLoginTokenContextJWTBean.payload.context.clientName
                 , ""
-                , Api.LoginServerUrl
+                , Api.vPortServiceApi + "login/jwt"
                 , OperationStateEnum.Cancel
                 , "取消登录"
                 , OperationTypeEnum.Login

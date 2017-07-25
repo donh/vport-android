@@ -11,9 +11,14 @@ public class Api {
     public static final String vChainApi = "http://58.83.219.133:9487/";
 
     /**
-     * 用户代理注册 服务器地址
+     * vPort 服务器地址
      */
-    public static final String vChainServiceApi = "http://58.83.219.147:8000/";
+    public static final String vPortApi = "http://58.83.219.147:8000/";
+
+    /**
+     * vPort 业务服务器地址
+     */
+    public static final String vPortServiceApi = vPortApi + "api/v1/";
 
     /**
      * 注册用户代理打钱 服务器地址
@@ -30,16 +35,4 @@ public class Api {
      * IPFS Web 服务器地址
      */
     public static final String IPFSWebApi = "http://58.83.219.152:8080/ipfs/";
-
-
-    /**
-     * 声明 服务器地址
-     */
-    public static final String ClaimApi = " http://58.83.219.147:8000/api/v1/";
-
-    public static final String LoginServerUrl = "http://58.83.219.147:8000/api/v1/login/jwt";
-
-    public static final String ClaimServerUrl = "http://58.83.219.147:8000/api/v1/claims/add";
-
-    public static final String AuthServerUrl = "http://58.83.219.147:8000/api/v1/authorizations/jwt";
 }

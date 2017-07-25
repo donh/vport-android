@@ -161,7 +161,7 @@ public class IdentityInfoActivity extends BaseActivity {
         if (mIdentityInfoList.get(i).getState() != IdentityCardState.PENDING.state) {
             return;
         }
-        new VPortRequest(Api.ClaimApi).certificate(new BaseHttpSubscriber<CertificationResult>() {
+        new VPortRequest(Api.vPortServiceApi).certificate(new BaseHttpSubscriber<CertificationResult>() {
             @Override
             protected void onError(ErrorResponse error) {
                 super.onError(error);
@@ -177,7 +177,7 @@ public class IdentityInfoActivity extends BaseActivity {
                         , SysConstant.getHradImageUrlHash()
                         , "智信禅城"
                         , ""
-                        , Api.ClaimApi+"attestations"
+                        , Api.vPortServiceApi+"attestations"
                         , OperationStateEnum.Success
                         , "取消登录"
                         , OperationTypeEnum.Approve

@@ -206,7 +206,7 @@ public class CreateKeyActivity extends BaseActivity {
         } catch (NoDecryptException e) {
             e.printStackTrace();
         }
-        return new VChainRequest(Api.vChainServiceApi)
+        return new VChainRequest(Api.vPortApi)
                 .vPortCreate(vPortCreateRequestBean)
                 .map(new Func1<VPortCreateResponse, Contract>() {
                     @Override
