@@ -8,6 +8,11 @@ public class ValidationUtility {
     static int[] weight = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};    //十七位数字本体码权重
     static char[] validate = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};    //mod11,对应校验码字符值
 
+    /**
+     * 简单验算身份证是否合法需要配合正则验证
+     * @param number
+     * @return
+     */
     public static boolean reagulerIdEntityNumber(String number) {
         String substring = number.substring(0, 17);
         int sum = 0;
