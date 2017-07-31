@@ -50,7 +50,9 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by wang.rongqiang on 2017/6/5.
- * 产生私钥公钥
+ * 1、产生私钥公钥，恢复公私钥
+ * 2、签名
+ * 3、JWT签名,解谜
  */
 
 public final class CryptoManager {
@@ -88,6 +90,12 @@ public final class CryptoManager {
         return mCryptoManager;
     }
 
+    /**
+     * 初始化加密的字符串
+     */
+    private void initKeyInfoStr() {
+        keyInfoStr = PrefUtility.getString(BaseApplication.getContext(), SAVE_KEY_FLAG, "");
+    }
 
     /**
      * 初始化公私钥生成器
@@ -197,7 +205,7 @@ public final class CryptoManager {
     /**
      * 通过助记词回复私钥
      *
-     * @param words
+     * @param words 助记词
      */
     public void resetBitcoinKeyPair(final String password, final List<String> words, final
     GenerateCallBack
@@ -247,7 +255,7 @@ public final class CryptoManager {
     /**
      * 通过助记词回复私钥 RxJava 样式
      *
-     * @param words
+     * @param words 助记词
      */
     public Observable<String> resetBitcoinKeyPair(final String password, final List<String> words) {
         return Observable.create(new Observable.OnSubscribe<String>() {
@@ -276,7 +284,7 @@ public final class CryptoManager {
     /**
      * 生成地址
      *
-     * @return
+     * @return 地址
      */
     public String generateBitcoinAddress() throws NoDecryptException {
         checkEnCode();
@@ -286,7 +294,7 @@ public final class CryptoManager {
     /**
      * 生成多重签名地址
      *
-     * @return
+     * @return 地址
      */
     public String generateMultiSigAddress() throws NoDecryptException {
         checkEnCode();
@@ -298,7 +306,7 @@ public final class CryptoManager {
      * 签名
      *
      * @param context
-     * @param tx
+     * @param tx       交易TX
      * @param callback
      */
     public void sign(Context context, final String tx, final
@@ -644,7 +652,7 @@ public final class CryptoManager {
     }
 
     /**
-     * 是否加密过
+     * 是否加密
      *
      * @return true：已加密  false：没有加密
      */
@@ -714,6 +722,9 @@ public final class CryptoManager {
         }
     }
 
+    /**
+     * 删除公私钥
+     */
     public void cleanBitcoinKey() {
         keyInfoStr = "";
         mBitcoinKey = null;
@@ -763,11 +774,4 @@ public final class CryptoManager {
         return DatatypeConverter.printHexBinary(script.getProgram());
     }
 
-
-    /**
-     * 初始化加密的字符串
-     */
-    private void initKeyInfoStr() {
-        keyInfoStr = PrefUtility.getString(BaseApplication.getContext(), SAVE_KEY_FLAG, "");
-    }
 }

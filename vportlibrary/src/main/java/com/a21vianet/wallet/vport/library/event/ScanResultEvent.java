@@ -1,6 +1,8 @@
 package com.a21vianet.wallet.vport.library.event;
 
-
+/**
+ * 二维码扫描结果返回时间
+ */
 public class ScanResultEvent {
 
     public String result;

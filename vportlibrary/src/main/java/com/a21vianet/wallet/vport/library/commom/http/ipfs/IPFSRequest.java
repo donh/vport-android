@@ -49,6 +49,15 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
         super(baseUrl);
     }
 
+    /**
+     * 通过 Vport 服务器上传IPFS信息到 IPFS
+     *
+     * @param subscriber
+     * @param senderAddress
+     * @param proxyAddress
+     * @param userInfo
+     * @return
+     */
     public Subscription set(
             Subscriber<RawTxResponse> subscriber,
             String senderAddress,
@@ -61,6 +70,15 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .subscribe(subscriber);
     }
 
+    /**
+     * 通过 Vport 服务器上传IPFS信息到 IPFS
+     *
+     * @param subscriber
+     * @param senderAddress
+     * @param proxyAddress
+     * @param userInfo
+     * @return
+     */
     public Subscription set(
             Subscriber<RawTxResponse> subscriber,
             String senderAddress,
@@ -73,6 +91,14 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .subscribe(subscriber);
     }
 
+    /**
+     * 通过 Vport 服务器上传IPFS信息到 IPFS (RX 方式)
+     *
+     * @param senderAddress
+     * @param proxyAddress
+     * @param userInfo
+     * @return
+     */
     public Observable<RawTxResponse> set(
             String senderAddress,
             String proxyAddress,
@@ -80,6 +106,14 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
         return mService.set(senderAddress, proxyAddress, "PROFILE", userInfo);
     }
 
+    /**
+     * 通过 Vport 服务器获取IPFS信息
+     *
+     * @param subscriber
+     * @param senderAddress
+     * @param proxyAddress
+     * @return
+     */
     public Subscription get(Subscriber<UserInfoIPFSGET> subscriber, String senderAddress, String
             proxyAddress) {
         return mService.get(senderAddress, proxyAddress, "PROFILE")
@@ -89,11 +123,24 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .subscribe(subscriber);
     }
 
+    /**
+     * 通过 Vport 服务器获取IPFS信息 (RX 方式)
+     *
+     * @param senderAddress
+     * @param proxyAddress
+     * @return
+     */
     public Observable<UserInfoIPFSGET> get(String senderAddress, String
             proxyAddress) {
         return mService.get(senderAddress, proxyAddress, "PROFILE");
     }
 
+    /**
+     * 再 IPFS 服务器上获取 JSON 信息
+     *
+     * @param hash
+     * @return
+     */
     public Subscription ipfsGetJson(Subscriber<String> subscriber, String hash) {
         return mService.ipfsGetJson(hash)
                 .map(new Func1<ResponseBody, String>() {
@@ -108,7 +155,13 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .subscribe(subscriber);
     }
 
-    public Observable<String> ipfsGetJson(String hash){
+    /**
+     * 再 IPFS 服务器上获取 JSON 信息 (RX方式)
+     *
+     * @param hash
+     * @return
+     */
+    public Observable<String> ipfsGetJson(String hash) {
         return mService.ipfsGetJson(hash)
                 .map(new Func1<ResponseBody, String>() {
                     @Override
@@ -121,6 +174,13 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .unsubscribeOn(Schedulers.io());
     }
 
+    /**
+     * 直接向 IPFS 服务器上传 JSON 信息
+     *
+     * @param subscriber
+     * @param json
+     * @return
+     */
     public Subscription ipfsAddJson(Subscriber<AddResult> subscriber,
                                     String json) {
         RequestBody requestFile = RequestBody.create(MediaType.parse("text/plain"), json);
@@ -133,6 +193,12 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
                 .subscribe(subscriber);
     }
 
+    /**
+     * 直接向 IPFS 服务器上传 JSON 信息 (RX方式调用)
+     *
+     * @param json
+     * @return
+     */
     public Observable<AddResult> ipfsAddJson(String json) {
         RequestBody requestFile = RequestBody.create(MediaType.parse("text/plain"), json);
         MultipartBody.Part formData = MultipartBody.Part.createFormData("file", "ipfsjson",
@@ -167,11 +233,17 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
         Observable<ResponseBody> ipfsGetJson(@Path("hash") String hash);
     }
 
+    /**
+     * 读取 IPFS 上的 String 信息,如果读取比较大的文件请勿使用此方法,会 OOM
+     *
+     * @param body
+     * @return
+     */
     private String getResponseBody(ResponseBody body) {
         try {
             // 改成自己需要的存储位置
-            InputStream inputStream = null;
-            ByteArrayOutputStream outputStream = null;
+            InputStream inputStream;
+            ByteArrayOutputStream outputStream;
             byte[] fileReader = new byte[4096];
 
             inputStream = body.byteStream();

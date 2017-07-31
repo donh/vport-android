@@ -11,6 +11,14 @@ import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnFinishedListe
  */
 
 public class Signer {
+    /**
+     * 对交易签名
+     *
+     * @param context
+     * @param priv
+     * @param tx
+     * @param callback
+     */
     public static void sign(Context context, final String priv, final String tx,
                             final OnFinishedListener callback) {
         final String call = "javascript:sign('" + priv + "','" +
@@ -28,6 +36,15 @@ public class Signer {
         });
     }
 
+    /**
+     * 对多重验签地址交易签名
+     *
+     * @param context
+     * @param priv
+     * @param script
+     * @param tx
+     * @param callback
+     */
     public static void signMultisig(Context context, final String priv, final String script, final
     String tx, final OnFinishedListener callback) {
         final String call = "javascript:signMultisig('" + priv + "','" + script + "','" +
@@ -45,6 +62,14 @@ public class Signer {
         });
     }
 
+    /**
+     * 签名消息
+     *
+     * @param context
+     * @param priv
+     * @param msg
+     * @param listener
+     */
     public static void signMessage(Context context, String priv, String msg, final
     OnFinishedListener
             listener) {

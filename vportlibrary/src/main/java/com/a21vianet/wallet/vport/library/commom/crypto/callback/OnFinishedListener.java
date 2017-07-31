@@ -4,6 +4,7 @@ package com.a21vianet.wallet.vport.library.commom.crypto.callback;
  * Created by ben on 2017/6/1.
  */
 public abstract class OnFinishedListener {
+    //对 JS 方法返回的结果进行判断
     public void onFinish(String s) {
         String ErroeTag = "JSERROR.";
 

@@ -24,6 +24,18 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
         super(url);
     }
 
+    @Override
+    protected Class<VPortApi> getServiceClass() {
+        return VPortApi.class;
+    }
+
+    /**
+     * Vport 登录业务
+     *
+     * @param subscriber
+     * @param userJWT
+     * @return
+     */
     public Subscription login(BaseHttpSubscriber<LoginResponse> subscriber, String userJWT) {
 
         JsonObject json = new JsonObject();
@@ -38,6 +50,13 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 .subscribe(subscriber);
     }
 
+    /**
+     * Vport 声明业务
+     *
+     * @param subscriber
+     * @param claimJWT
+     * @return
+     */
     public Subscription claim(BaseHttpSubscriber<ClaimResponse> subscriber, String claimJWT) {
 
         JsonObject jsonObject = new JsonObject();
@@ -52,6 +71,13 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 .subscribe(subscriber);
     }
 
+    /**
+     * 授权业务
+     *
+     * @param subscriber
+     * @param authJWT
+     * @return
+     */
     public Subscription auth(BaseHttpSubscriber<AuthResponse> subscriber, String authJWT) {
 
         JsonObject jsonObject = new JsonObject();
@@ -66,6 +92,13 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 .subscribe(subscriber);
     }
 
+    /**
+     * 获取 认证结果
+     *
+     * @param subscriber
+     * @param tx
+     * @return
+     */
     public Subscription certificate(BaseHttpSubscriber<CertificationResult> subscriber, String tx) {
 
         JsonObject jsonObject = new JsonObject();
@@ -80,11 +113,6 @@ public class VPortRequest extends Request<VPortRequest.VPortApi> {
                 .subscribe(subscriber);
     }
 
-
-    @Override
-    protected Class<VPortApi> getServiceClass() {
-        return VPortApi.class;
-    }
 
     interface VPortApi {
 

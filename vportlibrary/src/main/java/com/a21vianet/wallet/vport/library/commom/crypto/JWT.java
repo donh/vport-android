@@ -13,6 +13,14 @@ import com.a21vianet.wallet.vport.library.commom.crypto.callback.OnVerifiedListe
 
 public class JWT {
 
+    /**
+     * 对JTW进行签名
+     *
+     * @param context
+     * @param privateKey
+     * @param token
+     * @param listener
+     */
     public static void signToken(Context context, String privateKey, String token, final OnFinishedListener listener) {
         final String js = "javascript:signToken('" + privateKey + "', " +
                 token + ")";
@@ -30,6 +38,13 @@ public class JWT {
         });
     }
 
+    /**
+     * 对 JWT 解谜
+     *
+     * @param context
+     * @param tokenString
+     * @param listener
+     */
     public static void decodeToken(Context context, String tokenString, final OnFinishedListener listener) {
         final String js = "javascript:decodeToken('" + tokenString + "')";
 
@@ -46,6 +61,14 @@ public class JWT {
         });
     }
 
+    /**
+     * 验证 JWT
+     *
+     * @param context
+     * @param publicKey
+     * @param token
+     * @param listener
+     */
     public static void verifyToken(Context context, String publicKey, String token, final OnVerifiedListener listener) {
         final String js = "javascript:verifyToken('" + publicKey + "',\"" +
                 token + "\")";
