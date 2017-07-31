@@ -5,15 +5,15 @@ import com.a21vianet.wallet.vport.dao.IdentityCardManager;
 import com.a21vianet.wallet.vport.dao.entity.IdentityCard;
 import com.a21vianet.wallet.vport.library.commom.crypto.CryptoManager;
 import com.a21vianet.wallet.vport.library.commom.crypto.NoDecryptException;
-import com.a21vianet.wallet.vport.library.commom.crypto.bean.AuthTokenContext;
-import com.a21vianet.wallet.vport.library.commom.crypto.bean.ClaimTokenContext;
+import com.a21vianet.wallet.vport.library.commom.http.vport.bean.AuthTokenContext;
+import com.a21vianet.wallet.vport.library.commom.http.vport.bean.ClaimTokenContext;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.Contract;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTBean;
 import com.a21vianet.wallet.vport.library.commom.crypto.bean.JWTPayload;
-import com.a21vianet.wallet.vport.library.commom.crypto.bean.LoginTokenContext;
-import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserAuthTokenContext;
-import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserClaimTokenContext;
-import com.a21vianet.wallet.vport.library.commom.crypto.bean.UserLoginTokenContext;
+import com.a21vianet.wallet.vport.library.commom.http.vport.bean.LoginTokenContext;
+import com.a21vianet.wallet.vport.library.commom.http.vport.bean.UserAuthTokenContext;
+import com.a21vianet.wallet.vport.library.commom.http.vport.bean.UserClaimTokenContext;
+import com.a21vianet.wallet.vport.library.commom.http.vport.bean.UserLoginTokenContext;
 
 public class ScanDataTask {
 

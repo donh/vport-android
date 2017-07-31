@@ -196,6 +196,7 @@ public class IdentityInfoActivity extends BaseActivity {
                         mIdentityInfoList.get(i).setJwt("");
                         break;
                     case "REJECTED":
+                    case "ERROR": //手机时间不对会回传 ERROR
                         operatingData.setOperationState(OperationStateEnum.Error.state);
                         operatingData.setOperationmsg("认证失败");
                         OperatingDataManager.insert(operatingData);

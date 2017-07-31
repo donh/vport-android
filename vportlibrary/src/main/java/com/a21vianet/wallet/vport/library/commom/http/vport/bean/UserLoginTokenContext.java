@@ -1,4 +1,4 @@
-package com.a21vianet.wallet.vport.library.commom.crypto.bean;
+package com.a21vianet.wallet.vport.library.commom.http.vport.bean;
 
 
 public class UserLoginTokenContext {
