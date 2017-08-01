@@ -32,6 +32,13 @@ public class TransactionRequest extends Request<TransactionRequest.TransactionAp
         return TransactionApi.class;
     }
 
+    /**
+     * 向区块链发送签名的交易
+     *
+     * @param subscriber
+     * @param rawTxSigned
+     * @return
+     */
     public Subscription signed(Subscriber<RawTxSignedResponse> subscriber, String rawTxSigned) {
         return mService.signed(rawTxSigned)
                 .subscribeOn(Schedulers.io())

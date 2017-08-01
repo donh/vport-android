@@ -71,7 +71,7 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
     }
 
     /**
-     * 通过 Vport 服务器上传IPFS信息到 IPFS
+     * 通过 Vport 服务器上传信息到 IPFS
      *
      * @param subscriber
      * @param senderAddress
@@ -92,7 +92,7 @@ public class IPFSRequest extends Request<IPFSRequest.IPFSApi> {
     }
 
     /**
-     * 通过 Vport 服务器上传IPFS信息到 IPFS (RX 方式)
+     * 通过 Vport 服务器上传信息到 IPFS (RX 方式)
      *
      * @param senderAddress
      * @param proxyAddress
