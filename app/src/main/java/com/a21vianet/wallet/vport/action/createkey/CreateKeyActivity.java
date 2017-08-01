@@ -84,14 +84,14 @@ public class CreateKeyActivity extends BaseActivity {
                     public void onError(Throwable e) {
                         Contract contract = new Contract();
                         contract.clear();
-                        ToastFactory.getInstance(getApplicationContext()).makeTextShow("创建新用户失败",
-                                Toast.LENGTH_SHORT);
+                        ToastFactory.getInstance(getApplicationContext()).makeTextShow("创建账户失败", Toast.LENGTH_SHORT);
                         finish();
                     }
 
                     @Override
                     public void onNext(Contract contract) {
                         contract.save();
+                        ToastFactory.getInstance(getApplicationContext()).makeTextShow("创建账户成功", Toast.LENGTH_SHORT);
                         startActivity(new Intent(CreateKeyActivity.this, MainActivity.class));
                         ActivityManager.getInstance().finishAll();
                     }
@@ -235,6 +235,6 @@ public class CreateKeyActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(this, "请耐心等待用户注册完毕", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "正在创建用户身份，请耐心等待...", Toast.LENGTH_SHORT).show();
     }
 }

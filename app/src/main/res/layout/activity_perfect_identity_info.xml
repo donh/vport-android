@@ -65,7 +65,7 @@
                 android:id="@+id/edit_name_value"
                 style="@style/perfect_identity_info_value"
                 android:layout_toEndOf="@+id/tv_name_key"
-                android:hint="请填写姓名信息"
+                android:hint="请填写姓名"
                 android:labelFor="@+id/edit_name_value"/>
 
         </RelativeLayout>
@@ -89,7 +89,7 @@
                 android:id="@+id/edit_id_value"
                 style="@style/perfect_identity_info_value"
                 android:layout_toEndOf="@+id/tv_id_key"
-                android:hint="请填写身份证信息"
+                android:hint="请填写身份证号"
                 android:labelFor="@+id/edit_id_value"/>
 
         </RelativeLayout>
