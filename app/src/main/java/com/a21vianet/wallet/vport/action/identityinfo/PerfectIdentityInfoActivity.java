@@ -89,6 +89,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
             } else {
                 //其他状态不能修改
                 initNotEditDate();
+                Toast.makeText(this, "当前状态不可编辑身份证信息", Toast.LENGTH_SHORT).show();
             }
             //设置数据
             setViewData();
@@ -274,6 +275,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
             if (mIsInsert) {
                 IdentityCardManager.insert(new IdentityCard(null, name, number, timeBegin, timeEnd,
                         issued, IdentityCardState.NONE.state));
+                Toast.makeText(this, "身份证添加成功", Toast.LENGTH_SHORT).show();
             } else {
                 mIdentityCard.setName(name);
                 mIdentityCard.setNumber(number);
@@ -282,6 +284,7 @@ public class PerfectIdentityInfoActivity extends BaseActivity {
                 mIdentityCard.setAgencies(issued);
                 mIdentityCard.setState(IdentityCardState.NONE.state);
                 IdentityCardManager.update(mIdentityCard);
+                Toast.makeText(this, "身份证更新成功", Toast.LENGTH_SHORT).show();
             }
             finish();
         } catch (RegularException e) {

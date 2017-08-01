@@ -122,6 +122,13 @@ public class MainActivity extends BaseMainActivity {
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(userClaimJWT)) {
                     new VPortRequest(Api.vPortServiceApi).claim(new BaseHttpSubscriber<ClaimResponse>() {
+
+                        @Override
+                        public void onStart() {
+                            super.onStart();
+                            Toast.makeText(MainActivity.this, "正在声明...", Toast.LENGTH_SHORT).show();
+                        }
+
                         @Override
                         public void onError(Throwable e) {
                             super.onError(e);
@@ -140,7 +147,7 @@ public class MainActivity extends BaseMainActivity {
                                     , "");
                             OperatingDataManager.insert(operatingData);
 
-                            Toast.makeText(MainActivity.this, "声明失败，请稍候重试", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "声明失败", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -161,7 +168,7 @@ public class MainActivity extends BaseMainActivity {
                                     , "");
 
                             if (claimResponse.result.valid) {
-                                Toast.makeText(MainActivity.this, "声明信息提交成功", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "声明成功", Toast.LENGTH_SHORT).show();
                                 IdentityCard identityCard = IdentityCardManager.get(0);
                                 identityCard.setState(IdentityCardState.PENDING.state);
                                 IdentityCardManager.update(identityCard);
@@ -232,6 +239,13 @@ public class MainActivity extends BaseMainActivity {
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(userAuthJWT)) {
                     new VPortRequest(Api.vPortServiceApi).auth(new BaseHttpSubscriber<AuthResponse>() {
+
+                        @Override
+                        public void onStart() {
+                            super.onStart();
+                            Toast.makeText(MainActivity.this, "正在授权...", Toast.LENGTH_SHORT).show();
+                        }
+
                         @Override
                         protected void onSuccess(AuthResponse authResponse) {
                             super.onSuccess(authResponse);
@@ -315,6 +329,12 @@ public class MainActivity extends BaseMainActivity {
                 if (!TextUtils.isEmpty(userJWT)) {
                     new VPortRequest(Api.vPortServiceApi).login(new BaseHttpSubscriber<LoginResponse>() {
                         @Override
+                        public void onStart() {
+                            super.onStart();
+                            Toast.makeText(MainActivity.this, "正在登录...", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
                         public void onError(Throwable e) {
                             super.onError(e);
                             dismissDialog(mAlertDialogLogin);
@@ -332,7 +352,7 @@ public class MainActivity extends BaseMainActivity {
                                     , "");
                             OperatingDataManager.insert(operatingData);
 
-                            Toast.makeText(MainActivity.this, "登录失败，请稍候重试", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -582,7 +602,7 @@ public class MainActivity extends BaseMainActivity {
                                                                         subscriber.onNext(userLoginTokenContextJWTBean);
                                                                         subscriber.onCompleted();
                                                                     } else
-                                                                        subscriber.onError(new Throwable("验证签名失败，请稍候重试"));
+                                                                        subscriber.onError(new Throwable("二维码错误，请重新扫描"));
                                                                 }
                                                             });
                                                 } catch (NoDecryptException e) {
@@ -648,13 +668,9 @@ public class MainActivity extends BaseMainActivity {
                                 });
                         break;
                     case SUB_AUTHORIZATION_TOKEN:
-                        if (!IdentityCardManager.exists()) {
-                            Toast.makeText(MainActivity.this, "请先添加身份证信息", Toast.LENGTH_SHORT).show();
-                            dismissProgress();
-                            return;
-                        }
-                        if (IdentityCardManager.get(0).getState() != IdentityCardState.APPROVED.state) {
-                            Toast.makeText(MainActivity.this, "身份证信息未认证，请先认证身份证信息", Toast.LENGTH_SHORT).show();
+                        if (!IdentityCardManager.exists()
+                                || IdentityCardManager.get(0).getState() != IdentityCardState.APPROVED.state) {
+                            Toast.makeText(MainActivity.this, "暂无授权信息", Toast.LENGTH_SHORT).show();
                             dismissProgress();
                             return;
                         }
@@ -689,7 +705,7 @@ public class MainActivity extends BaseMainActivity {
                                                                         subscriber.onNext(userAuthTokenContextJWTBean);
                                                                         subscriber.onCompleted();
                                                                     } else {
-                                                                        subscriber.onError(new Throwable("验证签名失败，请稍候重试"));
+                                                                        subscriber.onError(new Throwable("二维码错误，请重新扫描"));
                                                                     }
                                                                 }
                                                             });
@@ -788,7 +804,7 @@ public class MainActivity extends BaseMainActivity {
                                                                         }
 
                                                                     } else {
-                                                                        subscriber.onError(new Throwable("验证签名失败，请稍候重试"));
+                                                                        subscriber.onError(new Throwable("二维码错误，请重新扫描"));
                                                                     }
                                                                 }
                                                             });
@@ -837,7 +853,12 @@ public class MainActivity extends BaseMainActivity {
                                         if (claimable()) {
                                             mAlertDialogClaim.show();
                                         } else {
-                                            Toast.makeText(MainActivity.this, "声明状态错误，请查看身份证声明状态后重试", Toast.LENGTH_SHORT).show();
+                                            if (IdentityCardManager.get(0).getState() == IdentityCardState.APPROVED.state
+                                                    || IdentityCardManager.get(0).getState() == IdentityCardState.PENDING.state) {
+                                                Toast.makeText(MainActivity.this, "请勿重复声明身份证", Toast.LENGTH_SHORT).show();
+                                            } else if (IdentityCardManager.get(0).getState() == IdentityCardState.REJECTED.state) {
+                                                Toast.makeText(MainActivity.this, "认证失败，请检查身份证信息", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                         dismissProgress();
                                     }
