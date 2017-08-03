@@ -1,3 +1,24 @@
+### 说明文档
+[中文版](/README_CN.md) | [English](/README.md)
+
+### App 示例
+[下载地址1](http://fir.im/3uj9)
+
+[下载地址2](\example\app-debug.apk)
+
+### 如何使用
+1. ```git clone https://github.com/QuincySx/vport-android.git```
+1. 使用 Android Studio 打开
+
+### Screenshot
+
+![](/screenshot/Screenshot1.jpg)
+
+![](/screenshot/Screenshot2.jpg)
+
+![](/screenshot/Screenshot3.jpg)
+
+### License
 MIT License
 
 Copyright (c) 2017 21vianet
