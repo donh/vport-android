@@ -8,13 +8,13 @@
 ### App 示例
 [下载地址1](http://fir.im/3uj9)
 
-[下载地址2](\example\app-debug.apk)
+[下载地址2](/example/app-debug.apk)
 
 ### 如何使用
 1. ```git clone https://github.com/QuincySx/vport-android.git```
 1. 使用 Android Studio 打开
 
-### Screenshot
+### 应用截图
 
 ![](/screenshot/Screenshot1.jpg)
 
