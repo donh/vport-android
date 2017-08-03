@@ -1,6 +1,6 @@
 ## vPort
 
-[![](https://jitpack.io/v/QuincySx/vport-android.svg)](https://jitpack.io/#QuincySx/vport-android) de
+[![](https://jitpack.io/v/QuincySx/vport-android.svg)](https://jitpack.io/#QuincySx/vport-android) 
 [![API](https://img.shields.io/badge/API-19%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=19)
 
 ### 说明文档
