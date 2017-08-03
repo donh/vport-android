@@ -1,3 +1,7 @@
+## vPort
+
+[![](https://jitpack.io/v/QuincySx/vport-android.svg)](https://jitpack.io/#QuincySx/vport-android)
+
 ### 说明文档
 [中文版](/README_CN.md) | [English](/README.md)
 
