@@ -8,7 +8,7 @@
 ### App Example
 [Download address 1](http://fir.im/3uj9)
 
-[Download address 2](\example\app-debug.apk)
+[Download address 2](/example/app-debug.apk)
 
 ### How to use
 1. ```git clone https://github.com/QuincySx/vport-android.git```
