@@ -37,7 +37,7 @@ before_install:
 
 script:
   - ./gradlew assembleDebug
- # - ./gradlew :app:createDebugAndroidTestCoverageReport --info --stacktrace
+  - ./gradlew :app:createDebugAndroidTestCoverageReport --info --stacktrace
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
