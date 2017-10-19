@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="common_text_bigSize">17sp</dimen>
-    <dimen name="common_text_largishSize">15sp</dimen>
-    <dimen name="common_text_normalSize">14sp</dimen>
-    <dimen name="common_text_smallerSize">12sp</dimen>
-    <dimen name="common_text_smallSize">10sp</dimen>
-</resources>
