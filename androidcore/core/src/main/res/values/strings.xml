@@ -1,0 +1,73 @@
+<resources>
+    <string name="capture">capture</string>
+    <string name="album">album</string>
+    <string name="sdcard_not_found">Sdcard not found!</string>
+    <string name="get_image_failed_tips">get_image_failed_tips</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="please_waiting">Please waiting</string>
+    <string name="quit_confirmation">quit_confirmation</string>
+
+    <string name="api_error_connect">api_error_connect</string>
+    <string name="api_error_json">api_error_json</string>
+    <string name="api_error_state">api_error_state</string>
+
+    <string name="kilometre">kilometre</string>
+    <string name="megameter">megameter</string>
+    <string name="miriadMilimetre">miriad milimetre</string>
+    <string name="ThousandsKilometers">Thousands kilometers</string>
+    <string name="today">today</string>
+    <string name="month">month</string>
+    <string name="day">day</string>
+    <string name="sunday">sunday</string>
+    <string name="monday">monday</string>
+    <string name="tuesday">tuesday</string>
+    <string name="wednesday">wednesday</string>
+    <string name="thursday">thursday</string>
+    <string name="friday">friday</string>
+    <string name="saturday">saturday</string>
+
+    <string name="register">register</string>
+    <string name="update">update</string>
+    <string name="login">login</string>
+    <string name="reset_pwd">reset_pwd</string>
+    <string name="reset_pwd_success">Reset Password Success</string>
+    <string name="reset_pwd_success_login">The passcode please login again</string>
+    <string name="send_auth_code">send_auth_code</string>
+    <string name="send_auth_code_success">send auth code success</string>
+    <string name="hint_mobile">hint_mobile</string>
+    <string name="hint_password">hint_password</string>
+    <string name="hint_auth_code">hint_auth_code</string>
+    <string name="hint_password_confirmation">hint_password_confirmation</string>
+    <string name="hint_original_password">hint_original_password</string>
+    <string name="hint_new_password">hint_new_password</string>
+    <string name="hint_new_password_confirmation">hint_new_password_confirmation</string>
+    <string name="confirm_password">confirm_password</string>
+    <string name="empty_mobile">empty_mobile</string>
+    <string name="illegal_mobile">illegal_mobile</string>
+    <string name="validation_code_sent">validation_code_sent</string>
+    <string name="empty_password">empty_password</string>
+    <string name="different_password">different_password</string>
+    <string name="illegal_password_tips">illegal_password_tips</string>
+    <string name="illegal_validation_code">illegal_validation_code</string>
+    <string name="about">About</string>
+    <string name="permission_call_message">When you make a phone call Require the system to authorize the call</string>
+    <string name="i_know">i see</string>
+    <string name="reset_phone">Replace a phone number</string>
+    <string name="hint_message_reset_mobile">Change personal information remains the same, after the next time you can log in using the new phone number</string>
+    <string name="phone_message">Your current mobile phone number is</string>
+    <string name="please_enter_password">Please enter the account password</string>
+    <string name="reset_hint_first">Only change once a month</string>
+    <string name="reset_hint_second">Replace mobile phone number will not affect the account content and data</string>
+    <string name="reset_hint_third">You will use the new phone number to log in</string>
+    <string name="mobile_auth_code">Please enter the phone number and verification code</string>
+    <string name="please_enter_mobile">Please enter the target cell phone number</string>
+    <string name="confirm">confirm</string>
+
+    <string name="There_is_no_more_data">There is no more data!</string>
+
+
+    <item name="tag_first_recycler" type="id"></item>
+    <item name="tag_second_recycler" type="id"></item>
+</resources>

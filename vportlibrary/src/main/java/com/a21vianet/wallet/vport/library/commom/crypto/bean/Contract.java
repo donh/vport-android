@@ -1,0 +1,127 @@
+package com.a21vianet.wallet.vport.library.commom.crypto.bean;
+
+import com.a21vianet.wallet.vport.library.BaseApplication;
+import com.google.gson.Gson;
+import com.littlesparkle.growler.core.utility.PrefUtility;
+
+/**
+ * Created by wang.rongqiang on 2017/6/9.
+ * 保存公开的智能合约信息
+ */
+
+public class Contract {
+    private String proxy;
+    private String controller;
+    private String recovery;
+    private String ipfsHex;
+    private String nickname;
+
+    private static final String SAVE_TAG = "contract_info_save_tag";
+
+    public Contract() {
+    }
+
+    public Contract(String proxy, String controller, String recover) {
+        this.proxy = proxy;
+        this.controller = controller;
+        this.recovery = recover;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getProxy() {
+        return proxy;
+    }
+
+    public void setProxy(String proxy) {
+        this.proxy = proxy;
+    }
+
+    public String getController() {
+        return controller;
+    }
+
+    public void setController(String controller) {
+        this.controller = controller;
+    }
+
+    public String getRecover() {
+        return recovery;
+    }
+
+    public void setRecover(String recover) {
+        this.recovery = recover;
+    }
+
+    public String getIpfsHex() {
+        return ipfsHex;
+    }
+
+    public void setIpfsHex(String ipfsHex) {
+        this.ipfsHex = ipfsHex;
+    }
+
+    @Override
+    public String toString() {
+        return "Contract{" +
+                "proxy='" + proxy + '\'' +
+                ", controller='" + controller + '\'' +
+                ", recover='" + recovery + '\'' +
+                ", ipfsHex='" + ipfsHex + '\'' +
+                ", nickname='" + nickname + '\'' +
+                '}';
+    }
+
+    /**
+     * 保存智能合约地址
+     */
+    public void save() {
+        PrefUtility.setString(BaseApplication.getContext(), SAVE_TAG, new Gson().toJson(this));
+    }
+
+    /**
+     * 获取智能合约地址
+     */
+    public void get() {
+        Gson gson = new Gson();
+        String string = PrefUtility.getString(BaseApplication.getContext(), SAVE_TAG, "");
+        if (string.equals("")) {
+            return;
+        }
+        Contract contract = gson.fromJson(string, this.getClass());
+        setDate(contract);
+    }
+
+    /**
+     * 清除智能合约地址
+     */
+    public void clear() {
+        Gson gson = new Gson();
+        Contract contract = new Contract();
+        PrefUtility.setString(BaseApplication.getContext(), SAVE_TAG, gson.toJson(contract));
+        setDate(contract);
+    }
+
+    public boolean isEmpty() {
+        get();
+        if (proxy == null || controller == null || recovery == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void setDate(Contract contract) {
+        this.setController(contract.getController());
+        this.setRecover(contract.getRecover());
+        this.setProxy(contract.getProxy());
+        this.setIpfsHex(contract.getIpfsHex());
+        this.setNickname(contract.getNickname());
+    }
+}

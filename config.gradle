@@ -1,0 +1,105 @@
+def libSupportVersion = '25.3.1'
+def libSupportRecyclerViewVersion = '25.3.1'
+def libButterknifeVersion = '8.6.0'
+def libRetrofitVersion = '2.3.0'
+def libRxjavaVersion = '1.3.0'
+def libRxAndroidVersion = '1.2.1'
+def libEventbusVersion = "3.0.0"
+def libMultidexVersion = "1.0.1"
+def libOkhttp3LoggingVersion = "3.5.0"
+def libGlideVersion = "3.7.0"
+def libFrescoVersion = "1.1.0"
+def libBaseAdapterVersion = "3.0.3"
+
+
+ext {
+    AndroidVersion = [
+            applicationId    : "com.a21vianet.wallet.vport",
+
+            compileSdkVersion: 25,
+            buildToolsVersion: "25.0.2",
+            minSdkVersion    : 19,
+            targetSdkVersion : 25,
+            versionCode      : 1,
+            versionName      : "1.0",
+    ]
+
+    libJunit = 'junit:junit:4.12'
+    libButterknife = "com.jakewharton:butterknife:${libButterknifeVersion}"
+    libButterknifeProcessor = "com.jakewharton:butterknife-compiler:${libButterknifeVersion}"
+
+    libSupportV7 = "com.android.support:appcompat-v7:${libSupportVersion}"
+    libDesign = "com.android.support:design:${libSupportVersion}"
+    libCardviewV7 = "com.android.support:cardview-v7:${libSupportVersion}"
+    libRecyclerviewV7 = "com.android.support:recyclerview-v7:${libSupportRecyclerViewVersion}"
+    libConstraint = "com.android.support.constraint:constraint-layout:1.0.2"
+
+    libRetrofitConverterGson = "com.squareup.retrofit2:converter-gson:${libRetrofitVersion}"
+    libRetrofitAdapterRxjava = "com.squareup.retrofit2:adapter-rxjava:2.1.0"
+    libOkhttp3Logging = "com.squareup.okhttp3:logging-interceptor:${libOkhttp3LoggingVersion}"
+
+    libRxjava = "io.reactivex:rxjava:${libRxjavaVersion}"
+    libRxAndroid = "io.reactivex:rxandroid:${libRxAndroidVersion}"
+    libRxBingding = "com.jakewharton.rxbinding:rxbinding:0.4.0"
+    libRxPreferences = "com.f2prateek.rx.preferences:rx-preferences:1.0.2"
+
+    libEventbus = "org.greenrobot:eventbus:${libEventbusVersion}"
+
+    libMultidex = "com.android.support:multidex:${libMultidexVersion}"
+
+    libGlide = "com.github.bumptech.glide:glide:${libGlideVersion}"
+
+    libReViewFlexibledivider = "com.yqritc:recyclerview-flexibledivider:1.2.9"
+
+    libNumberProgressBar = "com.daimajia.numberprogressbar:library:1.2@aar"
+    libNineoldAndroid = "com.nineoldandroids:library:2.4.0"
+
+    libDialogplus = "com.orhanobut:dialogplus:1.11@aar"
+    //弹窗
+    libSweetAlert = "com.github.QuincySx:SweetAlert:1.0.4"
+    //自定义dialog
+    libBirdDialog = "com.github.QuincySx:BirdDialog:1.0.0"
+    // 密码
+    libPassWordEdit = "com.github.QuincySx:PassWordEdit:1.0.2"
+
+    libDownloadManager = "com.coolerfall:android-http-download-manager:1.6.1"
+    libXutils = "org.xutils:xutils:3.3.36"
+    libPtrrv = "homhomlin.lib:ptrrv-library:1.3.1"
+
+    libLuban = "top.zibin:Luban:1.0.9"
+
+    // 下拉刷新
+    libRefresh = "com.yalantis:pulltomakesoup:1.0.1"
+    libRefreshLayout = "com.lcodecorex:tkrefreshlayout:1.0.5"
+
+    //hongyang BaseAdapter
+    libBaseRvAdapter = "com.zhy:base-rvadapter:${libBaseAdapterVersion}"
+    libBaseAdapter = "com.zhy:base-adapter:${libBaseAdapterVersion}"
+
+    //滚动样式的选择框
+    libPicker = "com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.4.4"
+
+    //流式布局
+    libFlowLayout = "com.zhy:flowlayout-lib:1.0.3"
+
+    libTakePhoto = "com.jph.takephoto:takephoto_library:4.0.3"
+
+    libRatingbar = "com.hedgehog.ratingbar:app:1.1.2"
+
+    //AES加密
+    libAESCrypt = "com.scottyab:aescrypt:0.0.1"
+
+    //沉浸式状态栏
+    libStatusBarCompat = "com.github.niorgai:StatusBarCompat:2.1.3"
+
+    //高斯模糊
+    lubTransformations = "jp.wasabeef:glide-transformations:2.0.1"
+
+    libDataPicker = "com.contrarywind:Android-PickerView:3.2.5"
+
+    libGreendao="org.greenrobot:greendao:3.2.2"
+
+    libZbar="me.dm7.barcodescanner:zxing:1.9.3"
+
+    libShapetextdrawable="com.amulyakhare:com.amulyakhare.textdrawable:1.0.1"
+}
