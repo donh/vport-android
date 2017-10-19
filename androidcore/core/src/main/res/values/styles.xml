@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="mypopwindow_anim_style">
+        <item name="android:windowEnterAnimation">@anim/alert_withdrawals_show</item>
+        <item name="android:windowExitAnimation">@anim/alert_withdrawals_hidd</item>
+    </style>
+</resources>

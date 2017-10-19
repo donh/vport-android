@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/layout"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/subtract_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentLeft="true"
+        android:layout_weight="1"
+        android:background="@drawable/elegant_add_button_background"
+        android:text="-"
+        android:textSize="22sp"/>
+
+    <EditText
+        android:id="@+id/number_counter"
+        android:layout_width="@dimen/other_fees_edit_width"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@drawable/elegant_number_button_background"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:text="0.0"/>
+
+    <Button
+        android:id="@+id/add_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_weight="1"
+        android:background="@drawable/elegant_add_button_background"
+        android:text="+"
+        android:textSize="22sp"/>
+
+</RelativeLayout>
